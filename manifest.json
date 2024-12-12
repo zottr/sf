@@ -2,7 +2,7 @@
   "name": "Urbana Haat",
   "short_name": "UBHaat",
   "start_url": "/",
-  "display": "fullscreen",
+  "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffA500",
   "description": "This is a marketplace for Urbana Jewels society.",
