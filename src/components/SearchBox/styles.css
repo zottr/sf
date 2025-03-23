@@ -1,0 +1,7 @@
+.searchBox {
+  flex: none;
+  gap: 0.5rem; /* 8px */
+  padding-top: 1rem; /* 16px */
+  width: 300px;
+  padding-left: 1rem;
+}

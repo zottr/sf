@@ -1,0 +1,81 @@
+:root {
+  --orange: hsl(26, 100%, 55%);
+  --green: hsl(120, 100%, 44%);
+  --call-button: hsl(207, 83%, 75%);
+  --whatsapp-green: hsl(142 70% 49%);
+}
+
+.make-payment-button {
+  background-color: var(--whatsapp-green);
+  color: #fff;
+}
+
+.make-payment-button:hover {
+  background-color: var(--whatsapp-green);
+  color: #fff;
+}
+
+.make-payment-button:focus {
+  background-color: var(--whatsapp-green);
+  color: #fff;
+}
+
+.make-payment-button:active {
+  background-color: var(--whatsapp-green);
+  color: #fff;
+}
+
+.make-payment-button:visited {
+  background-color: var(--whatsapp-green);
+  color: #fff;
+}
+
+.whatsapp-button {
+  background-color: var(--whatsapp-green);
+  color: #fff;
+}
+
+.whatsapp-button:hover {
+  background-color: var(--whatsapp-green);
+  color: #fff;
+}
+
+.whatsapp-button:focus {
+  background-color: var(--whatsapp-green);
+  color: #fff;
+}
+
+.whatsapp-button:active {
+  background-color: var(--whatsapp-green);
+  color: #fff;
+}
+
+.whatsapp-button:visited {
+  background-color: var(--whatsapp-green);
+  color: #fff;
+}
+
+.call-button {
+  background-color: var(--call-button);
+  color: #fff;
+}
+
+.call-button:hover {
+  background-color: var(--call-button);
+  color: #fff;
+}
+
+.call-button:focus {
+  background-color: var(--call-button);
+  color: #fff;
+}
+
+.call-button:active {
+  background-color: var(--call-button);
+  color: #fff;
+}
+
+.call-button:visited {
+  background-color: var(--call-button);
+  color: #fff;
+}

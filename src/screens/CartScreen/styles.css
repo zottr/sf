@@ -1,0 +1,28 @@
+:root {
+  --orange: hsl(26, 100%, 55%);
+}
+
+.place-order-button {
+  background-color: var(--orange);
+  color: #fff;
+}
+
+.place-order-button:hover {
+  background-color: var(--orange);
+  color: #fff;
+}
+
+.place-order-button:focus {
+  background-color: var(--orange);
+  color: #fff;
+}
+
+.place-order-button:active {
+  background-color: var(--orange);
+  color: #fff;
+}
+
+.place-order-button:visited {
+  background-color: var(--orange);
+  color: #fff;
+}

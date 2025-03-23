@@ -1,0 +1,31 @@
+:root {
+  --orange: hsl(26, 100%, 55%);
+  --green: hsl(120, 100%, 44%);
+  --call-button: hsl(207, 83%, 75%);
+  --seller-green: hsl(122, 88%, 50%);
+}
+
+.seller-chat-button {
+  background-color: var(--seller-green);
+  color: #fff;
+}
+
+.seller-chat-button:hover {
+  background-color: var(--seller-green);
+  color: #fff;
+}
+
+.seller-chat-button:focus {
+  background-color: var(--seller-green);
+  color: #fff;
+}
+
+.seller-chat-button:active {
+  background-color: var(--seller-green);
+  color: #fff;
+}
+
+.seller-chat-button:visited {
+  background-color: var(--seller-green);
+  color: #fff;
+}
