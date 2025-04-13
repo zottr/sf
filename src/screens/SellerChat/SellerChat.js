@@ -7,13 +7,9 @@ import { Box, useTheme } from '@mui/material';
 function SellerChat() {
   const theme = useTheme();
 
-  const handleClick = () => {
-    console.log('button clicked');
-  };
+  const handleClick = () => {};
 
-  const sayHello = () => {
-    console.log('Hello');
-  };
+  const sayHello = () => {};
 
   const messageTemplates = [
     'None',

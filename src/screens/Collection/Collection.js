@@ -48,16 +48,19 @@ function Collection() {
   });
 
   const loadMoreProducts = useCallback(() => {
-    if (isLoadingMore || !hasMore) return;
+    if (isLoadingMore || !hasMore || initialLoading) return;
 
     setIsLoadingMore(true);
-    fetchProducts({
-      variables: {
-        slug: slug,
-        options: { skip, take, sort: { updatedAt: 'DESC' } },
-      },
+    setSkip((prevSkip) => {
+      const newSkip = prevSkip + take;
+      fetchProducts({
+        variables: {
+          slug: slug,
+          options: { skip: newSkip, take, sort: { updatedAt: 'DESC' } },
+        },
+      });
+      return newSkip;
     });
-    setSkip((prevSkip) => prevSkip + take);
   }, [fetchProducts, hasMore, isLoadingMore, skip, take]);
 
   // Reset state when `slug` changes
@@ -68,12 +71,15 @@ function Collection() {
     setIsLoadingMore(false);
 
     // Fetch products for the new `slug`
-    fetchProducts({
-      variables: {
-        slug: slug,
-        options: { skip: 0, take, sort: { updatedAt: 'DESC' } },
-      },
-    });
+    // Wait for state to reset before fetching products
+    setTimeout(() => {
+      fetchProducts({
+        variables: {
+          slug: slug,
+          options: { skip: 0, take, sort: { updatedAt: 'DESC' } },
+        },
+      });
+    }, 0);
   }, [slug]);
 
   // Infinite scrolling

@@ -11,14 +11,14 @@ import {
 } from '@mui/material';
 import CollectionLinkItem from './CollectionLinkItem';
 import Item from './Item';
-import { GET_PRODUCTS } from '../../apollo/server';
+import { GET_COLLECTION_PRODUCTS } from '../../apollo/server';
 import { gql, useLazyQuery } from '@apollo/client';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { useNavigate } from 'react-router-dom';
 import { handleError } from '../../context/ErrorContext';
 
 const PRODUCTS = gql`
-  ${GET_PRODUCTS}
+  ${GET_COLLECTION_PRODUCTS}
 `;
 
 const HorizontalScroll = ({ collection }) => {
@@ -32,12 +32,15 @@ const HorizontalScroll = ({ collection }) => {
   const [fetchProducts] = useLazyQuery(PRODUCTS, {
     fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
-      if (data?.search?.items?.length < take) {
+      if (data?.collection.productVariants?.items?.length < take) {
         setHasMore(false); // No more products to load
       }
-      setProducts((prevProducts) => [...prevProducts, ...data?.search?.items]);
+      setProducts((prevProducts) => [
+        ...prevProducts,
+        ...data?.collection.productVariants?.items,
+      ]);
       setLoading(false);
-      totalItems = data?.search?.totalItems;
+      totalItems = data?.collection.productVariants?.totalItems;
     },
     onError: (err) => handleError(err),
   });
@@ -47,12 +50,8 @@ const HorizontalScroll = ({ collection }) => {
     setLoading(true);
     fetchProducts({
       variables: {
-        input: {
-          collectionSlug: collection.slug,
-          groupByProduct: true,
-          skip,
-          take,
-        },
+        slug: collection.slug,
+        options: { skip, take, sort: { updatedAt: 'DESC' } },
       },
     });
     setSkip((prevSkip) => prevSkip + take);
@@ -64,31 +63,6 @@ const HorizontalScroll = ({ collection }) => {
 
   const theme = useTheme();
   const navigate = useNavigate();
-
-  // let productItems = [
-  //   ...new Set(
-  //     collection.productVariants?.items.map((variant) => variant.product)
-  //   ),
-  // ];
-  //temp code
-  // let sellers = [
-  //   'Taco & Bell',
-  //   'Choco Kreations',
-  //   'Dominos',
-  //   'McDolands',
-  //   'Naturals',
-  // ];
-  // let i = 0;
-  // productItems = productItems.map((item) => {
-  //   let product = {
-  //     ...item,
-  //     sellerName: sellers[i],
-  //     sellerSlug: sellers[i].trim().replace(/\W+/g, '-').toLowerCase(),
-  //   };
-  //   i++;
-  //   if (i === sellers.length) i = 0;
-  //   return product;
-  // });
 
   //temp
   function getSlogan() {
@@ -158,7 +132,7 @@ const HorizontalScroll = ({ collection }) => {
         </Container>
         <Box className="horizontal-scroll">
           {products.map((product) => (
-            <Item key={product.slug} item={product} />
+            <Item key={product.product.slug} item={product.product} />
           ))}
           <CollectionLinkItem
             name={collection.name}

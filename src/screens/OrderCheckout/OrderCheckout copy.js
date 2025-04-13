@@ -130,7 +130,6 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
 
         //Step 4: transition state
         const response = await transactionToArrangingPayment();
-        console.log(response);
         let finalOrder = await addPaymentToOrder({
           variables: {
             input: { method: paymentMethodCode, metadata: { test: 'value' } },

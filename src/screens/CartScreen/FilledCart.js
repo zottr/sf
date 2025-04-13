@@ -96,7 +96,7 @@ function FilledCart({
                 <Grid item xs={3}>
                   <Box
                     component={RouterLink}
-                    to={`/sampleseller/${orderLine?.productVariant?.product?.slug}`}
+                    to={`/product/${orderLine?.productVariant?.product?.slug}`}
                     sx={{ textDecoration: 'none' }}
                   >
                     <Box

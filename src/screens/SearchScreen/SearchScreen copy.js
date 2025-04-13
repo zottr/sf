@@ -20,8 +20,6 @@ function SearchScreen() {
     `
   );
   React.useEffect(() => {
-    console.log('input: ' + input);
-    console.log('input%3: ' + (input.length % 3));
     if (input.length !== 0 && (input.length === 1 || input.length % 3 === 0)) {
       fetchSuggestions({
         variables: {

@@ -45,8 +45,6 @@ function SearchResults() {
       }
       setLoading(false);
       totalItems = data?.search?.totalItems;
-      console.log('total items: ', totalItems);
-      console.log('results.length', results.length);
     },
     onError: (err) => handleError(err),
   });

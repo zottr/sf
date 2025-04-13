@@ -27,7 +27,7 @@ function SellerPayments() {
   const { adminData, loading, error } = useAdminInfo({
     adminId: query.sellerId,
   });
-  console.log(adminData);
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const handleCloseSnackbar = () => setSnackbarOpen(false);

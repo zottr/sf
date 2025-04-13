@@ -30,8 +30,6 @@ const CustomButton = styled(Button)(({ theme }) => ({
 function OrderSuccess() {
   const { order, loading } = useContext(OrderContext);
 
-  console.log(order);
-
   return (
     <>
       {loading ? (

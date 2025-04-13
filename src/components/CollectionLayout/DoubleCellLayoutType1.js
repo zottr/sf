@@ -12,17 +12,7 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 
 function DoubleCellLayoutType1({ products }) {
   const theme = useTheme();
-  function getRandomSeller() {
-    let sellers = [
-      'Taco & Bell',
-      'Choco Kreations',
-      'Dominos',
-      'McDolands',
-      'Naturals',
-    ];
-    const randomIndex = Math.floor(Math.random() * sellers.length); // Generate a random index
-    return sellers[randomIndex]; // Return the seller at that index
-  }
+
   return (
     <Grid container columnSpacing={1} rowSpacing={2} sx={{ paddingX: '10px' }}>
       {products?.map((item, index) => (
@@ -101,7 +91,7 @@ function DoubleCellLayoutType1({ products }) {
                     overflow: 'hidden',
                   }}
                 >
-                  {getRandomSeller()}
+                  {item.product?.customFields?.adminName}
                 </Typography>
                 <Typography
                   variant="heavyb2"

@@ -749,6 +749,10 @@ export const GET_COLLECTION_PRODUCTS = gql`
             variants {
               price
             }
+            customFields {
+              adminId
+              adminName
+            }
           }
         }
       }

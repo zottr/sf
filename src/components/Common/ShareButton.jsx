@@ -3,14 +3,16 @@ import ShareIcon from '@mui/icons-material/Share';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
+import { stripHtml } from '../../Utils/utils';
 
 const ShareButton = ({ title, text, url }) => {
   const [toastOpen, setToastOpen] = useState(false);
 
   const handleShare = async () => {
+    const message = `${stripHtml(text)}\n\n${url}`;
     if (navigator.share) {
       try {
-        await navigator.share({ title, text, url });
+        await navigator.share({ text: message });
       } catch (error) {
         console.error('Error sharing:', error);
       }

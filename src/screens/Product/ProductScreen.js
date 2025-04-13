@@ -127,9 +127,9 @@ function ProductScreen() {
               {product.name}
             </Typography>
             <ShareButton
-              text={product.description}
               title={product.name}
-              url={window.location.href}
+              text={product.description}
+              url={`${window.location.href}/share`}
             />
           </Stack>
 

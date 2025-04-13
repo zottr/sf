@@ -4,19 +4,6 @@ import { Link as RouterLink } from 'react-router-dom';
 
 function Item({ item }) {
   const theme = useTheme();
-
-  function getRandomSeller() {
-    let sellers = [
-      'Taco & Bell',
-      'Choco Kreations',
-      'Dominos',
-      'McDolands',
-      'Naturals',
-    ];
-    const randomIndex = Math.floor(Math.random() * sellers.length); // Generate a random index
-    return sellers[randomIndex]; // Return the seller at that index
-  }
-
   return (
     <Box sx={{ width: '8rem', marginLeft: '10px' }}>
       <Box
@@ -37,7 +24,7 @@ function Item({ item }) {
             position: 'relative',
           }}
           style={{
-            backgroundImage: `url(${item.productAsset?.preview.replace(
+            backgroundImage: `url(${item.featuredAsset?.preview.replace(
               /\\/g,
               '/'
             )}?preset=thumb)`,
@@ -62,7 +49,7 @@ function Item({ item }) {
             overflow: 'hidden',
           }}
         >
-          {item.productName}
+          {item.name}
         </Typography>
         <Typography
           variant="b3"
@@ -80,7 +67,7 @@ function Item({ item }) {
             overflow: 'hidden',
           }}
         >
-          {getRandomSeller()}
+          {item?.customFields?.adminName}
         </Typography>
         <Typography
           variant="heavyb2"
@@ -97,7 +84,7 @@ function Item({ item }) {
             overflow: 'hidden',
           }}
         >
-          ₹{Number(item.price?.min ?? 0) / 100}
+          ₹{Number(item.variants[0].price ?? 0) / 100}
         </Typography>
       </Stack>
     </Box>
