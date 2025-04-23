@@ -8,25 +8,75 @@ const mainTheme = createTheme({
       white: '#fff',
     },
     primary: {
-      main: '#ee8300',
-      light: '#f8c67e',
-      lightest: '#fdf2df',
-      dark: '#e87301',
-      darkest: '#d74a01',
+      main: '#FFB300', // Warm Amber
+      light: '#FFD54F', // Soft Gold
+      dark: '#FF8F00', // Deep Golden
+      surface: 'hsl(42, 80%, 90%)', // Light golden cream
+      lightsurface: 'hsl(42, 80%, 97%)', // Light golden cream
+      contrastText: '#000',
+    },
+    // secondary: {
+    //   main: '#00897B', // Teal
+    //   light: '#4DB6AC', // Soft Aqua
+    //   dark: '#00695C', // Dark Teal
+    //   surface: 'hsl(174, 30%, 90%)', // Cool mint
+    //   contrastText: '#fff',
+    // },
+    secondary: {
+      main: '#8E24AA', // Deep Plum
+      light: '#BA68C8', // Soft Lavender
+      dark: '#6A1B9A', // Royal Purple
+      surface: 'hsl(288, 30%, 92%)', // Pale lilac
       contrastText: '#fff',
     },
-    secondary: {
-      main: '##b241d1',
-      light: '#c066d9',
-      lightest: '#f4e5f8',
-      dark: '#9416c2',
-      darkest: '#430ea6',
-      contrastText: '#000000',
-    },
+    // secondary: {
+    //   main: '#6D4C41', // Cocoa Brown
+    //   light: '#A1887F', // Muted Clay
+    //   dark: '#4E342E', // Dark Chocolate
+    //   surface: 'hsl(20, 15%, 15%)', // Earthy dark brown
+    //   contrastText: '#fff',
+    // },
+    // secondary: {
+    //   main: '#8E24AA', // Deep Plum
+    //   light: '#BA68C8', // Soft Lavender
+    //   dark: '#6A1B9A', // Royal Purple
+    //   surface: 'hsl(288, 20%, 15%)', // Very dark muted purple
+    //   contrastText: '#fff',
+    // },
+    // secondary: {
+    //   main: '#673AB7', // Regal Purple
+    //   light: '#9575CD', // Lavender
+    //   dark: '#512DA8', // Deep Violet
+    //   surface: 'hsl(270, 60%, 90%)', // Soft purple background
+    //   contrastText: '#fff',
+    // },
+    // secondary: {
+    //   main: '#F06292', // Coral Pink
+    //   light: '#F8BBD0', // Light Blush
+    //   dark: '#C2185B', // Raspberry
+    //   surface: 'hsl(340, 80%, 90%)', // Soft pink surface
+    //   contrastText: '#000',
+    // },
+    // // primary: {
+    //   main: '#ee8300',
+    //   light: '#f8c67e',
+    //   lightest: '#fdf2df',
+    //   dark: '#e87301',
+    //   darkest: '#d74a01',
+    //   contrastText: '#fff',
+    // },
+    // secondary: {
+    //   main: '##b241d1',
+    //   light: '#c066d9',
+    //   lightest: '#f4e5f8',
+    //   dark: '#9416c2',
+    //   darkest: '#430ea6',
+    //   contrastText: '#000000',
+    // },
     success: {
-      main: '#1DB20D',
-      light: '#6FCF97',
-      dark: '#F0F0F0',
+      main: '#2e7d32',
+      light: '#4caf50',
+      dark: '#1b5e20',
       contrastText: '#fff',
     },
     info: {
@@ -148,14 +198,14 @@ const mainTheme = createTheme({
       letterSpacing: '0.01071em',
       fontStyle: 'normal',
     },
-    h1: { fontSize: '6rem', fontWeight: 400 },
-    h2: { fontSize: '3.75rem', fontWeight: 500 },
-    h3: { fontSize: '3rem', fontWeight: 500 },
-    h4: { fontSize: '2.125rem', fontWeight: 600 },
-    h5: { fontSize: '1.5rem', fontWeight: 600 },
-    h6: { fontSize: '1.25rem', fontWeight: 600 }, //default line height should be 1.25*font-size
-    h7: { fontSize: '1.15rem', fontWeight: 600 }, //default line height should be 1.25*font-size
-    h8: { fontSize: '1rem', fontWeight: 600 }, //default line height should be 1.25*font-size
+    h1: { fontSize: '6rem', fontWeight: 500 },
+    h2: { fontSize: '3.75rem', fontWeight: 600 },
+    h3: { fontSize: '3rem', fontWeight: 600 },
+    h4: { fontSize: '2.125rem', fontWeight: 700 },
+    h5: { fontSize: '1.5rem', fontWeight: 700 },
+    h6: { fontSize: '1.25rem', fontWeight: 700 }, //default line height should be 1.25*font-size
+    h7: { fontSize: '1.15rem', fontWeight: 700 }, //default line height should be 1.25*font-size
+    h8: { fontSize: '1rem', fontWeight: 700 }, //default line height should be 1.25*font-size
     button: undefined,
     button1: {
       fontSize: '1rem',

@@ -61,7 +61,7 @@ function OrderSuccess() {
             }}
             src={CheckMarkThinCircle}
           />
-          <Typography variant="h5">Order Placed Successfully!</Typography>
+          <Typography variant="h6">Order Placed Successfully!</Typography>
           <Typography variant="subtitle1" color="black">
             Your order number is {order?.code}
           </Typography>
@@ -72,7 +72,7 @@ function OrderSuccess() {
           </Link>
           <Typography variant="b1" color="black">
             Total order amount is
-            <strong> ₹{Number(order?.totalWithTax ?? 0) / 100}</strong>
+            <strong> ₹{Number(order?.total ?? 0) / 100}</strong>
           </Typography>
           <Typography variant="subtitle1" color="black">
             Use your favourite UPI app to pay for your order
@@ -94,7 +94,7 @@ function OrderSuccess() {
           >
             <Typography variant="button">
               <strong>
-                Make payment of ₹{Number(order?.totalWithTax ?? 0) / 100}
+                Make payment of ₹{Number(order?.total ?? 0) / 100}
               </strong>
             </Typography>
             <Icon sx={{ fontSize: '25px' }}>

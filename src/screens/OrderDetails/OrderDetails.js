@@ -23,28 +23,41 @@ import { useNavigate } from 'react-router-dom';
 import WestIcon from '@mui/icons-material/West';
 import PhoneIcon from '@mui/icons-material/Phone';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import { getDateTimeString } from '../../Utils/utils';
+import { getDateTimeString } from '../../utils/utils';
 
 function OrderDetails() {
   const theme = useTheme();
   const navigate = useNavigate();
 
   const query = useParams();
-  const { setOrderCode, order, loading } = useContext(OrderContext);
+  const { getOrder, isFetchingOrder } = useContext(OrderContext);
+  const [order, setOrder] = useState(null);
   const [adminId, setAdminId] = useState();
   const { adminData, loading: adminLoading, error } = useAdminInfo({ adminId });
 
   useEffect(() => {
-    if (query.orderCode) {
-      setOrderCode(query.orderCode);
-    }
-  }, [query, setOrderCode]);
+    const fetchOrder = async () => {
+      if (query.orderCode) {
+        try {
+          const fetchedOrder = await getOrder(query.orderCode);
+          console.log('fetchedOrder:', fetchedOrder);
+          setOrder(fetchedOrder);
+        } catch (err) {
+          console.error('Error fetching order:', err);
+        }
+      }
+    };
+
+    fetchOrder();
+  }, [query, getOrder]);
 
   useEffect(() => {
-    let adminIdFromProduct =
-      order?.lines[0]?.productVariant?.product?.customFields?.adminId ?? '20';
-    if (adminIdFromProduct) {
-      setAdminId(adminIdFromProduct);
+    if (order != null) {
+      let adminIdFromProduct =
+        order?.lines[0]?.productVariant?.product?.customFields?.adminId;
+      if (adminIdFromProduct) {
+        setAdminId(adminIdFromProduct);
+      }
     }
   }, [order]);
 
@@ -62,6 +75,7 @@ function OrderDetails() {
     window.open(audioCallUrl, '_blank', 'noopener,noreferrer');
   };
 
+  console.log('order:', order);
   const sellerName =
     order?.lines[0]?.productVariant?.product?.customFields?.adminName ??
     adminData?.businessName ??
@@ -71,7 +85,7 @@ function OrderDetails() {
 
   return (
     <>
-      {loading ? (
+      {isFetchingOrder ? (
         <Box
           sx={{
             display: 'flex',

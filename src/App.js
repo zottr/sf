@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Home from './screens/Home';
 import AboutUs from './screens/AboutUs';
 import { Collection } from './screens/Collection';
@@ -23,6 +23,7 @@ import SellerListingPage from './screens/SellerListing/SellerListingPage';
 import FavoriteSellerListing from './screens/SellerListing/FavoriteSellerListing';
 import SearchResults from './screens/SearchScreen/SearchResults';
 import SellerPayments from './screens/SellerDetails/SellerPayments';
+import OrderSuccess2 from './screens/OrderSuccess/OrderSuccess2';
 
 function App() {
   const hostname = window.location.hostname;
@@ -34,8 +35,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/cart" element={<CartScreen />} />
           <Route path="/order-success" element={<OrderSuccess />} />
+          <Route path="/order-success2" element={<OrderSuccess2 />} />
           <Route path="/order-history" element={<OrderHistory />} />
-          <Route path="/order-details/:orderCode" element={<OrderDetails />} />
+          <Route path="/order/:orderCode" element={<OrderDetails />} />
           <Route path="/search" element={<SearchScreen />} />
           <Route path="/search/:input" element={<SearchResults />} />
           <Route path="/collection/:slug" element={<Collection />} />
@@ -57,6 +59,7 @@ function App() {
           <Route path="/user-profile" element={<MyProfile />} />
           <Route path="/store-address" element={<StoreAddress />} />
           <Route path="/terms-and-policy" element={<TermsAndPolicy />} />
+          <Route path="*" element={<Navigate replace to="/" />} />
         </Routes>
       </Layout>
     </BrowserRouter>

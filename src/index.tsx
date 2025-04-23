@@ -23,29 +23,29 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <ErrorProvider>
-    <ErrorBoundary>
-      <ApolloProvider client={client}>
-        <StyledEngineProvider injectFirst>
-          <ThemeProvider theme={mainTheme}>
-            <I18nextProvider i18n={i18n}>
-              <CollectionsProvider>
-                <CartProvider>
-                  <OrderProvider>
-                    <FavoriteSellerProvider>
-                      <InstallPromptProvider>
-                        <App />
-                      </InstallPromptProvider>
-                    </FavoriteSellerProvider>
-                  </OrderProvider>
-                </CartProvider>
-              </CollectionsProvider>
-            </I18nextProvider>
-          </ThemeProvider>
-        </StyledEngineProvider>
-      </ApolloProvider>
-    </ErrorBoundary>
-  </ErrorProvider>
+  // <ErrorProvider>
+  // <ErrorBoundary>
+  <ApolloProvider client={client}>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={mainTheme}>
+        <I18nextProvider i18n={i18n}>
+          <CollectionsProvider>
+            <CartProvider>
+              <OrderProvider>
+                <FavoriteSellerProvider>
+                  <InstallPromptProvider>
+                    <App />
+                  </InstallPromptProvider>
+                </FavoriteSellerProvider>
+              </OrderProvider>
+            </CartProvider>
+          </CollectionsProvider>
+        </I18nextProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
+  </ApolloProvider>
+  // </ErrorBoundary>
+  // </ErrorProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

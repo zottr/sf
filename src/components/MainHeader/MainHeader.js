@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Box,
+  Button,
   Collapse,
   Divider,
   Drawer,
@@ -9,6 +10,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Stack,
   Typography,
   useTheme,
 } from '@mui/material';
@@ -24,6 +26,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import HomeIcon from '@mui/icons-material/Home';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import CategoryIcon from '@mui/icons-material/Category';
 import EngineeringIcon from '@mui/icons-material/Engineering';
 import GroupIcon from '@mui/icons-material/Group';
@@ -77,18 +80,19 @@ function MainHeader() {
           onClick={() => {
             handleLinkClick(`/`);
           }}
+          sx={{ mb: 0.5 }}
         >
           <ListItemIcon>
             <HomeIcon
-              fontSize="medium"
+              fontSize="large"
               sx={{ color: theme.palette.grey[800] }}
             />
           </ListItemIcon>
           <ListItemText
             primary={
               <Typography
-                variant="button1"
-                sx={{ color: theme.palette.grey[800] }}
+                variant="h7"
+                sx={{ color: theme.palette.grey[800], fontWeight: 600 }}
               >
                 Home
               </Typography>
@@ -96,60 +100,63 @@ function MainHeader() {
           />
         </ListItemButton>
         <ListItemButton
+          sx={{ mb: 0.5 }}
           onClick={() => {
             handleLinkClick(`/order-history`);
           }}
         >
           <ListItemIcon>
             <EditNoteIcon
-              fontSize="medium"
+              fontSize="large"
               sx={{ color: theme.palette.grey[800] }}
             />
           </ListItemIcon>
           <ListItemText
             primary={
               <Typography
-                variant="button1"
-                sx={{ color: theme.palette.grey[800] }}
+                variant="h7"
+                sx={{ color: theme.palette.grey[800], fontWeight: 600 }}
               >
-                Orders
+                Your Orders
               </Typography>
             }
           />
         </ListItemButton>
         <ListItemButton
+          sx={{ mb: 0.5 }}
           onClick={() => {
             handleLinkClick(`/favourites`);
           }}
         >
           <ListItemIcon>
-            <FavoriteBorderIcon
-              fontSize="medium"
+            <FavoriteIcon
+              fontSize="large"
               sx={{ color: theme.palette.grey[800] }}
             />
           </ListItemIcon>
           <ListItemText
             primary={
               <Typography
-                variant="button1"
-                sx={{ color: theme.palette.grey[800] }}
+                variant="h7"
+                sx={{ color: theme.palette.grey[800], fontWeight: 600 }}
               >
-                Favourites
+                Favourite Sellers
               </Typography>
             }
           />
         </ListItemButton>
       </List>
-      <Divider />
+      <Divider sx={{ my: 1.5 }} />
       <List>
         <ListItemButton
+          sx={{ mb: 0.5 }}
           onClick={() => {
             setExpandCollections(!expandCollections);
           }}
         >
           <ListItemIcon>
             <CategoryIcon
-              fontSize="medium"
+              fontSize="large"
               sx={{ color: theme.palette.grey[800] }}
             />
           </ListItemIcon>
@@ -164,19 +171,19 @@ function MainHeader() {
                   }}
                 >
                   <Typography
-                    variant="button1"
-                    sx={{ color: theme.palette.grey[800] }}
+                    variant="h7"
+                    sx={{ color: theme.palette.grey[800], fontWeight: 500 }}
                   >
-                    Collections
+                    Categories
                   </Typography>
                   {expandCollections ? (
                     <ExpandLessIcon
-                      fontSize="small"
+                      fontSize="medium"
                       sx={{ color: theme.palette.grey[800], pl: 0.5 }}
                     />
                   ) : (
                     <ExpandMoreIcon
-                      fontSize="small"
+                      fontSize="medium"
                       sx={{ color: theme.palette.grey[800], pl: 0.5 }}
                     />
                   )}
@@ -190,7 +197,7 @@ function MainHeader() {
             {collections?.map((c) => (
               <ListItemButton
                 key={c.slug}
-                sx={{ pl: 4 }}
+                sx={{ pl: 4, mb: 0.5 }}
                 onClick={() => {
                   handleLinkClick(`/collection/${c.slug}`);
                 }}
@@ -198,8 +205,9 @@ function MainHeader() {
                 <ListItemText
                   primary={
                     <Typography
-                      variant="button1"
+                      variant="h7"
                       sx={{
+                        fontWeight: 600,
                         color: theme.palette.grey[800],
                         //avoid data spilling
                         wordWrap: 'break-word', // Ensures long words break and wrap onto the next line
@@ -223,46 +231,91 @@ function MainHeader() {
             ))}
           </List>
         </Collapse>
-        <ListItemButton>
-          <ListItemIcon>
-            <EngineeringIcon
-              fontSize="small"
-              sx={{ color: theme.palette.grey[800] }}
-            />
-          </ListItemIcon>
-          <ListItemText
-            primary={
-              <Typography
-                variant="button1"
-                sx={{ color: theme.palette.grey[800] }}
-              >
-                Services
-              </Typography>
-            }
-          />
-        </ListItemButton>
         <ListItemButton
+          sx={{ mb: 0.5 }}
           onClick={() => {
             handleLinkClick(`/sellers`);
           }}
         >
           <ListItemIcon>
             <GroupIcon
-              fontSize="medium"
+              fontSize="large"
               sx={{ color: theme.palette.grey[800] }}
             />
           </ListItemIcon>
           <ListItemText
             primary={
               <Typography
-                variant="button1"
-                sx={{ color: theme.palette.grey[800] }}
+                variant="h7"
+                sx={{ color: theme.palette.grey[800], fontWeight: 600 }}
               >
                 Sellers
               </Typography>
             }
           />
         </ListItemButton>
+        <Divider sx={{ my: 1.5 }} />
+        <ListItemButton
+          sx={{ mb: 0.5 }}
+          onClick={() => {
+            handleLinkClick(`/collection/services`);
+          }}
+        >
+          <ListItemIcon>
+            <EngineeringIcon
+              fontSize="large"
+              sx={{ color: theme.palette.grey[800] }}
+              // sx={{ color: 'secondary.dark' }}
+            />
+          </ListItemIcon>
+          <ListItemText
+            primary={
+              <Typography
+                variant="h7"
+                sx={{ color: theme.palette.grey[800], fontWeight: 600 }}
+                // sx={{ color: 'secondary.dark', fontWeight: 700 }}
+              >
+                Services
+              </Typography>
+            }
+          />
+        </ListItemButton>
+        {/* <ListItem
+          sx={{
+            mt: 3,
+            width: '100%',
+            // display: 'flex',
+            // alignItems: 'center',
+            // justifyContent: 'center',
+          }}
+        >
+          <Button
+            variant="outlined"
+            sx={{
+              px: 2.5,
+              py: 1,
+              // bgcolor: 'secondary.main',
+              borderRadius: '30px',
+              borderColor: 'secondary.main',
+            }}
+            onClick={() => {
+              handleLinkClick(`/collection/services`);
+            }}
+          >
+            <Stack direction="row" gap={1} className="flexCenter">
+              <EngineeringIcon
+                fontSize="large"
+                sx={{ color: 'secondary.main' }}
+              />
+              <Typography
+                variant="h7"
+                sx={{ color: 'secondary.main', fontWeight: 600 }}
+              >
+                Services
+              </Typography>
+            </Stack>
+          </Button>
+        </ListItem> */}
         <ListItem>
           <PWAInstallButton />
         </ListItem>

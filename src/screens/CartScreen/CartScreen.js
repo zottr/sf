@@ -5,8 +5,14 @@ import FilledCart from './FilledCart';
 import EmptyCart from './EmptyCart';
 
 function CartScreen() {
-  const { activeOrder, modifyItemQtyInCart, removeItemFromCart, loading } =
-    React.useContext(CartContext);
+  const {
+    activeOrder,
+    modifyItemQtyInCart,
+    removeItemFromCart,
+    loading,
+    itemBeingModifiedId,
+    itemBeingRemovedId,
+  } = React.useContext(CartContext);
 
   // Handlers
   const handleModifyAdd = (id, quantity) =>
@@ -35,6 +41,8 @@ function CartScreen() {
           reduceFromCart={handleModifyMinus}
           removeFromCart={handleRemoveFromCart}
           loading={loading}
+          itemBeingModifiedId={itemBeingModifiedId}
+          itemBeingRemovedId={itemBeingRemovedId}
         />
       ) : (
         <EmptyCart />

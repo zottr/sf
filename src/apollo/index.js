@@ -14,7 +14,6 @@ const API_URL = `https://api.zottr.com/shop-api`;
 // If using bearer-token based session management, we'll store the token
 // in localStorage using this key.
 const AUTH_TOKEN_KEY = 'userToken';
-const CHANNEL_TOKEN_KEY = 'channelToken';
 
 let languageCode;
 
@@ -78,7 +77,6 @@ export const client = new ApolloClient({
     // response, we attach it to all subsequent requests.
     setContext((request, operation) => {
       const authToken = localStorage.getItem(AUTH_TOKEN_KEY);
-      //const channelToken = localStorage.getItem(CHANNEL_TOKEN_KEY);
       const channelToken = '8d8f0da4-d470-41fc-897c-7604c139f8cb'; //sample store token
       //const channelToken = '';
       let headers = {};

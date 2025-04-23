@@ -1,189 +1,128 @@
-import React, { useContext, useState, useCallback, useEffect } from 'react';
+import React from 'react';
 import {
   Typography,
   Stack,
   useTheme,
   Button,
   Container,
-  Grid,
   Box,
   Divider,
+  useMediaQuery,
 } from '@mui/material';
 import CollectionLinkItem from './CollectionLinkItem';
 import Item from './Item';
 import { GET_COLLECTION_PRODUCTS } from '../../apollo/server';
-import { gql, useLazyQuery } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { handleError } from '../../context/ErrorContext';
+import ItemsSkeleton from './ItemsSkeleton';
+import ServicesBanner from '../StoreBanner/ServicesBanner';
 
 const PRODUCTS = gql`
   ${GET_COLLECTION_PRODUCTS}
 `;
 
 const HorizontalScroll = ({ collection }) => {
-  const [products, setProducts] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [skip, setSkip] = useState(0);
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+  const navigate = useNavigate();
   const take = 6;
-  let totalItems = 0;
 
-  const [fetchProducts] = useLazyQuery(PRODUCTS, {
+  const { data, loading } = useQuery(PRODUCTS, {
     fetchPolicy: 'cache-and-network',
-    onCompleted: (data) => {
-      if (data?.collection.productVariants?.items?.length < take) {
-        setHasMore(false); // No more products to load
-      }
-      setProducts((prevProducts) => [
-        ...prevProducts,
-        ...data?.collection.productVariants?.items,
-      ]);
-      setLoading(false);
-      totalItems = data?.collection.productVariants?.totalItems;
+    variables: {
+      slug: collection.slug,
+      options: { skip: 0, take, sort: { updatedAt: 'DESC' } },
     },
     onError: (err) => handleError(err),
   });
 
-  const loadMoreProducts = useCallback(() => {
-    if (loading || !hasMore) return;
-    setLoading(true);
-    fetchProducts({
-      variables: {
-        slug: collection.slug,
-        options: { skip, take, sort: { updatedAt: 'DESC' } },
-      },
-    });
-    setSkip((prevSkip) => prevSkip + take);
-  }, [fetchProducts, hasMore, loading, skip, take]);
-
-  useEffect(() => {
-    loadMoreProducts(); // Initial fetch
-  }, []);
-
-  const theme = useTheme();
-  const navigate = useNavigate();
-
-  //temp
-  function getSlogan() {
-    let slogan = '';
-    switch (collection.name) {
-      case 'Plants':
-        slogan = 'Browse through our selection of plants';
-        break;
-      case 'Furniture':
-        slogan = 'High quality wooden furniture';
-        break;
-      case 'Electronics':
-        slogan = 'Mobiles, Laptops from Top Brands';
-        break;
-      case 'Equipment':
-        slogan = 'Browse for everyday essentials';
-        break;
-      case 'Computers':
-        slogan = 'Buy latest models here';
-        break;
-      case 'Plants':
-        slogan = 'Browse through our selection of plants';
-        break;
-
-      default:
-        slogan = 'A generic statement about this collection';
-    }
-    return slogan;
-  }
+  const items = data?.collection.productVariants?.items ?? [];
 
   return (
-    <>
-      <Stack spacing={1.5}>
-        <Container>
-          <Stack spacing={1}>
-            <Box>
-              <Typography
-                variant="h6"
-                sx={{
-                  //avoid data spilling
-                  wordWrap: 'break-word', // Ensures long words break and wrap onto the next line
-                  whiteSpace: 'normal', // Allows the text to wrap within the container
-                  width: '100%', // Ensure the text takes up the full width of its container
-                  //name shouldn't extend more than 1 line
-                  display: 'block',
-                  maxHeight: '1.5625em', //max 1 line
-                  overflow: 'hidden',
-                }}
-              >
-                {collection.name}
-              </Typography>
-              <Typography
-                variant="b2"
-                sx={{
-                  color: theme.palette.grey[700],
-                  //name shouldn't extend more than 1 line
-                  display: 'block',
-                  maxHeight: '1.43em', //max 1 line
-                  overflow: 'hidden',
-                }}
-              >
-                {getSlogan()}
-              </Typography>
-            </Box>
-            <Divider />
-          </Stack>
-        </Container>
+    <Stack spacing={1.5}>
+      <Container>
+        <Stack
+          spacing={1}
+          component={RouterLink}
+          to={`/collection/${collection.slug}`}
+          sx={{ textDecoration: 'none' }}
+        >
+          <Box>
+            <Typography
+              variant={isDesktop ? 'h4' : 'h6'}
+              sx={{
+                textDecoration: 'none',
+                color: 'grey.900',
+                wordWrap: 'break-word',
+                whiteSpace: 'normal',
+                width: '100%',
+                display: 'block',
+                maxHeight: '1.5625em',
+                overflow: 'hidden',
+              }}
+            >
+              {collection.name}
+            </Typography>
+            <Typography
+              variant="b1"
+              sx={{
+                color: theme.palette.grey[700],
+                display: 'block',
+                maxHeight: '1.43em',
+                overflow: 'hidden',
+              }}
+            >
+              {collection.customFields.summary}
+            </Typography>
+          </Box>
+          {collection.slug !== 'services' && <Divider />}
+        </Stack>
+      </Container>
+      {collection.slug === 'services' && <ServicesBanner />}
+      {loading && <ItemsSkeleton />}
+      {!loading && (
         <Box className="horizontal-scroll">
-          {products.map((product) => (
+          {items.map((product) => (
             <Item key={product.product.slug} item={product.product} />
           ))}
           <CollectionLinkItem
             name={collection.name}
-            preview={collection?.featuredAsset?.preview}
+            preview={`${collection?.featuredAsset?.preview}?preset=${
+              isDesktop ? 'medium' : 'thumb'
+            }`}
             slug={collection.slug}
           />
         </Box>
-        <Container>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+      )}
+
+      <Container>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Button
+            onClick={() => navigate(`/collection/${collection.slug}`)}
+            variant="outlined"
+            size="large"
+            sx={{ borderRadius: '25px', borderColor: 'secondary.dark' }}
           >
-            <Button
-              onClick={() => {
-                navigate(`/collection/${collection.slug}`);
-              }}
-              variant="outlined"
-              size="small"
-              sx={{
-                width: '100%',
-                borderWidth: '0',
-                backgroundColor: 'hsl(38 88.2% 98%)',
-                '&:hover': {
-                  backgroundColor: 'hsl(38 88.2% 98%)',
-                  borderWidth: '0',
-                },
-                '&:focus': {
-                  backgroundColor: 'hsl(38 88.2% 98%)',
-                },
-                '&:active': {
-                  backgroundColor: 'hsl(38 88.2% 98%)',
-                },
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Typography
-                  variant="button2"
-                  sx={{ color: 'hsl(33 100% 26.7%)' }}
-                >
-                  View all products
-                </Typography>
-                <ArrowRightIcon sx={{ color: 'hsl(33 100% 36.7%)' }} />
-              </Box>
-            </Button>
-          </Box>
-        </Container>
-      </Stack>
-    </>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant="button1" sx={{ color: 'secondary.dark' }}>
+                {collection.slug === 'services'
+                  ? 'View all services'
+                  : 'View all products'}
+              </Typography>
+              <ArrowRightIcon sx={{ color: 'secondary.dark' }} />
+            </Box>
+          </Button>
+        </Box>
+      </Container>
+    </Stack>
   );
 };
 

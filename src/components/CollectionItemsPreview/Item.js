@@ -1,11 +1,21 @@
-import { Typography, Box, Button, Stack, useTheme } from '@mui/material';
+import {
+  Typography,
+  Box,
+  Button,
+  Stack,
+  useTheme,
+  useMediaQuery,
+} from '@mui/material';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import { Link as RouterLink } from 'react-router-dom';
+import placeholderLogo from '/logos/zottr_logo_small2_grey_white.svg';
 
 function Item({ item }) {
   const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+
   return (
-    <Box sx={{ width: '8rem', marginLeft: '10px' }}>
+    <Box sx={{ width: { xs: '8rem', md: '15rem' }, marginLeft: '10px' }}>
       <Box
         sx={{
           overflow: 'hidden',
@@ -15,21 +25,22 @@ function Item({ item }) {
         to={`/product/${item.slug}`}
       >
         <Box
+          component="img"
+          onError={(e) => {
+            e.target.onerror = null; // Prevent infinite loop
+            e.target.src = `${placeholderLogo}`; // This should exist in /public
+          }}
           sx={{
-            width: '7.5rem',
-            height: '7.5rem',
-            backgroundSize: 'cover',
-            backgroundPositionX: 'center',
-            backgroundPositionY: 'center',
-            position: 'relative',
+            width: { xs: '7.5rem', md: '12rem' },
+            height: { xs: '7.5rem', md: '12rem' },
+            objectFit: 'contain',
+            objectPosition: 'center',
+            borderRadius: '10px',
           }}
-          style={{
-            backgroundImage: `url(${item.featuredAsset?.preview.replace(
-              /\\/g,
-              '/'
-            )}?preset=thumb)`,
-            borderRadius: '15px',
-          }}
+          src={`${item.featuredAsset?.preview}?preset=${
+            isDesktop ? 'medium' : 'thumb'
+          }`}
+          alt={item.name}
         />
       </Box>
       <Stack>

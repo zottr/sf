@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Box, Grid, Stack, Typography, useTheme } from '@mui/material';
 import AddToCartButton from '../../screens/Product/AddToCartButton';
 import ReplaceItemsConfirmationDialog from '../../screens/Product/ReplaceItemsConfirmationDialog';
+import placeholderLogo from '/logos/zottr_logo_small2_grey_white.svg';
 
 function DoubleCellLayoutProducts({ products }) {
   const theme = useTheme();
@@ -10,7 +11,7 @@ function DoubleCellLayoutProducts({ products }) {
 
   return (
     <>
-      <Grid container columnSpacing={1} rowSpacing={2}>
+      <Grid container columnSpacing={2} rowSpacing={3}>
         {products?.map((product) => (
           <Grid
             key={product.slug}
@@ -33,11 +34,16 @@ function DoubleCellLayoutProducts({ products }) {
               >
                 <Box
                   component="img"
+                  onError={(e) => {
+                    e.target.onerror = null; // Prevent infinite loop
+                    e.target.src = `${placeholderLogo}`; // This should exist in /public
+                  }}
                   sx={{
                     aspectRatio: 1,
                     width: '100%',
-                    objectFit: 'cover',
+                    objectFit: 'contain',
                     objectPosition: 'center',
+                    bgcolor: 'grey.100',
                   }}
                   src={`${product.featuredAsset?.preview}`}
                   alt={product.name}

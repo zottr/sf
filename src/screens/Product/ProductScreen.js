@@ -18,14 +18,14 @@ import ProductImages from './ProductImages';
 import useAdminInfo from '../../customhooks/useAdminInfo';
 import SellerInfo from './SellerInfo';
 import Item from '../../components/CollectionItemsPreview/Item';
-import CallActionButtons from '../../components/Common/CallActionButtons';
+import CallActionButtons from '../../components/common/CallActionButtons';
 import ReplaceItemsConfirmationDialog from './ReplaceItemsConfirmationDialog';
 import AddToCartButton from './AddToCartButton';
 import { useNavigate } from 'react-router-dom';
 import DoubleCellLayoutProducts from '../../components/ProuctsDisplay/DoubleCellLayoutProducts';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { handleError } from '../../context/ErrorContext';
-import ShareButton from '../../components/Common/ShareButton';
+import ShareButton from '../../components/common/ShareButton';
 
 const PRODUCT = gql`
   ${GET_PRODUCT}
@@ -40,6 +40,7 @@ function ProductScreen() {
   const theme = useTheme();
   const query = useParams();
   const [product, setProduct] = useState();
+  const [isService, setIsService] = useState(false);
   const [productVariantId, setProductVariantId] = useState();
   const [adminId, setAdminId] = useState();
   const [similarProducts, setSimilarProducts] = useState([]);
@@ -52,6 +53,8 @@ function ProductScreen() {
     },
   });
 
+  console.log(data);
+
   const [fetchSellerProducts, { loading: similarProductsLoading }] =
     useLazyQuery(PRODUCTS_FROM_SELLER, { onError: (err) => handleError(err) });
 
@@ -59,6 +62,7 @@ function ProductScreen() {
     const product = data?.product;
     if (product) {
       setProduct(product);
+      if (product.collections[0].slug === 'services') setIsService(true);
       setProductVariantId(product?.variantList?.items[0]?.id);
     }
   }, [data]);
@@ -109,112 +113,118 @@ function ProductScreen() {
   }
 
   return (
-    <Container sx={{ p: 1 }}>
-      <SellerInfo
-        imageUrl={adminData?.logo}
-        name={adminData?.businessName}
-        id={adminData?.id}
-      />
-      <ProductImages images={product.assets} />
-      <Stack gap={1} sx={{ mt: 2, px: 0.5 }}>
-        <Stack>
-          <Stack
-            direction="row"
-            gap={1}
-            sx={{ display: 'flex', alignItems: 'center' }}
-          >
-            <Typography variant="h5" sx={{ fontWeight: '400' }}>
-              {product.name}
-            </Typography>
-            <ShareButton
-              title={product.name}
-              text={product.description}
-              url={`${window.location.href}/share`}
-            />
-          </Stack>
-
-          <Typography variant="h6" sx={{ fontWeight: '600' }}>
-            ₹{Number(product?.variantList?.items[0]?.price ?? 0) / 100}
-          </Typography>
-          <Box sx={{ width: '60%', mt: 1 }}>
-            <AddToCartButton
-              productVariantId={productVariantId}
-              adminId={adminId}
-              buttonTextVariant="button1"
-              buttonHeight="2.7rem"
-            />
-          </Box>
-        </Stack>
-        <Typography
-          variant="b1"
-          color={theme.palette.grey[800]}
-          sx={{ textAlign: 'left', mt: 0.5 }}
-        >
-          {product.description}
-        </Typography>
-      </Stack>
-      {/* Similar Products */}
-      {similarProductsLoading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2 }}>
-          <CircularProgress />
-        </Box>
-      ) : similarProducts.length > 1 ? (
+    <Box sx={{ overflowX: 'clip', maxWidth: '100vw' }}>
+      <Container sx={{ px: 1, mb: 2 }}>
+        <SellerInfo
+          imageUrl={adminData?.logo}
+          name={adminData?.businessName}
+          id={adminData?.id}
+        />
         <Stack
-          gap={2}
-          sx={{ display: 'flex', alignItems: 'flex-start', mt: 4, mb: 1 }}
+          direction="row"
+          gap={1}
+          sx={{ display: 'flex', alignItems: 'center', mt: 1 }}
         >
-          <Typography
-            variant="h7"
-            sx={{ fontWeight: '500', color: theme.palette.grey[800] }}
-          >
-            Other products by {adminData?.businessName}
+          <Typography variant="h8" sx={{ color: 'grey.700' }}>
+            {product.name}
           </Typography>
-          <DoubleCellLayoutProducts products={similarProducts} />
-          <Container sx={{ px: 1, mt: 2 }}>
-            <Button
-              onClick={() => {
-                navigate(`/seller/${adminId}`);
-              }}
-              variant="outlined"
-              sx={{
-                width: '100%',
-                borderRadius: '25px',
-                borderColor: 'hsl(33 100% 26.7%)',
-                backgroundColor: 'hsl(38 88.2% 99.5%)',
-                '&:hover': {
-                  backgroundColor: 'hsl(38 88.2% 98%)',
-                },
-                '&:focus': {
-                  backgroundColor: 'hsl(38 88.2% 98%)',
-                },
-                '&:active': {
-                  backgroundColor: 'hsl(38 88.2% 98%)',
-                },
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Typography
-                  variant="button1"
-                  sx={{ color: 'hsl(33 100% 26.7%)' }}
-                >
-                  View all products
+        </Stack>
+      </Container>
+      <ProductImages images={product.assets} />
+      <Container sx={{ px: 1 }}>
+        <Stack gap={1} sx={{ mt: 2, px: 0.5 }}>
+          <Stack gap={1}>
+            <Stack direction="row" gap={2} sx={{ my: 1 }}>
+              {!isService && (
+                <Typography variant="h5" sx={{ color: 'grey.900' }}>
+                  ₹{Number(product?.variantList?.items[0]?.price ?? 0) / 100}
                 </Typography>
-                <ArrowRightIcon
-                  fontSize="large"
-                  sx={{ color: 'hsl(33 100% 36.7%)' }}
+              )}
+              <ShareButton
+                text={product.description}
+                title={product.name}
+                url={window.location.href}
+              />
+            </Stack>
+            {!isService && (
+              <Box sx={{ width: '100%', mt: 1 }}>
+                <AddToCartButton
+                  productVariantId={productVariantId}
+                  adminId={adminId}
+                  buttonTextVariant="button1"
+                  buttonHeight="3rem"
                 />
               </Box>
-            </Button>
-          </Container>
+            )}
+          </Stack>
+          <Typography
+            variant="b1"
+            color={theme.palette.grey[900]}
+            sx={{
+              textAlign: 'left',
+              mt: 0.5,
+              // '& p': {
+              //   // margin: '0.2em 0',
+              //   // lineHeight: 0.5,
+              // },
+            }}
+            dangerouslySetInnerHTML={{
+              __html: product.description,
+            }}
+          >
+            {/* {product.description} */}
+          </Typography>
         </Stack>
-      ) : null}
-
+        {/* Similar Products */}
+        {similarProductsLoading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2 }}>
+            <CircularProgress />
+          </Box>
+        ) : similarProducts.length > 1 ? (
+          <Stack
+            gap={2}
+            sx={{ display: 'flex', alignItems: 'flex-start', mt: 2, mb: 1 }}
+          >
+            <Typography variant="h7" sx={{ color: theme.palette.grey[700] }}>
+              Other {isService ? 'services' : 'products'} by{' '}
+              {adminData?.businessName}
+            </Typography>
+            <DoubleCellLayoutProducts products={similarProducts} />
+            <Container sx={{ px: 1, mt: 2 }}>
+              <Button
+                onClick={() => {
+                  navigate(`/seller/${adminId}`);
+                }}
+                variant="outlined"
+                sx={{
+                  width: '100%',
+                  borderRadius: '25px',
+                  borderColor: 'secondary.dark',
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography
+                    variant="button1"
+                    sx={{ color: 'secondary.dark' }}
+                  >
+                    View all products
+                  </Typography>
+                  <ArrowRightIcon
+                    fontSize="large"
+                    sx={{ color: 'secondary.dark' }}
+                  />
+                </Box>
+              </Button>
+            </Container>
+          </Stack>
+        ) : null}
+      </Container>
       {/* Replace Items Confirmation Dialog */}
       <ReplaceItemsConfirmationDialog
         productVariantId={productVariantId}
         adminId={adminId}
       />
-    </Container>
+    </Box>
   );
 }
 

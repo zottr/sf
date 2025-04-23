@@ -1,4 +1,4 @@
-import { initiateAudioCall, openWhatsAppChat } from '../../Utils/utils';
+import { initiateAudioCall, openWhatsAppChat } from '../../utils/utils';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import CallIcon from '@mui/icons-material/Call';
 import { Box, IconButton, Tooltip } from '@mui/material';

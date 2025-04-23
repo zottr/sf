@@ -209,7 +209,6 @@ export const GET_PRODUCT = gql`
       assets {
         ...Asset
       }
-
       collections {
         id
         slug
@@ -691,6 +690,7 @@ export const GET_COLLECTIONS = gql`
           banner {
             ...Asset
           }
+          summary
         }
       }
     }
@@ -743,6 +743,7 @@ export const GET_COLLECTION_PRODUCTS = gql`
             id
             name
             slug
+            description
             featuredAsset {
               preview
             }

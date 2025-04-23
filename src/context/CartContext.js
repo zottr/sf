@@ -18,6 +18,9 @@ export const CartProvider = (props) => {
   const [cartQuantity, setCartQuantity] = useState();
   const [currentSeller, setCurrentSeller] = useState();
   const [showWarning, setShowWarning] = useState(false);
+  const [itemBeingModifiedId, setItemBeingModifiedId] = useState('');
+  const [itemBeingRemovedId, setItemBeingRemovedId] = useState('');
+  const [itemBeingAddedVariantId, setItemBeingAddedVariantId] = useState('');
 
   const { data, loading, error } = useQuery(GET_ACTIVE_ORDER, {
     fetchPolicy: 'cache-and-network',
@@ -59,6 +62,7 @@ export const CartProvider = (props) => {
   }, [activeOrder]);
 
   async function addItemToCart(variantId, sellerId, skipCheck) {
+    setItemBeingAddedVariantId(variantId);
     try {
       if (!skipCheck && currentSeller && currentSeller !== sellerId) {
         setShowWarning(true);
@@ -72,15 +76,17 @@ export const CartProvider = (props) => {
       if (result.data.addItemToOrder.__typename !== 'Order') {
         throw new Error(result.data.addItemToOrder.message);
       }
-
       setActiveOrder(result.data.addItemToOrder);
     } catch (err) {
       console.error('Failed to add item to cart:', err);
       handleError(err);
+    } finally {
+      setItemBeingAddedVariantId('');
     }
   }
 
   async function modifyItemQtyInCart(orderLineId, quantity) {
+    setItemBeingModifiedId(orderLineId);
     try {
       const result = await adjustItemQuantity({
         variables: { id: orderLineId, qty: quantity },
@@ -94,10 +100,13 @@ export const CartProvider = (props) => {
     } catch (err) {
       console.error('Failed to modify item quantity in cart:', err);
       handleError(err);
+    } finally {
+      setItemBeingModifiedId('');
     }
   }
 
   async function removeItemFromCart(orderLineId) {
+    setItemBeingRemovedId(orderLineId);
     try {
       const result = await removeFromCart({
         variables: { id: orderLineId },
@@ -111,6 +120,8 @@ export const CartProvider = (props) => {
     } catch (err) {
       console.error('Failed to remove item from cart:', err);
       handleError(err);
+    } finally {
+      setItemBeingRemovedId('');
     }
   }
 
@@ -165,6 +176,9 @@ export const CartProvider = (props) => {
         clearExistingAddNewItems,
         setShowWarning,
         loading,
+        itemBeingModifiedId,
+        itemBeingRemovedId,
+        itemBeingAddedVariantId,
       }}
     >
       {props.children}

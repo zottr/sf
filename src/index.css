@@ -22,6 +22,10 @@ code {
   /* Hide scrollbar for Firefox */
   scrollbar-width: none;
 
+  /* Prevent full-page horizontal scroll */
+  max-width: 100vw;
+  box-sizing: border-box;
+
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -52,4 +56,15 @@ code {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+}
+
+.customLink {
+  color: hsl(211.9, 80.3%, 41.8%);
+  text-decoration: none;
+}
+.customLink:hover,
+.customLink:active {
+  color: hsl(211.9, 80.3%, 31.8%);
+  text-decoration: underline;
+  text-decoration-color: hsl(211.9, 80.3%, 31.8%);
 }

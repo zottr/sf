@@ -16,6 +16,9 @@ import DoubleCellLayoutType1 from '../../components/CollectionLayout/DoubleCellL
 
 import { Link } from 'react-router-dom';
 import { handleError } from '../../context/ErrorContext';
+import ServicesCollectionLayout from '../../components/CollectionLayout/ServicesCollectionLayout';
+import CollectionBreadcrumbs from './CollectionBreadcrumbs';
+import noItemsFoundImage from '/images/no_items_found.svg';
 
 const PRODUCTS = gql`
   ${GET_COLLECTION_PRODUCTS}
@@ -30,6 +33,7 @@ function Collection() {
   const [products, setProducts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
   const [skip, setSkip] = useState(0);
   const take = 10;
 
@@ -41,6 +45,7 @@ function Collection() {
     onCompleted: (data) => {
       const newProducts = data?.collection.productVariants?.items || [];
       setProducts((prevProducts) => [...prevProducts, ...newProducts]);
+      setInitialLoadCompleted(true);
       setHasMore(newProducts.length === take); // Stop loading if fewer products than `take` are returned
       setIsLoadingMore(false);
     },
@@ -106,30 +111,42 @@ function Collection() {
   ) : (
     <>
       {/* Collection header */}
-      <Box>
-        <Stack
-          direction="row"
-          sx={{ alignItems: 'center', paddingBottom: 4, display: 'flex' }}
+      <CollectionBreadcrumbs name={collection?.name} />
+      <Stack sx={{ alignItems: 'center', display: 'flex', mt: 2, mb: 3 }}>
+        <Typography
+          variant="h5"
+          color={theme.palette.grey[900]}
+          sx={{ margin: 'auto', textAlign: 'center' }}
         >
-          <Link to="/" style={{ textDecoration: 'none', margin: 0 }}>
-            <Box display="flex" alignItems="center">
-              <IconButton sx={{ position: 'absolute', marginLeft: '30px' }}>
-                <WestIcon fontSize="small" sx={{ color: 'brown' }} />
-              </IconButton>
-            </Box>
-          </Link>
+          {collection?.name}
+        </Typography>
+      </Stack>
+      {collection?.slug !== 'services' && products.length !== 0 && (
+        <DoubleCellLayoutType1 products={products} />
+      )}
+      {products.length === 0 && initialLoadCompleted && (
+        <Stack gap={1} sx={{ display: 'flex', alignItems: 'center', mt: 5 }}>
           <Typography
-            variant="h6"
-            color={theme.palette.grey[900]}
-            sx={{ margin: 'auto', textAlign: 'center' }}
+            variant="h7"
+            sx={{ color: 'grey.600', textAlign: 'center' }}
           >
-            {collection?.name}
+            There are no products in this category
           </Typography>
+          <Box
+            component="img"
+            sx={{
+              width: '60%',
+              objectFit: 'contain',
+              objectPosition: 'center',
+              borderRadius: '10px',
+            }}
+            src={noItemsFoundImage}
+          />
         </Stack>
-      </Box>
-
-      {/* Product layouts */}
-      <DoubleCellLayoutType1 products={products} />
+      )}
+      {collection?.slug === 'services' && (
+        <ServicesCollectionLayout products={products} />
+      )}
 
       {/* Loading more spinner */}
       {isLoadingMore && (
@@ -139,10 +156,24 @@ function Collection() {
       )}
 
       {/* No more products message */}
-      {!hasMore && (
-        <Typography variant="body2" align="center" color="textSecondary">
-          No more products to load
-        </Typography>
+      {!hasMore && products.length !== 0 && (
+        <Stack
+          direction="row"
+          sx={{
+            mt: 4,
+            height: '50px',
+            display: 'flex',
+            alignItems: 'baseline',
+            justifyContent: 'center',
+          }}
+        >
+          <Typography variant="heavyb2" color="brown">
+            That's all!
+          </Typography>
+          <Typography variant="b1" sx={{ fontSize: '20px' }}>
+            &#x1F44B;
+          </Typography>
+        </Stack>
       )}
     </>
   );

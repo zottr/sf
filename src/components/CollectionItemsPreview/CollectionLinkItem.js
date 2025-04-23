@@ -1,90 +1,68 @@
-import { Typography, Box, useTheme, Stack } from '@mui/material';
-import { Link } from 'react-router-dom';
+import {
+  Typography,
+  Box,
+  useTheme,
+  Stack,
+  useMediaQuery,
+  Link,
+} from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 function CollectionLinkItem(props) {
   const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   return (
-    <Box
-      sx={{
-        marginX: '10px',
-      }}
+    <Link
+      component={RouterLink}
+      to={`/collection/${props.slug}`}
+      style={{ textDecoration: 'none' }}
     >
       <Box
         sx={{
-          overflow: 'hidden',
-          width: '100%',
+          marginX: '10px',
+          width: { xs: '7.5rem', md: '12rem' },
+          height: { xs: '7.5rem', md: '12rem' },
+          backgroundSize: 'cover',
+          backgroundPositionX: 'center',
+          backgroundPositionY: 'center',
+          borderRadius: '10px',
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${props?.preview?.replace(
+            /\\/g,
+            '/'
+          )})`,
+          backgroundSize: 'cover',
         }}
       >
-        <Box
+        <Stack
+          // direction="row"
           sx={{
-            width: '7.5rem',
-            height: '7.5rem',
-            backgroundSize: 'cover',
-            backgroundPositionX: 'center',
-            backgroundPositionY: 'center',
-            position: 'relative',
-            borderRadius: '15px',
-          }}
-          style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${props?.preview?.replace(
-              /\\/g,
-              '/'
-            )})`,
-            backgroundSize: 'cover',
-            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
           }}
         >
-          <Box
-            style={{
-              width: '100%',
-              height: '100%',
-              position: 'absolute',
+          <Typography
+            variant="heavylabel2"
+            sx={{
+              color: theme.palette.common.white,
             }}
           >
-            <Link
-              to={`/collection/${props.slug}`}
-              style={{ textDecoration: 'none' }}
-            >
-              <Box
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  paddingTop: '2.5rem',
-                }}
-              >
-                <Stack
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Typography
-                    variant="button2"
-                    sx={{
-                      color: theme.palette.common.white,
-                    }}
-                  >
-                    Explore
-                  </Typography>
-                  <Typography
-                    variant="button2"
-                    sx={{
-                      color: theme.palette.common.white,
-                    }}
-                    align="center"
-                  >
-                    {props.name}
-                  </Typography>
-                </Stack>
-              </Box>
-            </Link>
-          </Box>
-        </Box>
+            Explore
+          </Typography>
+          <Typography
+            variant="heavylabel2"
+            sx={{
+              color: theme.palette.common.white,
+            }}
+            align="center"
+          >
+            {props.name}
+          </Typography>
+        </Stack>
       </Box>
-    </Box>
+    </Link>
   );
 }
 

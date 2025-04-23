@@ -10,8 +10,9 @@ import {
   useTheme,
   Typography,
   CircularProgress,
+  Box,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Slide from '@mui/material/Slide';
 import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import PersonIcon from '@mui/icons-material/Person';
@@ -19,11 +20,12 @@ import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import { GET_PLACE_ORDER_METADATA, PLACE_ORDER } from '../../apollo/server';
 import CartContext from '../../context/CartContext';
-import OrderContext from '../../context/OrderContext';
-import { handleError, logError } from '../../context/ErrorContext';
 import axiosClient from '../../axiosClient';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ErrorPopup from '../../components/ErrorHandling/ErrorPopup';
+import ErrorAlert from '../../components/common/Alerts/ErrorAlert';
+import ServiceErrorAlert from '../../components/common/Alerts/ServiceErrorAlert';
+import OrderContext from '../../context/OrderContext';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -37,21 +39,33 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
     address: '',
   });
 
-  const [isLoading, setIsLoading] = useState(false); // Add loading state
-  const [errorMessage, setErrorMessage] = useState('');
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false); // Add loading state
   const { activeOrder, setActiveOrder } = React.useContext(CartContext);
-  const { setOrderCode } = React.useContext(OrderContext);
+
+  const { getOrder } = useContext(OrderContext);
+
+  const [serviceError, setServiceError] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({
+    name: false,
+    phone: false,
+    address: false,
+  });
+
+  const validationErrorMessages = {
+    name: 'Enter your name',
+    phone: 'Enter your valid phone number',
+    address: 'Enter your delivery address',
+  };
 
   const [placeOrder, { error }] = useMutation(PLACE_ORDER, {
     onError: (err) => {
-      logError(err); // Log the error
-      setErrorMessage(
-        'Something went wrong while placing the order. Please try again or contact support.'
-      );
+      console.log(err);
     },
   });
   const [fetchPlaceOrderMetadata] = useLazyQuery(GET_PLACE_ORDER_METADATA, {
-    onError: (err) => handleError(err),
+    onError: (err) => {
+      console.log(err);
+    },
   });
 
   const adminId =
@@ -62,85 +76,150 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
     setUserData((prevState) => ({ ...prevState, [name]: value }));
   };
 
+  const isValidPhone = (phone) => {
+    const phoneRegex = /^[1-9][0-9]{9}$/;
+    return phoneRegex.test(phone);
+  };
+
   const handleCheckout = async () => {
-    setIsLoading(true);
-    setErrorMessage('');
-    const createCustomerInput = {
-      firstName: userData.name,
-      lastName: '',
-      phoneNumber: userData.phone,
-      emailAddress: `${userData.phone}-customer@zottr.com`,
-    };
+    //reset error states
+    setValidationErrors(() => ({
+      name: false,
+      phone: false,
+      address: false,
+    }));
+    setServiceError(false);
 
-    const addressInput = {
-      streetLine1: userData.address,
-      countryCode: 'IN',
-    };
-
-    const updateOrderInput = {
-      customFields: {
-        adminId: adminId,
-        adminStatus: 'new',
-      },
-    };
-
-    try {
-      // Step 1: Fetch shipping and payment methods using batch query
-      const { data: methodsData } = await fetchPlaceOrderMetadata();
-      if (
-        !methodsData?.eligibleShippingMethods?.length ||
-        !methodsData?.eligiblePaymentMethods?.length
-      ) {
-        throw new Error(
-          'Failed to fetch shipping or payment methods. Please try again.'
-        );
-      }
-
-      const shippingMethodId = methodsData.eligibleShippingMethods[0]?.id;
-      const paymentMethodCode = methodsData.eligiblePaymentMethods[0]?.code;
-
-      // Step 2: Call the place order mutation with all required data
-      const { data: orderData } = await placeOrder({
-        variables: {
-          updateOrderInput,
-          customerInput: createCustomerInput,
-          addressInput,
-          shippingMethodId: [shippingMethodId],
-          paymentInput: {
-            method: paymentMethodCode,
-            metadata: { test: 'value' },
-          },
+    if (userData.name === '') {
+      setValidationErrors((prev) => ({
+        ...prev,
+        name: true,
+      }));
+    }
+    if (!isValidPhone(userData.phone)) {
+      setValidationErrors((prev) => ({
+        ...prev,
+        phone: true,
+      }));
+    }
+    if (userData.address === '') {
+      setValidationErrors((prev) => ({
+        ...prev,
+        address: true,
+      }));
+    }
+    if (
+      userData.name !== '' &&
+      isValidPhone(userData.phone) &&
+      userData.address !== ''
+    ) {
+      setIsPlacingOrder(true);
+      const createCustomerInput = {
+        firstName: userData.name,
+        lastName: '',
+        phoneNumber: userData.phone,
+        emailAddress: `${userData.phone}-customer@zottr.com`,
+      };
+      const addressInput = {
+        streetLine1: userData.address,
+        countryCode: 'IN',
+      };
+      const updateOrderInput = {
+        customFields: {
+          adminId: adminId,
+          adminStatus: 'new',
         },
-      });
+      };
+      try {
+        // Step 1: Fetch shipping and payment methods using batch query
+        const { data: methodsData } = await fetchPlaceOrderMetadata();
+        if (
+          !methodsData?.eligibleShippingMethods?.length ||
+          !methodsData?.eligiblePaymentMethods?.length
+        ) {
+          throw new Error(
+            'Failed to fetch shipping or payment methods. Please try again.'
+          );
+        }
+        const shippingMethodId = methodsData.eligibleShippingMethods[0]?.id;
+        const paymentMethodCode = methodsData.eligiblePaymentMethods[0]?.code;
 
-      const finalOrder = orderData.addPaymentToOrder;
-      setOrderCode(finalOrder?.code);
-      setActiveOrder(null);
-
-      // Notify the server to send the order to the seller
-      axiosClient
-        .post('admin-user/notify-order', {
-          customer: userData.name,
-          orderId: finalOrder?.code,
-          adminId,
-        })
-        .catch(function (error) {
-          if (error.response) {
-            logError(error.response.data);
-          } else if (error.request) {
-            logError(error.request);
-          } else {
-            logError('Error', error.message);
-          }
+        // Step 2: Call the place order mutation with all required data
+        const { data: orderData } = await placeOrder({
+          variables: {
+            updateOrderInput,
+            customerInput: createCustomerInput,
+            addressInput,
+            shippingMethodId: [shippingMethodId],
+            paymentInput: {
+              method: paymentMethodCode,
+              metadata: { test: 'value' },
+            },
+          },
         });
 
-      completeCheckout();
-    } catch (err) {
-      handleError(err);
-    } finally {
-      setIsLoading(false); // Stop loading
+        console.log('orderData:', orderData);
+        const finalOrder = orderData.addPaymentToOrder;
+
+        let notificationError = false;
+        try {
+          await axiosClient.post('admin-user/notify-order', {
+            customer: userData.name,
+            orderId: finalOrder?.id,
+            adminId,
+          });
+          console.log('seller notified');
+        } catch (error) {
+          console.log(error);
+          notificationError = true;
+          setServiceError(true);
+          console.log('Service error set to true'); // add this
+          console.log('checkout open state:', checkout);
+          if (error.response) {
+            console.log('error.response.data:', error.response.data);
+          } else if (error.request) {
+            console.log('error.request:', error.request);
+          } else {
+            console.log('error.message:', error.message);
+          }
+        }
+        if (!notificationError) {
+          // if (true) {
+          console.log('order placed and user notified successfully');
+          setActiveOrder(null);
+          //fetch recently placed order
+          const fetchedOrder = await getOrder(finalOrder?.code);
+          console.log('fetchedOrder:', fetchedOrder);
+          completeCheckout(fetchedOrder);
+        }
+      } catch (err) {
+        console.log(err);
+        setServiceError(true);
+        console.log('Service error set to true'); // add this
+        console.log('checkout open state:', checkout);
+      } finally {
+        console.log('finally');
+        setIsPlacingOrder(false); // Stop loading
+      }
     }
   };
+
+  console.log('Render check:', { serviceError, isPlacingOrder });
+  useEffect(() => {
+    console.log('Service error changed:', serviceError);
+  }, [serviceError]);
+
+  useEffect(() => {
+    if (checkout) {
+      // Reset error states when dialog opens
+      setServiceError(false);
+      setValidationErrors({
+        name: false,
+        phone: false,
+        address: false,
+      });
+    }
+  }, [checkout]);
 
   return (
     <>
@@ -149,127 +228,175 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
         onClose={closeCheckout}
         TransitionComponent={Transition}
       >
-        <DialogTitle sx={{ margin: 'auto', color: theme.palette.common.black }}>
-          <Typography variant="h6">Order Delivery</Typography>
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <Typography variant="b1">
-              Please provide name, address and contact number
-            </Typography>
-          </DialogContentText>
-          {errorMessage && <ErrorPopup message={errorMessage} />}
-          <Stack
-            spacing={5}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              width: '100%',
-              marginTop: '10px',
-              marginBottom: '10px',
-              color: theme.palette.common.black,
-            }}
-          >
-            <Stack
-              direction="row"
-              spacing={3}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                width: '100%',
-              }}
-            >
-              <PersonIcon sx={{ paddingTop: '20px' }} />
-              <TextField
-                id="name"
-                name="name"
-                label=<Typography variant="b2">Customer Name</Typography>
-                variant="standard"
-                value={userData.name}
-                onChange={handleChange}
-                sx={{ width: '80%', input: { color: 'black' } }}
-              />
-            </Stack>
-            <Stack
-              direction="row"
-              spacing={3}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                width: '100%',
-              }}
-            >
-              <LocalPhoneIcon sx={{ paddingTop: '20px' }} />
-              <TextField
-                id="phone"
-                name="phone"
-                label=<Typography variant="b2">
-                  Phone/Whatsapp Number
+        {/* {false && ( */}
+        {!serviceError && isPlacingOrder && (
+          <DialogContent sx={{ p: 4 }}>
+            <DialogContentText id="placing-order">
+              <Stack gap={2}>
+                <Typography variant="h7" sx={{ color: 'grey.700' }}>
+                  Placing your order...
                 </Typography>
-                variant="standard"
-                value={userData.phone}
-                onChange={handleChange}
-                sx={{ width: '80%', input: { color: 'red' } }}
-              />
-            </Stack>
-            <Stack
-              direction="row"
-              spacing={3}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                width: '100%',
-              }}
-            >
-              <ApartmentIcon sx={{ paddingTop: '20px' }} />
-              <TextField
-                id="address"
-                name="address"
-                label=<Typography variant="b2">Flat/House Number</Typography>
-                variant="standard"
-                value={userData.address}
-                onChange={handleChange}
-                sx={{ width: '80%', input: { color: 'red' } }}
-              />
-            </Stack>
-          </Stack>
-        </DialogContent>
-
-        <DialogActions>
-          <Button
-            variant="contained"
-            // endIcon={<ShoppingCartCheckoutIcon />}
-            sx={{
-              padding: '10px 40px',
-              marginY: '10px',
-              borderRadius: '10px',
-              py: 1.3,
-              borderRadius: '10px',
-              backgroundColor: 'hsl(84, 100%, 50%)',
-              '&:hover': {
-                backgroundColor: 'hsl(84, 100%, 50%)',
-              },
-              '&:focus': {
-                backgroundColor: 'hsl(84, 100%, 50%)',
-              },
-              '&:active': {
-                backgroundColor: 'hsl(84, 100%, 50%)',
-              },
-            }}
-            onClick={handleCheckout}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <CircularProgress size={20} />
-            ) : (
-              <Typography variant="button1">Place Order</Typography>
-            )}
-          </Button>
-
-          <Button onClick={closeCheckout} disabled={isLoading}>
-            <Typography variant="button2">Go Back</Typography>
-          </Button>
-        </DialogActions>
+                <Box className="flexCenter">
+                  <CircularProgress
+                    thickness={5}
+                    sx={{ color: 'primary.main' }}
+                  />
+                </Box>
+              </Stack>
+            </DialogContentText>
+          </DialogContent>
+        )}
+        {/* {true && ( */}
+        {serviceError && !isPlacingOrder && (
+          <DialogContent sx={{ p: 1 }}>
+            <DialogContentText id="placing-order">
+              <ServiceErrorAlert variant="standard" />
+            </DialogContentText>
+            <DialogActions sx={{ p: 0 }}>
+              <Button onClick={closeCheckout}>
+                <Typography variant="button1" sx={{ color: 'secondary.main' }}>
+                  CLOSE
+                </Typography>
+              </Button>
+            </DialogActions>
+          </DialogContent>
+        )}
+        {/* {false && ( */}
+        {!serviceError && !isPlacingOrder && (
+          <>
+            <DialogTitle>
+              <Typography variant="h6" sx={{ color: 'grey.800' }}>
+                Enter your details
+              </Typography>
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                <Typography variant="b1">
+                  Please provide your order delivery details
+                </Typography>
+              </DialogContentText>
+              <Stack
+                spacing={5}
+                sx={{
+                  display: 'flex',
+                  // alignItems: 'center',
+                  width: '100%',
+                  marginTop: '10px',
+                  marginBottom: '10px',
+                  color: theme.palette.common.black,
+                }}
+              >
+                <Stack
+                  direction="row"
+                  spacing={3}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '100%',
+                  }}
+                >
+                  <PersonIcon
+                    sx={{ paddingTop: '20px', color: 'secondary.main' }}
+                  />
+                  <TextField
+                    id="name"
+                    name="name"
+                    label=<Typography variant="b1" sx={{ color: 'grey.700' }}>
+                      Name
+                    </Typography>
+                    variant="standard"
+                    value={userData.name}
+                    onChange={handleChange}
+                    helperText={
+                      validationErrors.name && validationErrorMessages.name
+                    }
+                    error={validationErrors.name}
+                    sx={{ width: '80%', input: { color: 'grey.900' } }}
+                  />
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={3}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '100%',
+                  }}
+                >
+                  <LocalPhoneIcon
+                    sx={{ paddingTop: '20px', color: 'secondary.main' }}
+                  />
+                  <TextField
+                    id="phone"
+                    name="phone"
+                    label=<Typography variant="b1" sx={{ color: 'grey.700' }}>
+                      Whatsapp Number
+                    </Typography>
+                    variant="standard"
+                    value={userData.phone}
+                    onChange={handleChange}
+                    helperText={
+                      validationErrors.phone && validationErrorMessages.phone
+                    }
+                    error={validationErrors.phone}
+                    sx={{ width: '80%', input: { color: 'grey.900' } }}
+                  />
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={3}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '100%',
+                  }}
+                >
+                  <ApartmentIcon
+                    sx={{ paddingTop: '20px', color: 'secondary.main' }}
+                  />
+                  <TextField
+                    id="address"
+                    name="address"
+                    label=<Typography variant="b1" sx={{ color: 'grey.700' }}>
+                      Flat Address
+                    </Typography>
+                    variant="standard"
+                    value={userData.address}
+                    onChange={handleChange}
+                    helperText={
+                      validationErrors.address &&
+                      validationErrorMessages.address
+                    }
+                    error={validationErrors.address}
+                    sx={{ width: '80%', input: { color: 'grey.900' } }}
+                  />
+                </Stack>
+              </Stack>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                variant="contained"
+                sx={{
+                  padding: '20px 40px',
+                  marginY: '20px',
+                  py: 1.3,
+                  borderRadius: '25px',
+                  backgroundColor: 'primary.main',
+                }}
+                onClick={handleCheckout}
+              >
+                <Typography variant="button1" sx={{ color: 'grey.900' }}>
+                  Place Order
+                </Typography>
+              </Button>
+              <Button onClick={closeCheckout}>
+                <Typography variant="button1" sx={{ color: 'grey.600' }}>
+                  Cancel
+                </Typography>
+              </Button>
+            </DialogActions>
+          </>
+        )}
       </Dialog>
     </>
   );

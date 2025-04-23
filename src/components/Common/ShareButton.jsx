@@ -1,9 +1,10 @@
-import { Button, Snackbar, IconButton } from '@mui/material';
+import { Button, Snackbar, IconButton, Typography } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
-import { stripHtml } from '../../Utils/utils';
+import ReplyIcon from '@mui/icons-material/Reply';
+import { stripHtml } from '../../utils/utils';
 
 const ShareButton = ({ title, text, url }) => {
   const [toastOpen, setToastOpen] = useState(false);
@@ -28,9 +29,35 @@ const ShareButton = ({ title, text, url }) => {
 
   return (
     <>
-      <IconButton size="large" onClick={handleShare} sx={{ color: '#1976d2' }}>
-        <ShareIcon />
-      </IconButton>
+      <Button
+        onClick={handleShare}
+        variant="outlined"
+        // sx={{ bgcolor: '#1976d2' }}
+        // sx={{ bgcolor: 'secondary.light' }}
+        sx={{
+          // bgcolor: 'secondary.main',
+          borderColor: 'secondary.main',
+          borderRadius: '30px',
+          '&:hover, &:focus, &:active': {
+            borderColor: 'secondary.main',
+          },
+
+          // color: 'grey.800',
+          // borderColor: 'grey.800',
+          // borderRadius: '30px',
+          // '&:hover, &:focus, &:active': {
+          //   borderColor: 'grey.500',
+          // },
+        }}
+      >
+        <Typography variant="button2" sx={{ color: 'secondary.main' }}>
+          Share
+        </Typography>
+        <ReplyIcon
+          fontSize="medium"
+          sx={{ transform: 'scaleX(-1)', ml: 0.5, color: 'secondary.main' }}
+        />
+      </Button>
       {/* Snackbar for toast message */}
       <Snackbar
         open={toastOpen}

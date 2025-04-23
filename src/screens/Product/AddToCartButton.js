@@ -2,6 +2,7 @@ import { Button, Typography, useTheme } from '@mui/material';
 import QuantityButton from './QuantityButton';
 import { useContext } from 'react';
 import CartContext from '../../context/CartContext';
+import LoadingButton from '../../components/common/LoadingButton';
 
 function AddToCartButton({
   productVariantId,
@@ -18,7 +19,11 @@ function AddToCartButton({
     addItemToCart,
     modifyItemQtyInCart,
     removeItemFromCart,
+    itemBeingModifiedId,
+    itemBeingAddedVariantId,
   } = useContext(CartContext);
+
+  const isItemBeingAdded = itemBeingAddedVariantId === productVariantId;
 
   let quantity = 0;
   const productInCart = activeOrder?.lines?.find(
@@ -39,13 +44,15 @@ function AddToCartButton({
   };
 
   const handleModifyMinus = () => {
-    if (quantity > 1) {
-      quantity = quantity - 1;
-      modifyItemQtyInCart(productInCart?.id, quantity);
-    } else {
-      quantity = 0;
-      removeItemFromCart(productInCart?.id);
-    }
+    quantity = quantity - 1;
+    modifyItemQtyInCart(productInCart?.id, quantity);
+    // if (quantity > 1) {
+    //   quantity = quantity - 1;
+    //   modifyItemQtyInCart(productInCart?.id, quantity);
+    // } else {
+    //   quantity = 0;
+    //   removeItemFromCart(productInCart?.id);
+    // }
   };
 
   return (
@@ -58,32 +65,55 @@ function AddToCartButton({
           buttonHeight={buttonHeight}
           buttonSize="medium"
           labelVariant="button1"
+          itemBeingModifiedId={itemBeingModifiedId}
+          itemId={productInCart?.id}
         />
       )}
       {quantity === 0 && (
-        <Button
-          variant="outlined"
-          onClick={handleAdd}
-          sx={{
-            ...buttonSx,
-            width: '100%',
-            backgroundColor: 'hsl(84, 100%, 60%)',
-            '&:hover': {
-              backgroundColor: 'hsl(84, 100%, 60%)',
-            },
-            '&:focus': {
-              backgroundColor: 'hsl(84, 100%, 60%)',
-            },
-            '&:active': {
-              backgroundColor: 'hsl(84, 100%, 60%)',
-            },
-            color: theme.palette.grey[900],
-            borderColor: 'hsl(84, 100%, 60%)',
-            borderRadius: '25px',
-          }}
-        >
-          <Typography variant={buttonTextVariant}>Add to cart</Typography>
-        </Button>
+        <>
+          {/* <Button
+            variant="contained"
+            onClick={handleAdd}
+            sx={{
+              ...buttonSx,
+              width: '100%',
+              // backgroundColor: 'hsl(84, 100%, 60%)',
+              bgcolor: 'primary.light',
+              '&:hover, &:focus, &:active': {
+                bgcolor: 'primary.light',
+              },
+              color: theme.palette.grey[900],
+              borderColor: 'primary.light',
+              borderRadius: '25px',
+            }}
+          >
+            <Typography variant={buttonTextVariant}>Add to cart</Typography>
+          </Button> */}
+          <LoadingButton
+            onClick={handleAdd}
+            loading={isItemBeingAdded}
+            variant="contained"
+            type="button"
+            buttonStyles={{
+              backgroundColor: 'primary.light',
+              borderRadius: '25px',
+            }}
+            buttonContainerStyles={{
+              ...buttonSx,
+              width: '100%',
+            }}
+            label="Add to cart"
+            labelStyles={{
+              color: 'grey.900',
+            }}
+            labelVariant="button2"
+            progressSize={24}
+            progressThickness={7}
+            progressStyles={{
+              color: 'grey.700',
+            }}
+          />
+        </>
       )}
     </>
   );

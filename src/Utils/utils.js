@@ -1,7 +1,12 @@
 // utils.js
-export const openWhatsAppChat = (phoneNumber) => {
-  const whatsappUrl = `https://wa.me/+91${phoneNumber}`;
-  window.location.href = whatsappUrl;
+export const openWhatsAppChat = (phoneNumber, text = '') => {
+  const cleanedNumber = phoneNumber.replace(/\D/g, ''); // removes + and non-digits
+  const encodedText = encodeURIComponent(text);
+  const url = text
+    ? `https://wa.me/${cleanedNumber}?text=${encodedText}`
+    : `https://wa.me/${cleanedNumber}`;
+  console.log('URL to open:', url);
+  window.location.href = url;
 };
 
 export const initiateAudioCall = (phoneNumber) => {
@@ -27,6 +32,18 @@ export const getDateTimeString = (order) => {
     const time = dateObj.toLocaleTimeString();
     return formattedDate + ' @ ' + time;
   } else return '';
+};
+
+export const isLocalStorageAvailable = () => {
+  try {
+    // Try to access localStorage
+    const testKey = '__test_local_storage_availability__';
+    localStorage.setItem(testKey, 'test');
+    localStorage.removeItem(testKey);
+    return true; // localStorage is available
+  } catch (error) {
+    return false; // localStorage is not available
+  }
 };
 
 export const stripHtml = (html) => {

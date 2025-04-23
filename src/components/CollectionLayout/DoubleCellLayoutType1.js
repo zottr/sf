@@ -9,12 +9,13 @@ import {
   useTheme,
 } from '@mui/material';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import placeholderLogo from '/logos/zottr_logo_small2_grey_white.svg';
 
 function DoubleCellLayoutType1({ products }) {
   const theme = useTheme();
 
   return (
-    <Grid container columnSpacing={1} rowSpacing={2} sx={{ paddingX: '10px' }}>
+    <Grid container columnSpacing={2} rowSpacing={2} sx={{ paddingX: '10px' }}>
       {products?.map((item, index) => (
         <Grid
           key={item.product.slug}
@@ -29,29 +30,19 @@ function DoubleCellLayoutType1({ products }) {
             to={`/product/${item.product.slug}`}
             style={{ textDecoration: 'none' }}
           >
-            {/* <Box
-        sx={{
-          backgroundImage: `url(${product.productAsset.preview.replace(
-            /\\/g,
-            '/'
-          )}?preset=small)`,
-          width: '100%',
-          height: '10rem',
-          backgroundSize: 'cover',
-          backgroundPositionX: 'center',
-          backgroundPositionY: 'center',
-          position: 'relative',
-        }}
-      /> */}
             <Box>
               <Box
                 component="img"
+                onError={(e) => {
+                  e.target.onerror = null; // Prevent infinite loop
+                  e.target.src = `${placeholderLogo}`; // This should exist in /public
+                }}
                 sx={{
                   aspectRatio: 1,
                   width: '100%',
-                  objectFit: 'cover',
+                  objectFit: 'contain',
                   objectPosition: 'center',
-                  // backgroundColor: 'hsl(81, 33%, 97%)',
+                  // bgcolor: 'grey.100',
                 }}
                 src={`${item.product.featuredAsset?.preview}?preset=medium`}
                 alt={item.product.name}

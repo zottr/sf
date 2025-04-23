@@ -49,7 +49,7 @@ export function CollectionList({ collection }) {
           ) : (
             // Simple link item for collections without children
             <Link
-              component={RouterLink}
+              component={nk}
               to={`/collection/${child.slug}`}
               underline="hover"
               color="inherit"

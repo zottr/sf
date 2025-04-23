@@ -15,23 +15,23 @@ import { Link as RouterLink } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import { useContext, useEffect, useState } from 'react';
 import OrderContext from '../../context/OrderContext';
-import { getDateTimeString } from '../../Utils/utils';
+import { getDateTimeString } from '../../utils/utils';
 
 function OrderHistory() {
   const theme = useTheme();
 
-  const { getOrdersFromLocalStorage } = useContext(OrderContext);
+  const { getSavedOrdersFromLocalStorage } = useContext(OrderContext);
   const [orders, setOrders] = useState();
   const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     setLoading(true);
-    const fetchedOrders = getOrdersFromLocalStorage();
+    const fetchedOrders = getSavedOrdersFromLocalStorage();
     if (fetchedOrders) {
       setOrders([...fetchedOrders].reverse()); // Reverse orders here
     }
     setLoading(false);
-  }, [getOrdersFromLocalStorage]);
+  }, [getSavedOrdersFromLocalStorage]);
 
   const getSellerName = (order) => {
     return (
@@ -93,7 +93,7 @@ function OrderHistory() {
               {orders?.map((order, index) => (
                 <Box
                   component={RouterLink}
-                  to={`/order-details/${order.code}`}
+                  to={`/order/${order.code}`}
                   sx={{ textDecoration: 'none', marginTop: '30px' }}
                 >
                   <Grid container rowSpacing={0.5} alignItems={'center'}>

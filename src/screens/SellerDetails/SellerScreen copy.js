@@ -11,9 +11,9 @@ import { gql, useLazyQuery } from '@apollo/client';
 import { GET_PRODUCTS_WITH_OPTIONS } from '../../apollo/server';
 import DoubleCellLayoutProducts from '../../components/ProuctsDisplay/DoubleCellLayoutProducts';
 import useAdminInfo from '../../customhooks/useAdminInfo';
-import CallActionButtons from '../../components/Common/CallActionButtons';
-import UpiPaymentDialog from '../../components/Common/UpiPaymentDialog';
-import Banner from '../../components/Common/Banner';
+import CallActionButtons from '../../components/common/CallActionButtons';
+import UpiPaymentDialog from '../../components/common/UpiPaymentDialog';
+import Banner from '../../components/common/Banner';
 import StarButton from './FavButton';
 import { handleError } from '../../context/ErrorContext';
 

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Box, CircularProgress, useTheme } from '@mui/material';
+import { Box, CircularProgress, Skeleton, useTheme } from '@mui/material';
 import CollectionLink from './CollectionLink';
 import CollectionsContext from '../../context/CollectionsContext';
+import CollectionLinksViewSkeleton from './CollectionLinksViewSkeleton';
 
 function CollectionLinksView() {
   const { collections, loading } = React.useContext(CollectionsContext);
@@ -15,17 +16,25 @@ function CollectionLinksView() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            marginTop: 2,
           }}
         >
-          <CircularProgress size={24} />
+          <CollectionLinksViewSkeleton />
         </Box>
       )}
-      <Box className="horizontal-scroll">
-        {collections?.map((item) => (
-          <CollectionLink key={item.id} item={item} />
-        ))}
-      </Box>
+      {!loading && (
+        <Box
+          className="horizontal-scroll"
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+          }}
+        >
+          {collections?.map((item) => (
+            <CollectionLink key={item.id} item={item} />
+          ))}
+        </Box>
+      )}
     </>
   );
 }

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { gql, useLazyQuery } from '@apollo/client';
 import { GET_ORDER_BY_CODE } from '../apollo/server';
 import { handleError } from './ErrorContext';
+import { isLocalStorageAvailable } from '../utils/utils';
 
 const GET_ORDER = gql`
   ${GET_ORDER_BY_CODE}
@@ -10,61 +11,65 @@ const GET_ORDER = gql`
 const OrderContext = React.createContext({});
 
 export const OrderProvider = (props) => {
-  const [orderCode, setOrderCode] = useState();
-  const [order, setOrder] = useState();
+  const [isFetchingOrder, setIsFetchingOrder] = useState(false); // ✅ full loading state
 
-  const [fetchOrder, { loading }] = useLazyQuery(GET_ORDER, {
+  const [fetchOrderQuery] = useLazyQuery(GET_ORDER, {
     fetchPolicy: 'cache-and-network',
-    onError: (err) => handleError(err),
+    onError: (err) => {
+      handleError(err);
+      setIsFetchingOrder(false); // in case of error
+    },
   });
 
-  useEffect(() => {
-    async function fetchOrderAsync() {
-      const response = await fetchOrder({
-        variables: {
-          code: orderCode,
-        },
-      });
-      const orderData = response?.data?.orderByCode;
-      setOrder(orderData);
-      storeOrderInLocalStorage(orderData);
-    }
-    //order code is set in order checkout page
-    if (orderCode) {
-      const ordersFromStorage = getOrdersFromLocalStorage();
-      const orderFromStorage = ordersFromStorage?.find(
-        (o) => o.code === orderCode
-      );
-      if (!orderFromStorage) {
-        fetchOrderAsync();
-      } else {
-        setOrder(orderFromStorage);
-      }
-    }
-  }, [orderCode]);
+  const getSavedOrdersFromLocalStorage = () => {
+    return isLocalStorageAvailable()
+      ? JSON.parse(localStorage.getItem('orders')) || []
+      : [];
+  };
 
-  // Function to store a new order in localStorage
-  const storeOrderInLocalStorage = (newOrder) => {
-    if (newOrder) {
-      const existingOrders = JSON.parse(localStorage.getItem('orders')) || [];
+  const saveOrder = (newOrder) => {
+    const existingOrders = getSavedOrdersFromLocalStorage();
+    const isAlreadySaved = existingOrders.some((o) => o.code === newOrder.code);
+    if (isLocalStorageAvailable() && !isAlreadySaved) {
       const updatedOrders = [...existingOrders, newOrder];
       localStorage.setItem('orders', JSON.stringify(updatedOrders));
     }
   };
 
-  // Function to retrieve orders from localStorage
-  const getOrdersFromLocalStorage = () => {
-    const orders = JSON.parse(localStorage.getItem('orders')) || [];
-    return orders;
-  };
+  const getOrder = useCallback(
+    async (orderCode) => {
+      setIsFetchingOrder(true);
+
+      try {
+        const ordersFromStorage = getSavedOrdersFromLocalStorage();
+        const localOrder = ordersFromStorage.find((o) => o.code === orderCode);
+
+        if (localOrder) {
+          return localOrder;
+        }
+
+        const response = await fetchOrderQuery({
+          variables: { code: orderCode },
+        });
+
+        const fetchedOrder = response?.data?.orderByCode;
+        if (fetchedOrder && isLocalStorageAvailable()) {
+          saveOrder(fetchedOrder);
+        }
+        return fetchedOrder;
+      } finally {
+        setIsFetchingOrder(false); // ✅ always unset after done
+      }
+    },
+    [fetchOrderQuery]
+  );
 
   return (
     <OrderContext.Provider
       value={{
-        order,
-        setOrderCode,
-        getOrdersFromLocalStorage,
-        loading,
+        isFetchingOrder, // ✅ full loading state exposed
+        getOrder,
+        getSavedOrdersFromLocalStorage,
       }}
     >
       {props.children}
