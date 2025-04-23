@@ -8,7 +8,10 @@ import {
 } from '@mui/material';
 import React from 'react';
 import useAdminInfo from '../../../customhooks/useAdminInfo';
-import { initiateAudioCall, openWhatsAppChat } from '../../../utils/utils';
+import {
+  initiateAudioCall,
+  openWhatsAppChat,
+} from '../../../utils/CommonUtils';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

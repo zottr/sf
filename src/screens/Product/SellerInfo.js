@@ -11,7 +11,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import { initiateAudioCall, openWhatsAppChat } from '../../utils/utils';
+import { initiateAudioCall, openWhatsAppChat } from '../../utils/CommonUtils';
 import CallIcon from '@mui/icons-material/Call';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import logo from '/logos/zottr_logo_small1_white.svg';

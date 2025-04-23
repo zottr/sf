@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { gql, useLazyQuery } from '@apollo/client';
 import { GET_ORDER_BY_CODE } from '../apollo/server';
 import { handleError } from './ErrorContext';
-import { isLocalStorageAvailable } from '../utils/utils';
+import { isLocalStorageAvailable } from '../utils/CommonUtils';
 
 const GET_ORDER = gql`
   ${GET_ORDER_BY_CODE}

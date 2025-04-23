@@ -23,7 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import WestIcon from '@mui/icons-material/West';
 import PhoneIcon from '@mui/icons-material/Phone';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import { getDateTimeString } from '../../utils/utils';
+import { getDateTimeString } from '../../utils/CommonUtils';
 
 function OrderDetails() {
   const theme = useTheme();

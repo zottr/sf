@@ -15,7 +15,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import { useContext, useEffect, useState } from 'react';
 import OrderContext from '../../context/OrderContext';
-import { getDateTimeString } from '../../utils/utils';
+import { getDateTimeString } from '../../utils/CommonUtils';
 
 function OrderHistory() {
   const theme = useTheme();

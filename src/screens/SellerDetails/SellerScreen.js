@@ -19,7 +19,7 @@ import useAdminInfo from '../../customhooks/useAdminInfo';
 import CallActionButtons from '../../components/common/CallActionButtons';
 import FavButton from './FavButton';
 import { handleError } from '../../context/ErrorContext';
-import { initiateAudioCall, openWhatsAppChat } from '../../utils/utils';
+import { initiateAudioCall, openWhatsAppChat } from '../../utils/CommonUtils';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import CallIcon from '@mui/icons-material/Call';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
