@@ -23,8 +23,8 @@ import CartContext from '../../context/CartContext';
 import axiosClient from '../../axiosClient';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ErrorPopup from '../../components/ErrorHandling/ErrorPopup';
-import ErrorAlert from '../../components/common/Alerts/ErrorAlert';
-import ServiceErrorAlert from '../../components/common/Alerts/ServiceErrorAlert';
+import ErrorAlert from '../../components/shared/Alerts/ErrorAlert';
+import ServiceErrorAlert from '../../components/shared/Alerts/ServiceErrorAlert';
 import OrderContext from '../../context/OrderContext';
 
 const Transition = React.forwardRef(function Transition(props, ref) {

@@ -2,7 +2,7 @@ import { Button, Typography, useTheme } from '@mui/material';
 import QuantityButton from './QuantityButton';
 import { useContext } from 'react';
 import CartContext from '../../context/CartContext';
-import LoadingButton from '../../components/common/LoadingButton';
+import LoadingButton from '../../components/shared/LoadingButton';
 
 function AddToCartButton({
   productVariantId,

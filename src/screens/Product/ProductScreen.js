@@ -18,14 +18,14 @@ import ProductImages from './ProductImages';
 import useAdminInfo from '../../customhooks/useAdminInfo';
 import SellerInfo from './SellerInfo';
 import Item from '../../components/CollectionItemsPreview/Item';
-import CallActionButtons from '../../components/common/CallActionButtons';
+import CallActionButtons from '../../components/shared/CallActionButtons';
 import ReplaceItemsConfirmationDialog from './ReplaceItemsConfirmationDialog';
 import AddToCartButton from './AddToCartButton';
 import { useNavigate } from 'react-router-dom';
 import DoubleCellLayoutProducts from '../../components/ProuctsDisplay/DoubleCellLayoutProducts';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { handleError } from '../../context/ErrorContext';
-import ShareButton from '../../components/common/ShareButton';
+import ShareButton from '../../components/shared/ShareButton';
 
 const PRODUCT = gql`
   ${GET_PRODUCT}

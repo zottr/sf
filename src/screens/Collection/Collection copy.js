@@ -15,7 +15,7 @@ import WestIcon from '@mui/icons-material/West';
 import DoubleCellLayoutType1 from '../../components/CollectionLayout/DoubleCellLayoutType1';
 
 import { Link } from 'react-router-dom';
-import Banner from '../../components/common/Banner';
+import Banner from '../../components/shared/Banner';
 
 const PRODUCTS = gql`
   ${GET_PRODUCTS}

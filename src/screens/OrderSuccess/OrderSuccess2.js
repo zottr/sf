@@ -1,9 +1,9 @@
 import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import CheckmarkThinCircle from '../../components/common/svg/CheckmarkThinCircle';
-import CheckmarkCircle from '../../components/common/svg/CheckmarkCircle';
-import ContactSellerDialog from '../../components/common/ContactSellerDialog';
+import CheckmarkThinCircle from '../../components/shared/svg/CheckmarkThinCircle';
+import CheckmarkCircle from '../../components/shared/svg/CheckmarkCircle';
+import ContactSellerDialog from '../../components/shared/ContactSellerDialog';
 
 function OrderSuccess2() {
   const location = useLocation();

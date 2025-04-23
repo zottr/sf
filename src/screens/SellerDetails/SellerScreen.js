@@ -16,7 +16,7 @@ import { gql, useLazyQuery } from '@apollo/client';
 import { GET_PRODUCTS_WITH_OPTIONS } from '../../apollo/server';
 import DoubleCellLayoutProducts from '../../components/ProuctsDisplay/DoubleCellLayoutProducts';
 import useAdminInfo from '../../customhooks/useAdminInfo';
-import CallActionButtons from '../../components/common/CallActionButtons';
+import CallActionButtons from '../../components/shared/CallActionButtons';
 import FavButton from './FavButton';
 import { handleError } from '../../context/ErrorContext';
 import { initiateAudioCall, openWhatsAppChat } from '../../utils/CommonUtils';

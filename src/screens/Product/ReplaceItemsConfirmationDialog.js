@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import ConfirmationDialog from '../../components/common/ConfirmationDialog';
+import ConfirmationDialog from '../../components/shared/ConfirmationDialog';
 import CartContext from '../../context/CartContext';
 
 function ReplaceItemsConfirmationDialog({ productVariantId, adminId }) {
