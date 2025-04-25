@@ -143,7 +143,7 @@ function ProductScreen() {
               <ShareButton
                 text={product.description}
                 title={product.name}
-                url={window.location.href}
+                url={`${window.location.href.replace(/\/$/, '')}/share`}
               />
             </Stack>
             {!isService && (

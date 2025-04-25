@@ -684,6 +684,7 @@ export const GET_COLLECTIONS = gql`
         name
         slug
         featuredAsset {
+          id
           preview
         }
         customFields {
@@ -706,6 +707,7 @@ export const GET_COLLECTIONS_WITH_PRODUCTS = gql`
         name
         slug
         featuredAsset {
+          id
           preview
         }
         productVariants(options: { take: 5 }) {
@@ -715,6 +717,7 @@ export const GET_COLLECTIONS_WITH_PRODUCTS = gql`
               name
               slug
               featuredAsset {
+                id
                 preview
               }
               variants {
@@ -745,9 +748,11 @@ export const GET_COLLECTION_PRODUCTS = gql`
             slug
             description
             featuredAsset {
+              id
               preview
             }
             variants {
+              id
               price
             }
             customFields {
@@ -829,6 +834,7 @@ export const GET_PRODUCTS_WITH_OPTIONS = gql`
         name
         slug
         featuredAsset {
+          id
           preview
           source
         }

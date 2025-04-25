@@ -107,6 +107,11 @@ export const client = new ApolloClient({
               return Array.from(mergedLinesMap.values());
             },
           },
+          shippingAddress: {
+            merge(existing, incoming) {
+              return incoming; // Always replace safely
+            },
+          },
         },
       },
     },

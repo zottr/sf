@@ -99,6 +99,7 @@ export const ORDER_DETAILS = gql`
         id
         name
         product {
+          id
           customFields {
             adminId
             adminName

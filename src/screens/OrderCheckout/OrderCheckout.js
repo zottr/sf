@@ -193,10 +193,23 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
           completeCheckout(fetchedOrder);
         }
       } catch (err) {
-        console.log(err);
+        console.error('Place order error:', err);
+        const gqlErrors = err?.graphQLErrors || [];
+        const isSessionError = gqlErrors.some((e) =>
+          ['NO_ACTIVE_ORDER_ERROR', 'ALREADY_LOGGED_IN_ERROR'].includes(
+            e?.extensions?.code
+          )
+        );
+        if (isSessionError) {
+          console.warn('Session is invalid or expired. Resetting...');
+          localStorage.removeItem('userToken');
+          //Clear cart context
+          setActiveOrder(null);
+          setServiceError(true);
+          return;
+        }
         setServiceError(true);
-        console.log('Service error set to true'); // add this
-        console.log('checkout open state:', checkout);
+        console.error('checkout open state:', checkout);
       } finally {
         console.log('finally');
         setIsPlacingOrder(false); // Stop loading
