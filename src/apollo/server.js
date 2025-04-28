@@ -740,6 +740,7 @@ export const GET_COLLECTIONS_WITH_PRODUCTS = gql`
 export const GET_COLLECTION_PRODUCTS = gql`
   query collection($slug: String, $options: ProductVariantListOptions) {
     collection(slug: $slug) {
+      id
       productVariants(options: $options) {
         items {
           product {

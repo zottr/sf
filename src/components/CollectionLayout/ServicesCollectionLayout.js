@@ -21,7 +21,6 @@ function ServicesCollectionLayout({ products }) {
     return doc.body.textContent || '';
   }
 
-  console.log(products);
   return (
     <>
       <Container>

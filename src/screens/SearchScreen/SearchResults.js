@@ -118,6 +118,28 @@ function SearchResults() {
     };
   }, [hasMore, loading]);
 
+  const mapResultsToProducts = (results) => {
+    return results?.map((item) => ({
+      product: {
+        id: item.productId,
+        name: item.productName,
+        slug: item.slug,
+        description: item.description,
+        featuredAsset: item.productAsset
+          ? {
+              id: item.productAsset.id,
+              preview: item.productAsset.preview,
+            }
+          : null,
+        variants: [
+          {
+            price: item.priceWithTax?.min ?? 0,
+          },
+        ],
+      },
+    }));
+  };
+
   if (error) {
     return <>{handleError(error)}</>;
   }
@@ -136,7 +158,9 @@ function SearchResults() {
           </Container>
         </Grid>
         <Grid item xs={12}>
-          {results.length > 0 && <DoubleCellLayoutType1 products={results} />}
+          {results.length > 0 && (
+            <DoubleCellLayoutType1 products={mapResultsToProducts(results)} />
+          )}
         </Grid>
         <Grid
           item

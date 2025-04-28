@@ -18,7 +18,7 @@ import logo from '/logos/zottr_logo_small1_white.svg';
 import useAdminInfo from '../../customhooks/useAdminInfo';
 
 function SellerInfo({ imageUrl, name, id }) {
-  const { adminData } = useAdminInfo({ id });
+  const { adminData } = useAdminInfo({ adminId: id });
   const theme = useTheme();
   return (
     <Stack

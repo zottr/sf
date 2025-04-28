@@ -18,12 +18,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 function ContactSellerDialog({ open, onClose, order }) {
-  console.log(order);
   const adminId = order?.lines[0].productVariant.product.customFields.adminId;
   const { adminData, loading: fetchingAdminInfo } = useAdminInfo({ adminId });
-  console.log('adminData:', adminData);
-  //temp, to remove
-  const phoneNumber = '8861382884';
+  const phoneNumber = adminData?.phoneNumber;
 
   // const chatWithSeller = () => {
   //   const adminId =

@@ -34,7 +34,7 @@ const useAdminInfo = ({ adminId }: UseAdminInfoParams) => {
         const response = await axiosClient.get(
           `admin-user/get-info/${adminId}`
         );
-        console.log('response.data', response.data);
+
         setAdminData(response.data);
       } catch (err) {
         setError('Failed to fetch admin info.');

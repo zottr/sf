@@ -59,12 +59,12 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
 
   const [placeOrder, { error }] = useMutation(PLACE_ORDER, {
     onError: (err) => {
-      console.log(err);
+      console.error(err);
     },
   });
   const [fetchPlaceOrderMetadata] = useLazyQuery(GET_PLACE_ORDER_METADATA, {
     onError: (err) => {
-      console.log(err);
+      console.error(err);
     },
   });
 
@@ -158,7 +158,6 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
           },
         });
 
-        console.log('orderData:', orderData);
         const finalOrder = orderData.addPaymentToOrder;
 
         let notificationError = false;
@@ -168,28 +167,24 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
             orderId: finalOrder?.id,
             adminId,
           });
-          console.log('seller notified');
         } catch (error) {
-          console.log(error);
+          console.error(error);
           notificationError = true;
           setServiceError(true);
-          console.log('Service error set to true'); // add this
-          console.log('checkout open state:', checkout);
+          console.error('Service error set to true'); // add this
+          console.error('checkout open state:', checkout);
           if (error.response) {
-            console.log('error.response.data:', error.response.data);
+            console.error('error.response.data:', error.response.data);
           } else if (error.request) {
-            console.log('error.request:', error.request);
+            console.error('error.request:', error.request);
           } else {
-            console.log('error.message:', error.message);
+            console.error('error.message:', error.message);
           }
         }
         if (!notificationError) {
-          // if (true) {
-          console.log('order placed and user notified successfully');
           setActiveOrder(null);
           //fetch recently placed order
           const fetchedOrder = await getOrder(finalOrder?.code);
-          console.log('fetchedOrder:', fetchedOrder);
           completeCheckout(fetchedOrder);
         }
       } catch (err) {
@@ -211,16 +206,10 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
         setServiceError(true);
         console.error('checkout open state:', checkout);
       } finally {
-        console.log('finally');
         setIsPlacingOrder(false); // Stop loading
       }
     }
   };
-
-  console.log('Render check:', { serviceError, isPlacingOrder });
-  useEffect(() => {
-    console.log('Service error changed:', serviceError);
-  }, [serviceError]);
 
   useEffect(() => {
     if (checkout) {

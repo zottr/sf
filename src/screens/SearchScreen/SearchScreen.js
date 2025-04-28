@@ -22,18 +22,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import { handleError } from '../../context/ErrorContext';
 import { forwardRef, useEffect, useState } from 'react';
 
-function getRandomSeller() {
-  let sellers = [
-    'Taco & Bell',
-    'Choco Kreations',
-    'Dominos',
-    'McDolands',
-    'Naturals',
-  ];
-  const randomIndex = Math.floor(Math.random() * sellers.length); // Generate a random index
-  return sellers[randomIndex]; // Return the seller at that index
-}
-
 // Custom Backdrop with blur effect
 const CustomBackdrop = (props) => {
   return (
@@ -221,7 +209,11 @@ function SearchScreen({ open, close }) {
                     <>
                       <Box
                         component={RouterLink}
-                        to={`/${suggestion.sellerSlug}/${suggestion.slug}`}
+                        to={`/product/${suggestion.slug}`}
+                        onClick={() => {
+                          close();
+                          setInput('');
+                        }}
                         sx={{ textDecoration: 'none' }}
                       >
                         <Grid
@@ -247,19 +239,19 @@ function SearchScreen({ open, close }) {
                           <Grid item xs={8}>
                             <Stack>
                               <Typography
-                                variant="b2"
+                                variant="b1"
                                 color={theme.palette.grey[900]}
                                 noWrap
                               >
                                 {suggestion.productName}
                               </Typography>
-                              <Typography
+                              {/* <Typography
                                 variant="b3"
                                 color={theme.palette.grey[700]}
                                 noWrap
                               >
                                 {getRandomSeller()}
-                              </Typography>
+                              </Typography> */}
                             </Stack>
                           </Grid>
                         </Grid>

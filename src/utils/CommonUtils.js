@@ -5,7 +5,6 @@ export const openWhatsAppChat = (phoneNumber, text = '') => {
   const url = text
     ? `https://wa.me/${cleanedNumber}?text=${encodedText}`
     : `https://wa.me/${cleanedNumber}`;
-  console.log('URL to open:', url);
   window.location.href = url;
 };
 

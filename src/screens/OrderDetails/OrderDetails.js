@@ -40,7 +40,6 @@ function OrderDetails() {
       if (query.orderCode) {
         try {
           const fetchedOrder = await getOrder(query.orderCode);
-          console.log('fetchedOrder:', fetchedOrder);
           setOrder(fetchedOrder);
         } catch (err) {
           console.error('Error fetching order:', err);
@@ -75,7 +74,6 @@ function OrderDetails() {
     window.open(audioCallUrl, '_blank', 'noopener,noreferrer');
   };
 
-  console.log('order:', order);
   const sellerName =
     order?.lines[0]?.productVariant?.product?.customFields?.adminName ??
     adminData?.businessName ??

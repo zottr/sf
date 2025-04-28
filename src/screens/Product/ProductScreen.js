@@ -53,8 +53,6 @@ function ProductScreen() {
     },
   });
 
-  console.log(data);
-
   const [fetchSellerProducts, { loading: similarProductsLoading }] =
     useLazyQuery(PRODUCTS_FROM_SELLER, { onError: (err) => handleError(err) });
 

@@ -9,7 +9,6 @@ function OrderSuccess2() {
   const location = useLocation();
   const navigate = useNavigate();
   const order = location.state?.order;
-  console.log('order:', order);
 
   const [openDialog, setOpenDialog] = useState(false);
   const closeDialog = () => {
