@@ -9,7 +9,7 @@ import { setGlobalError } from '../context/ErrorContext';
 import { onError } from '@apollo/client/link/error';
 
 // const API_URL = `http://api.zottr.com/shop-api`;
-const API_URL = `https://api.zottr.com/shop-api`;
+const API_URL = `https://shop-api.zottr.com/`;
 // const API_URL = `http://172.18.121.156:3000/shop-api`;
 // If using bearer-token based session management, we'll store the token
 // in localStorage using this key.
@@ -116,4 +116,17 @@ export const client = new ApolloClient({
       },
     },
   }),
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'cache-and-network', // or 'network-only' if you want absolutely fresh data always
+      errorPolicy: 'all',
+    },
+    query: {
+      fetchPolicy: 'cache-and-network',
+      errorPolicy: 'all',
+    },
+    mutate: {
+      errorPolicy: 'all',
+    },
+  },
 });

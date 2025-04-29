@@ -12,6 +12,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axiosClient from '../../axiosClient';
+import placeholderLogo from '/logos/zottr_logo_small1_white.svg';
 
 const SellerListingPage = () => {
   const theme = useTheme();
@@ -31,6 +32,7 @@ const SellerListingPage = () => {
         },
       });
       const newSellers = response.data;
+      console.log('newSellers:', newSellers);
       setSellers((prevSellers) => [...prevSellers, ...newSellers]);
       setHasMore(newSellers?.length === take);
       setSkip((prevSkip) => prevSkip + take);
@@ -65,9 +67,9 @@ const SellerListingPage = () => {
   }, [loadMoreAdmins, hasMore, loading]);
 
   return (
-    <Container>
-      <Stack spacing={2.5}>
-        <Box sx={{ justifyContent: 'center', display: 'flex' }}>
+    <>
+      <Stack gap={4} sx={{ mx: 2 }}>
+        <Box sx={{ mt: 1, justifyContent: 'center', display: 'flex' }}>
           <Typography
             variant="h5"
             sx={{ color: theme.palette.grey[800], fontWeight: 'bold' }}
@@ -81,7 +83,7 @@ const SellerListingPage = () => {
           </Box>
         ) : (
           <Grid container spacing={2} sx={{ width: '100%' }}>
-            {sellers?.map((seller) => (
+            {sellers?.map((seller, index) => (
               <>
                 <Grid
                   item
@@ -95,7 +97,6 @@ const SellerListingPage = () => {
                     color: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
-                    padding: 2,
                     borderRadius: 1,
                   }}
                 >
@@ -107,8 +108,18 @@ const SellerListingPage = () => {
                         width: '60px',
                         height: '60px',
                         border: '1px solid rgba(200,200,200,1)',
+                        bgcolor: 'secondary.light',
                       }}
-                    />
+                    >
+                      <Box
+                        component="img"
+                        sx={{
+                          height: '80%',
+                          width: '80%',
+                        }}
+                        src={placeholderLogo}
+                      />
+                    </Avatar>
                   </Grid>
                   <Grid item xs={9}>
                     <Stack>
@@ -131,17 +142,38 @@ const SellerListingPage = () => {
                   </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                  <Divider flexItem variant="fullWidth" sx={{ opacity: 0.8 }} />
+                  {index !== sellers.length - 1 && (
+                    <Divider
+                      flexItem
+                      variant="fullWidth"
+                      sx={{ opacity: 0.8 }}
+                    />
+                  )}
                 </Grid>
               </>
             ))}
           </Grid>
         )}
-        {/* {!hasMore && (
-          <Typography variant="b2">No more items to load</Typography>
-        )} */}
       </Stack>
-    </Container>
+      {!hasMore && sellers.length !== 0 && (
+        <Stack
+          direction="row"
+          sx={{
+            mt: 1,
+            display: 'flex',
+            alignItems: 'baseline',
+            justifyContent: 'center',
+          }}
+        >
+          <Typography variant="heavyb2" color="brown">
+            That's all!
+          </Typography>
+          <Typography variant="b1" sx={{ fontSize: '20px' }}>
+            &#x1F44B;
+          </Typography>
+        </Stack>
+      )}
+    </>
   );
 };
 

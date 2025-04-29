@@ -29,6 +29,7 @@ function OrderHistory() {
     const fetchedOrders = getSavedOrdersFromLocalStorage();
     if (fetchedOrders) {
       setOrders([...fetchedOrders].reverse()); // Reverse orders here
+      console.log('fetchedOrders:', fetchedOrders);
     }
     setLoading(false);
   }, [getSavedOrdersFromLocalStorage]);
@@ -97,10 +98,10 @@ function OrderHistory() {
                   sx={{ textDecoration: 'none', marginTop: '30px' }}
                 >
                   <Grid container rowSpacing={0.5} alignItems={'center'}>
-                    <Grid item xs={6}>
+                    <Grid item xs={12}>
                       <Typography
-                        variant="heavyb1"
-                        color={theme.palette.grey[800]}
+                        variant="h7"
+                        color={theme.palette.grey[700]}
                         sx={{
                           wordWrap: 'break-word', // Ensures long words break and wrap onto the next line
                         }}
@@ -108,10 +109,10 @@ function OrderHistory() {
                         {getSellerName(order)}
                       </Typography>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12}>
                       <Typography
-                        variant="b3"
-                        color={theme.palette.grey[700]}
+                        variant="heavyb2"
+                        color={theme.palette.grey[600]}
                         sx={{
                           fontStyle: 'italic',
                           wordWrap: 'break-word', // Ensures long words break and wrap onto the next line
@@ -121,7 +122,10 @@ function OrderHistory() {
                       </Typography>
                     </Grid>
                     <Grid item xs={12}>
-                      <Typography variant="b2" color={theme.palette.grey[800]}>
+                      <Typography
+                        variant="heavyb1"
+                        color={theme.palette.grey[500]}
+                      >
                         {getProducts(order)}
                       </Typography>
                     </Grid>

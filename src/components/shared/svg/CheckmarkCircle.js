@@ -24,7 +24,7 @@ const CheckmarkThinCircle = (props) => {
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       stroke="currentColor"
-      strokeWidth="3"
+      strokeWidth="4"
       strokeLinecap="round"
       strokeLinejoin="round"
       width="1em"

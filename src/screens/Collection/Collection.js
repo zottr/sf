@@ -41,7 +41,6 @@ function Collection() {
   const collection = collections?.find((c) => c.slug === slug);
 
   const [fetchProducts, { loading: initialLoading }] = useLazyQuery(PRODUCTS, {
-    fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
       const newProducts = data?.collection.productVariants?.items || [];
       setProducts((prevProducts) => [...prevProducts, ...newProducts]);
@@ -125,12 +124,12 @@ function Collection() {
         <DoubleCellLayoutType1 products={products} />
       )}
       {products.length === 0 && initialLoadCompleted && (
-        <Stack gap={1} sx={{ display: 'flex', alignItems: 'center', mt: 5 }}>
+        <Stack gap={2} sx={{ display: 'flex', alignItems: 'center', mt: 5 }}>
           <Typography
-            variant="h7"
-            sx={{ color: 'grey.600', textAlign: 'center' }}
+            variant="h6"
+            sx={{ color: 'grey.500', textAlign: 'center' }}
           >
-            There are no products in this category
+            There are no products in this category.
           </Typography>
           <Box
             component="img"
@@ -167,7 +166,7 @@ function Collection() {
             justifyContent: 'center',
           }}
         >
-          <Typography variant="heavyb2" color="brown">
+          <Typography variant="heavyb1" color="brown">
             That's all!
           </Typography>
           <Typography variant="b1" sx={{ fontSize: '20px' }}>

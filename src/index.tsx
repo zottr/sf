@@ -17,6 +17,7 @@ import mainTheme from './themes/mainTheme';
 import { ErrorProvider } from './context/ErrorContext';
 import ErrorBoundary from './components/ErrorHandling/ErrorBoundary';
 import { InstallPromptProvider } from './context/InstallPromptContext';
+import AppLayout from './AppLayout';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -34,7 +35,9 @@ root.render(
               <OrderProvider>
                 <FavoriteSellerProvider>
                   <InstallPromptProvider>
+                    {/* <AppLayout> */}
                     <App />
+                    {/* </AppLayout> */}
                   </InstallPromptProvider>
                 </FavoriteSellerProvider>
               </OrderProvider>

@@ -140,7 +140,7 @@ function MainHeader() {
                 variant="h7"
                 sx={{ color: theme.palette.grey[800], fontWeight: 600 }}
               >
-                Favourite Sellers
+                Favorite Sellers
               </Typography>
             }
           />
@@ -412,14 +412,36 @@ function MainHeader() {
           to="/order-history"
           onClick={handleMenuClose}
         >
-          Orders
+          <Stack direction="row" className="flexCenter" gap={1}>
+            <EditNoteIcon
+              fontSize="large"
+              sx={{ color: theme.palette.grey[800] }}
+            />
+            <Typography
+              variant="label1"
+              sx={{ color: theme.palette.grey[800] }}
+            >
+              Your Orders
+            </Typography>
+          </Stack>
         </MenuItem>
         <MenuItem
           component={RouterLink}
-          to="/favourites"
+          to="/favorite-sellers"
           onClick={handleMenuClose}
         >
-          Favorites
+          <Stack direction="row" className="flexCenter" gap={2}>
+            <FavoriteIcon
+              fontSize="medium"
+              sx={{ color: theme.palette.grey[800] }}
+            />
+            <Typography
+              variant="label1"
+              sx={{ color: theme.palette.grey[800] }}
+            >
+              Favorite Sellers
+            </Typography>
+          </Stack>
         </MenuItem>
       </Menu>
 

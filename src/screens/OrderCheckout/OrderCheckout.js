@@ -11,6 +11,9 @@ import {
   Typography,
   CircularProgress,
   Box,
+  FormControlLabel,
+  Checkbox,
+  Badge,
 } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import Slide from '@mui/material/Slide';
@@ -26,6 +29,8 @@ import ErrorPopup from '../../components/ErrorHandling/ErrorPopup';
 import ErrorAlert from '../../components/shared/Alerts/ErrorAlert';
 import ServiceErrorAlert from '../../components/shared/Alerts/ServiceErrorAlert';
 import OrderContext from '../../context/OrderContext';
+import { getAdminInfo } from '../../dataLoaders/getAdminInfo';
+import { isLocalStorageAvailable } from '../../utils/CommonUtils';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -38,6 +43,9 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
     phone: '',
     address: '',
   });
+
+  const [saveFormData, setSaveFormData] = useState(true); // checkbox state
+  const [fetchedFromStorage, setFetchedFromStorage] = useState(false); // to show badge
 
   const [isPlacingOrder, setIsPlacingOrder] = useState(false); // Add loading state
   const { activeOrder, setActiveOrder } = React.useContext(CartContext);
@@ -114,6 +122,14 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
       userData.address !== ''
     ) {
       setIsPlacingOrder(true);
+
+      // Save or clear localStorage based on checkbox
+      if (saveFormData) {
+        localStorage.setItem('checkout_form_data', JSON.stringify(userData));
+      } else {
+        localStorage.removeItem('checkout_form_data');
+      }
+
       const createCustomerInput = {
         firstName: userData.name,
         lastName: '',
@@ -182,10 +198,15 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
           }
         }
         if (!notificationError) {
-          setActiveOrder(null);
+          // if (true) {
+          console.log('order placed and user notified successfully');
+          //setActiveOrder(null);
           //fetch recently placed order
           const fetchedOrder = await getOrder(finalOrder?.code);
-          completeCheckout(fetchedOrder);
+          //fetch admin info
+          const adminInfo = await getAdminInfo(adminId);
+          console.log('fetchedOrder:', fetchedOrder);
+          completeCheckout(fetchedOrder, adminInfo);
         }
       } catch (err) {
         console.error('Place order error:', err);
@@ -211,6 +232,18 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
     }
   };
 
+  const handleCheckboxChange = (event) => {
+    const { checked } = event.target;
+    setSaveFormData(checked);
+    if (isLocalStorageAvailable())
+      localStorage.setItem('checkout_save_form_checkbox', checked);
+  };
+
+  console.log('Render check:', { serviceError, isPlacingOrder });
+  useEffect(() => {
+    console.log('Service error changed:', serviceError);
+  }, [serviceError]);
+
   useEffect(() => {
     if (checkout) {
       // Reset error states when dialog opens
@@ -220,6 +253,26 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
         phone: false,
         address: false,
       });
+
+      if (isLocalStorageAvailable()) {
+        // Load saved form data
+        const savedForm = localStorage.getItem('checkout_form_data');
+        const savedCheckbox = localStorage.getItem(
+          'checkout_save_form_checkbox'
+        );
+        console.log('savedForm:', savedForm);
+        console.log('savedCheckbox:', savedCheckbox);
+        if (savedCheckbox !== null) {
+          setSaveFormData(savedCheckbox === 'true');
+        }
+        if (savedForm) {
+          const parsed = JSON.parse(savedForm);
+          setUserData(parsed);
+          setFetchedFromStorage(true); // show "Edit if needed"
+        } else {
+          setFetchedFromStorage(false);
+        }
+      }
     }
   }, [checkout]);
 
@@ -278,12 +331,12 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
                 </Typography>
               </DialogContentText>
               <Stack
-                spacing={5}
+                gap={5}
                 sx={{
                   display: 'flex',
                   // alignItems: 'center',
                   width: '100%',
-                  marginTop: '10px',
+                  marginTop: '20px',
                   marginBottom: '10px',
                   color: theme.palette.common.black,
                 }}
@@ -373,6 +426,20 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
                     sx={{ width: '80%', input: { color: 'grey.900' } }}
                   />
                 </Stack>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={saveFormData}
+                      onChange={handleCheckboxChange}
+                      color="info"
+                    />
+                  }
+                  label={
+                    <Typography variant="b1" sx={{ color: 'grey.700' }}>
+                      Save form data for faster checkout in the future
+                    </Typography>
+                  }
+                />
               </Stack>
             </DialogContent>
             <DialogActions>
@@ -380,10 +447,11 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
                 variant="contained"
                 sx={{
                   padding: '20px 40px',
-                  marginY: '20px',
+                  mb: '10px',
                   py: 1.3,
                   borderRadius: '25px',
                   backgroundColor: 'primary.main',
+                  mr: 1,
                 }}
                 onClick={handleCheckout}
               >

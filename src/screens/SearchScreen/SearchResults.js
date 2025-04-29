@@ -31,7 +31,6 @@ function SearchResults() {
   let totalItems = 0;
   const theme = useTheme();
   const [fetchSuggestions, { error }] = useLazyQuery(SEARCH_PRODUCTS_QUERY, {
-    fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
       if (data?.search?.items) {
         setResults((prevResults) =>

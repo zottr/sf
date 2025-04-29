@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -10,8 +10,10 @@ import {
   Stack,
   Typography,
   useTheme,
+  Tabs,
+  Tab,
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { gql, useLazyQuery } from '@apollo/client';
 import { GET_PRODUCTS_WITH_OPTIONS } from '../../apollo/server';
 import DoubleCellLayoutProducts from '../../components/ProuctsDisplay/DoubleCellLayoutProducts';
@@ -21,10 +23,10 @@ import FavButton from './FavButton';
 import { handleError } from '../../context/ErrorContext';
 import { initiateAudioCall, openWhatsAppChat } from '../../utils/CommonUtils';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import CallIcon from '@mui/icons-material/Call';
-import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-// import DoubleCellLayoutType1 from '../../components/CollectionLayout/DoubleCellLayoutType1';
-import { useNavigate } from 'react-router-dom';
+import SellerInfo from './SellerInfo';
+import DoubleCellLayoutType1 from '../../components/CollectionLayout/DoubleCellLayoutType1';
+import noItemsFoundImage from '/images/no_items_found.svg';
+
 const PRODUCTS_FROM_SELLER = gql`
   ${GET_PRODUCTS_WITH_OPTIONS}
 `;
@@ -34,45 +36,96 @@ function SellerScreen() {
   const theme = useTheme();
   const query = useParams();
   const sellerId = query.sellerId;
-  const [products, setProducts] = useState();
+  const [products, setProducts] = useState([]);
   const [adminId, setAdminId] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { adminData, loading, error } = useAdminInfo({ adminId });
+  const { adminData, loading: adminLoading, error } = useAdminInfo({ adminId });
+  const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [tabIndex, setTabIndex] = useState(0);
+  const take = 10;
+  const [skip, setSkip] = useState(0);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const toggleDialog = () => setDialogOpen(!dialogOpen);
 
-  const [fetchSellerProducts] = useLazyQuery(PRODUCTS_FROM_SELLER, {
-    onError: (err) => handleError(err),
-  });
+  const handleTabChange = (event, newValue) => {
+    setTabIndex(newValue);
+  };
 
-  useEffect(() => {
-    let adminIdFromProduct = sellerId;
-    if (adminIdFromProduct) {
-      setAdminId(adminIdFromProduct);
+  const [fetchProducts, { loading: initialLoading }] = useLazyQuery(
+    PRODUCTS_FROM_SELLER,
+    {
+      onCompleted: (data) => {
+        const newProducts = data?.products?.items || [];
+        setProducts((prevProducts) => [...prevProducts, ...newProducts]);
+        setInitialLoadCompleted(true);
+        setHasMore(newProducts.length === take);
+        setIsLoadingMore(false);
+      },
+      onError: (err) => handleError(err),
     }
-  }, [sellerId]);
+  );
 
-  useEffect(() => {
-    async function fetchProducts() {
-      const response = await fetchSellerProducts({
+  const loadMoreProducts = useCallback(() => {
+    if (isLoadingMore || !hasMore || initialLoading) return;
+    setIsLoadingMore(true);
+    setSkip((prevSkip) => {
+      const newSkip = prevSkip + take;
+      fetchProducts({
         variables: {
-          options: { filter: { adminId: { eq: sellerId } } },
+          options: {
+            filter: { adminId: { eq: sellerId } },
+            skip: newSkip,
+            take,
+            sort: { updatedAt: 'DESC' },
+          },
         },
       });
-      if (response.data) {
-        setProducts(response.data?.products?.items);
-      }
-    }
-    if (sellerId) {
-      fetchProducts();
-    }
+      return newSkip;
+    });
+  }, [fetchProducts, hasMore, isLoadingMore, skip, take]);
+
+  useEffect(() => {
+    setAdminId(sellerId);
+    setProducts([]);
+    setSkip(0);
+    setHasMore(true);
+    setIsLoadingMore(false);
+    setTimeout(() => {
+      fetchProducts({
+        variables: {
+          options: {
+            filter: { adminId: { eq: sellerId } },
+            skip: 0,
+            take,
+            sort: { updatedAt: 'DESC' },
+          },
+        },
+      });
+    }, 0);
   }, [sellerId]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+          document.documentElement.offsetHeight - 200 &&
+        hasMore &&
+        !isLoadingMore
+      ) {
+        loadMoreProducts();
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [loadMoreProducts, hasMore, isLoadingMore]);
 
   if (error) {
     return <>{handleError(error)}</>;
   }
 
-  return loading ? (
+  return adminLoading ? (
     <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2 }}>
       <CircularProgress />
     </Box>
@@ -80,152 +133,146 @@ function SellerScreen() {
     <>
       {adminData && (
         <>
-          <Stack>
-            {adminData?.banner != null && adminData?.banner !== '' && (
+          <SellerInfo adminData={adminData} />
+          <Container sx={{ p: 1 }}>
+            {adminData?.banner && (
               <Box
                 component="img"
                 sx={{
-                  height: 'auto',
+                  // height: '220px',
                   width: '100%',
+                  aspectRatio: 16 / 9,
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                  mt: 1,
                 }}
                 src={adminData?.banner}
               />
             )}
-            <Container
-              sx={{
-                backgroundColor: 'hsl(48 88.2% 99%)',
-                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-                // borderRadius: 5,
-                borderBottomLeftRadius: '45px',
-                borderBottomRightRadius: '45px',
-                width: '100%',
-                paddingY: 2,
-                margin: 'auto',
-              }}
-            >
-              <Stack
-                gap={2}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                }}
+            {/* Tabs start here */}
+            <Box sx={{ width: '100%', mt: 1 }}>
+              <Tabs
+                value={tabIndex}
+                onChange={handleTabChange}
+                centered
+                fullWidth
+                textColor="primary"
+                indicatorColor="primary"
               >
+                <Tab
+                  label=<Typography
+                    variant={tabIndex === 0 ? 'h6' : 'h7'}
+                    color={
+                      tabIndex === 0
+                        ? theme.palette.grey[700]
+                        : theme.palette.grey[500]
+                    }
+                    sx={{ width: '100%', mx: 2 }}
+                  >
+                    Products
+                  </Typography>
+                />
+                <Tab
+                  label=<Typography
+                    variant={tabIndex === 1 ? 'h6' : 'h7'}
+                    color={
+                      tabIndex === 1
+                        ? theme.palette.grey[700]
+                        : theme.palette.grey[500]
+                    }
+                    sx={{ width: '100%', mx: 2 }}
+                  >
+                    Services
+                  </Typography>
+                />
+              </Tabs>
+              {/* Products Tab */}
+              {tabIndex === 0 && (
                 <Stack
-                  direction="row"
-                  gap={1}
+                  gap={3}
+                  sx={{ display: 'flex', alignItems: 'center', mt: 3, mb: 2 }}
+                >
+                  {/* <Typography variant="h5" color={theme.palette.grey[700]}>
+                    Products
+                  </Typography> */}
+                  {products.length !== 0 && (
+                    <DoubleCellLayoutProducts products={products} />
+                  )}
+                  {products.length === 0 && initialLoadCompleted && (
+                    <Stack
+                      gap={1}
+                      sx={{ display: 'flex', alignItems: 'center', mt: 5 }}
+                    >
+                      <Typography
+                        variant="h7"
+                        sx={{ color: 'grey.500', textAlign: 'center' }}
+                      >
+                        {adminData.businessName} doesn't have any product
+                        listings.
+                      </Typography>
+                      <Box
+                        component="img"
+                        sx={{
+                          width: '60%',
+                          objectFit: 'contain',
+                          objectPosition: 'center',
+                          borderRadius: '10px',
+                        }}
+                        src={noItemsFoundImage}
+                      />
+                    </Stack>
+                  )}
+                  {/* Loading more spinner */}
+                  {isLoadingMore && products.length !== 0 && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        padding: 2,
+                      }}
+                    >
+                      <CircularProgress />
+                    </Box>
+                  )}
+                  {/* No more products message */}
+                  {!hasMore && products.length !== 0 && (
+                    <Stack
+                      direction="row"
+                      sx={{
+                        mt: 4,
+                        display: 'flex',
+                        alignItems: 'baseline',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Typography variant="heavyb1" color="brown">
+                        That's all!
+                      </Typography>
+                      <Typography variant="b1" sx={{ fontSize: '20px' }}>
+                        &#x1F44B;
+                      </Typography>
+                    </Stack>
+                  )}
+                </Stack>
+              )}
+
+              {/* Services Tab */}
+              {tabIndex === 1 && (
+                <Stack
                   sx={{
-                    // backgroundColor: 'hsl(48 88.2% 98%)',
-                    // borderRadius: 2,
+                    mt: 4,
+                    mb: 4,
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    // boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-                    width: '100%',
+                    justifyContent: 'center',
                   }}
                 >
-                  <Avatar
-                    src={adminData.logo}
-                    alt={`${adminData.businessName} Logo`}
-                    sx={{
-                      width: '42px',
-                      height: '42px',
-                      padding: 1,
-                      boxShadow: '0px 4px 10px rgba(255, 0, 0, 0.1)',
-                    }}
-                  />
-                  <Stack>
-                    <Typography
-                      variant="h6"
-                      fontWeight="bold"
-                      sx={{
-                        wordBreak: 'break-word',
-                      }}
-                    >
-                      {adminData.businessName}
-                    </Typography>
-                    <Typography
-                      variant="heavyb2"
-                      sx={{
-                        wordBreak: 'break-word',
-                        color: theme.palette.grey[700],
-                      }}
-                    >
-                      {adminData.tagline}
-                    </Typography>
-                  </Stack>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      height: '52px',
-                      alignItems: 'flex-start',
-                    }}
-                  >
-                    <FavButton sellerId={adminData.id} />
-                  </Box>
+                  <Typography variant="h6" color="text.secondary">
+                    No services listed yet.
+                  </Typography>
                 </Stack>
-                <Stack
-                  gap={1}
-                  direction="row"
-                  sx={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'flex-end',
-                    justifyContent: 'flex-end',
-                  }}
-                >
-                  <IconButton onClick={() => openWhatsAppChat(phoneNumber)}>
-                    <WhatsAppIcon
-                      fontSize="medium"
-                      sx={{ color: 'hsl(142.4,70.2%,42.6%)' }}
-                    />
-                  </IconButton>
-                  <IconButton onClick={() => initiateAudioCall(phoneNumber)}>
-                    <CallIcon
-                      fontSize="medium"
-                      sx={{ color: 'hsl(217, 79%, 65%)' }}
-                    />
-                  </IconButton>
-                  <Button
-                    variant="outlined"
-                    // onClick={toggleDialog}
-                    onClick={() => {
-                      navigate(`/seller/${query.sellerId}/payments`);
-                    }}
-                    sx={{
-                      height: '2.5rem',
-                      borderRadius: '15px',
-                      borderColor: theme.palette.grey[500],
-                    }}
-                  >
-                    <CurrencyRupeeIcon
-                      fontSize="small"
-                      sx={{
-                        color: 'hsl(145, 63%, 39%)',
-                        mr: 0.5,
-                      }}
-                    />
-                    <Typography
-                      variant="button2"
-                      color={theme.palette.grey[700]}
-                    >
-                      Payments
-                    </Typography>
-                  </Button>
-                </Stack>
-              </Stack>
-            </Container>
-          </Stack>
-          <Container sx={{ p: 1 }}>
-            <Stack
-              gap={2}
-              sx={{ display: 'flex', alignItems: 'center', mt: 3 }}
-            >
-              <Typography variant="h6" color={theme.palette.grey[800]}>
-                Products
-              </Typography>
-              <DoubleCellLayoutProducts products={products} />
-            </Stack>
+              )}
+            </Box>
           </Container>
         </>
       )}

@@ -23,7 +23,6 @@ export const CartProvider = (props) => {
   const [itemBeingAddedVariantId, setItemBeingAddedVariantId] = useState('');
 
   const { data, loading, error } = useQuery(GET_ACTIVE_ORDER, {
-    fetchPolicy: 'cache-and-network',
     onError: (err) => handleError(err),
   });
 

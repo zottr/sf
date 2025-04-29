@@ -1,5 +1,6 @@
 // FavoriteContext.js
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { isLocalStorageAvailable } from '../utils/CommonUtils';
 
 const FavoriteSellersContext = createContext();
 
@@ -10,14 +11,18 @@ export const FavoriteSellerProvider = ({ children }) => {
 
   // Load favorites from local storage on initial render
   useEffect(() => {
-    const storedFavorites =
-      JSON.parse(localStorage.getItem('favoriteSellers')) || [];
-    setFavoriteSellers(storedFavorites);
+    if (isLocalStorageAvailable) {
+      const storedFavorites =
+        JSON.parse(localStorage.getItem('favoriteSellers')) || [];
+      setFavoriteSellers(storedFavorites);
+    }
   }, []);
 
   // Update local storage whenever favorites change
   useEffect(() => {
-    localStorage.setItem('favoriteSellers', JSON.stringify(favoriteSellers));
+    if (isLocalStorageAvailable) {
+      localStorage.setItem('favoriteSellers', JSON.stringify(favoriteSellers));
+    }
   }, [favoriteSellers]);
 
   const toggleFavorite = (sellerId) => {

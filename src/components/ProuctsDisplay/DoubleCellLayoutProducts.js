@@ -11,7 +11,7 @@ function DoubleCellLayoutProducts({ products }) {
 
   return (
     <>
-      <Grid container columnSpacing={2} rowSpacing={3}>
+      <Grid container columnSpacing={2} rowSpacing={4}>
         {products?.map((product) => (
           <Grid
             key={product.slug}
@@ -43,12 +43,12 @@ function DoubleCellLayoutProducts({ products }) {
                     width: '100%',
                     objectFit: 'contain',
                     objectPosition: 'center',
-                    bgcolor: 'grey.100',
+                    bgcolor: 'grey.50',
                   }}
                   src={`${product.featuredAsset?.preview}`}
                   alt={product.name}
                 />
-                <Stack sx={{ display: 'flex' }}>
+                <Stack sx={{ display: 'flex', mt: 1 }}>
                   <Typography
                     variant="heavyb2"
                     sx={{
@@ -93,7 +93,7 @@ function DoubleCellLayoutProducts({ products }) {
                   </Typography>
                 </Stack>
               </Link>
-              <Box sx={{ width: '90%', mt: 0.5 }}>
+              <Box sx={{ width: '90%', mt: 1 }}>
                 <AddToCartButton
                   productVariantId={product.variants[0]?.id}
                   adminId={product.customFields?.adminId}

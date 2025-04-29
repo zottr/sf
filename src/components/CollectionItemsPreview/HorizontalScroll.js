@@ -30,7 +30,6 @@ const HorizontalScroll = ({ collection }) => {
   const take = 6;
 
   const { data, loading } = useQuery(PRODUCTS, {
-    fetchPolicy: 'cache-and-network',
     variables: {
       slug: collection.slug,
       options: { skip: 0, take, sort: { updatedAt: 'DESC' } },
@@ -109,7 +108,15 @@ const HorizontalScroll = ({ collection }) => {
             onClick={() => navigate(`/collection/${collection.slug}`)}
             variant="outlined"
             size="large"
-            sx={{ borderRadius: '25px', borderColor: 'secondary.dark' }}
+            sx={{
+              mt: 2,
+              borderRadius: '25px',
+              borderColor: 'secondary.dark',
+              '&:hover, &:focus, &:active': {
+                // bgcolor: 'primary.light',
+                borderColor: 'secondary.dark',
+              },
+            }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="button1" sx={{ color: 'secondary.dark' }}>

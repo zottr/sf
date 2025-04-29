@@ -14,7 +14,6 @@ export const OrderProvider = (props) => {
   const [isFetchingOrder, setIsFetchingOrder] = useState(false); // ✅ full loading state
 
   const [fetchOrderQuery] = useLazyQuery(GET_ORDER, {
-    fetchPolicy: 'cache-and-network',
     onError: (err) => {
       handleError(err);
       setIsFetchingOrder(false); // in case of error

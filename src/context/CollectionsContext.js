@@ -10,9 +10,7 @@ const COLLECTIONS = gql`
 const CollectionsContext = React.createContext({});
 
 export const CollectionsProvider = (props) => {
-  const { data, loading, error } = useQuery(COLLECTIONS, {
-    fetchPolicy: 'cache-and-network',
-  });
+  const { data, loading, error } = useQuery(COLLECTIONS, {});
 
   if (error) {
     return <>{handleError(error)}</>;

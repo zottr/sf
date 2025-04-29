@@ -24,6 +24,7 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import './styles.css';
 import QuantityButton from '../Product/QuantityButton';
 import placeholderLogo from '/logos/zottr_logo_small2_grey_white.svg';
+import CartContext from '../../context/CartContext';
 
 function FilledCart({
   activeOrder,
@@ -39,6 +40,7 @@ function FilledCart({
   const [open, setOpen] = React.useState(false);
   const [checkout, setCheckout] = React.useState(false);
   const [item, setItem] = React.useState('');
+  const { setActiveOrder } = React.useContext(CartContext);
 
   const handleRemoveItem = (item, remove) => {
     if (remove) removeFromCart(item.id);
@@ -59,11 +61,13 @@ function FilledCart({
     setCheckout(true);
   };
 
-  const completeCheckout = (order) => {
+  const completeCheckout = (order, admin) => {
+    console.log('called');
     setCheckout(false);
     localStorage.removeItem('userToken');
+    setActiveOrder(null);
     navigate('/order-success2', {
-      state: { order },
+      state: { order, admin },
     });
   };
 

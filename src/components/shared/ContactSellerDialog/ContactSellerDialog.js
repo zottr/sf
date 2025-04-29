@@ -3,7 +3,10 @@ import {
   CircularProgress,
   Dialog,
   DialogContent,
+  DialogTitle,
   Slide,
+  Stack,
+  SvgIcon,
   Typography,
 } from '@mui/material';
 import React from 'react';
@@ -12,15 +15,16 @@ import {
   initiateAudioCall,
   openWhatsAppChat,
 } from '../../../utils/CommonUtils';
+import PhoneIcon from '@mui/icons-material/Phone';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function ContactSellerDialog({ open, onClose, order }) {
-  const adminId = order?.lines[0].productVariant.product.customFields.adminId;
-  const { adminData, loading: fetchingAdminInfo } = useAdminInfo({ adminId });
-  const phoneNumber = adminData?.phoneNumber;
+function ContactSellerDialog({ open, onClose, order, admin }) {
+  console.log(order);
+  console.log('admin:', admin);
 
   // const chatWithSeller = () => {
   //   const adminId =
@@ -87,7 +91,6 @@ function ContactSellerDialog({ open, onClose, order }) {
       `${order.customer.firstName} ${order.customer.lastName}`.trim();
     const address = order.shippingAddress?.streetLine1 ?? '';
     const phone = order.customer?.phoneNumber ?? '';
-
     //   const inquiryText =
     //     `Hi, I've placed an order on ${sellerStoreUrl} with order ID *#${order.id}*.\n` +
     //     `Can you give order status and expected delivery time?\n\n` +
@@ -118,7 +121,6 @@ function ContactSellerDialog({ open, onClose, order }) {
     //   🏠 Address: ${address}
     //   📞 Contact: +91${phone}
     // `;
-
     const inquiryText =
       `Hi, I've placed an order on ${sellerStoreUrl} with order ID *#${order.id}*.\n` +
       `Can you give order status and expected delivery time?\n\n` +
@@ -134,7 +136,7 @@ function ContactSellerDialog({ open, onClose, order }) {
       `🏠 _Address_ : ${address}\n` +
       `📞 _Contact_ : +91${phone}`;
 
-    openWhatsAppChat(phoneNumber, inquiryText);
+    openWhatsAppChat(admin.phoneNumber, inquiryText);
 
     // const encodedMessage = encodeURIComponent(inquiryText);
     // const whatsappUrl = `https://wa.me/91${phoneNumber}?text=${encodedMessage}`;
@@ -143,22 +145,83 @@ function ContactSellerDialog({ open, onClose, order }) {
   };
 
   return (
-    <Dialog open={open} TransitionComponent={Transition} onClose={onClose}>
+    <Dialog
+      open={open}
+      TransitionComponent={Transition}
+      onClose={onClose}
+      PaperProps={{
+        sx: {
+          width: '100%', // 👈 custom width
+        },
+      }}
+    >
+      <DialogTitle>
+        <Typography variant="h6" sx={{ color: 'secondary.dark' }}>
+          Check Order Status
+        </Typography>
+      </DialogTitle>
       <DialogContent>
-        {fetchingAdminInfo && <CircularProgress />}
-        {!fetchingAdminInfo && (
-          <>
-            <Button variant="contained" onClick={() => chatWithSeller()}>
-              <Typography variant="button1">Chat With Seller</Typography>
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => initiateAudioCall(phoneNumber)}
+        <Stack gap={1.5} className="flexCenter">
+          <Button
+            className="flexCenter"
+            variant="outlined"
+            sx={{
+              borderRadius: '50px',
+              borderColor: 'secondary.dark',
+              width: '100%',
+              height: '3rem',
+              '&:hover, &:focus, &:active': {
+                borderColor: 'secondary.dark',
+              },
+            }}
+            onClick={() => chatWithSeller()}
+          >
+            <Typography
+              variant="button1"
+              sx={{ color: 'secondary.dark', mr: 1 }}
             >
-              <Typography variant="button1">Call Seller</Typography>
-            </Button>
-          </>
-        )}
+              Chat With Seller
+            </Typography>
+            <WhatsAppIcon
+              sx={{
+                color: '#20ba5b',
+                ml: '8px',
+                fontSize: '34px',
+              }}
+            />
+          </Button>
+          <Typography variant="heavybb1" sx={{ color: 'grey.500' }}>
+            OR
+          </Typography>
+          <Button
+            className="flexCenter"
+            variant="outlined"
+            sx={{
+              borderRadius: '50px',
+              borderColor: 'secondary.dark',
+              width: '100%',
+              height: '3rem',
+              '&:hover, &:focus, &:active': {
+                borderColor: 'secondary.dark',
+              },
+            }}
+            onClick={() => initiateAudioCall(phoneNumber)}
+          >
+            <Typography
+              variant="button1"
+              sx={{ color: 'secondary.dark', mr: 1 }}
+            >
+              Call Seller
+            </Typography>
+            <PhoneIcon
+              sx={{
+                color: 'hsl(217, 79%, 55%)',
+                ml: '8px',
+                fontSize: '28px',
+              }}
+            />
+          </Button>
+        </Stack>
       </DialogContent>
     </Dialog>
   );

@@ -15,20 +15,20 @@ const mainTheme = createTheme({
       lightsurface: 'hsl(42, 80%, 97%)', // Light golden cream
       contrastText: '#000',
     },
-    // secondary: {
-    //   main: '#00897B', // Teal
-    //   light: '#4DB6AC', // Soft Aqua
-    //   dark: '#00695C', // Dark Teal
-    //   surface: 'hsl(174, 30%, 90%)', // Cool mint
-    //   contrastText: '#fff',
-    // },
     secondary: {
-      main: '#8E24AA', // Deep Plum
-      light: '#BA68C8', // Soft Lavender
-      dark: '#6A1B9A', // Royal Purple
-      surface: 'hsl(288, 30%, 92%)', // Pale lilac
+      main: '#00897B', // Teal
+      light: '#4DB6AC', // Soft Aqua
+      dark: '#00695C', // Dark Teal
+      surface: 'hsl(174, 30%, 90%)', // Cool mint
       contrastText: '#fff',
     },
+    // secondary: {
+    //   main: '#8E24AA', // Deep Plum
+    //   light: '#BA68C8', // Soft Lavender
+    //   dark: '#6A1B9A', // Royal Purple
+    //   surface: 'hsl(288, 30%, 92%)', // Pale lilac
+    //   contrastText: '#fff',
+    // },
     // secondary: {
     //   main: '#6D4C41', // Cocoa Brown
     //   light: '#A1887F', // Muted Clay

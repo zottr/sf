@@ -47,7 +47,7 @@ function App() {
             element={<SellerPayments />}
           />
           <Route path="/sellers" element={<SellerListingPage />} />
-          <Route path="/favourites" element={<FavoriteSellerListing />} />
+          <Route path="/favorite-sellers" element={<FavoriteSellerListing />} />
           <Route path="/make-payment" element={<MakePayment />} />
           <Route path="/product/:productSlug" element={<ProductScreen />} />
           <Route path="/about-us" element={<AboutUs />} />
