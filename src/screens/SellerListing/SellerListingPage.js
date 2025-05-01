@@ -9,45 +9,69 @@ import {
   useTheme,
   Stack,
 } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import axiosClient from '../../axiosClient';
 import placeholderLogo from '/logos/zottr_logo_small1_white.svg';
 
 const SellerListingPage = () => {
+  const loadingRef = useRef(false);
+  const lastRequestedSkipRef = useRef(0);
+
   const theme = useTheme();
   const [sellers, setSellers] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [initialLoaded, setInitialLoaded] = useState(false);
   const [skip, setSkip] = useState(0);
   const take = 10;
 
   const loadMoreAdmins = useCallback(async () => {
+    if (loadingRef.current || !hasMore) return;
+
+    loadingRef.current = true;
+    const currentSkip = skip;
+    lastRequestedSkipRef.current = currentSkip;
+
     setLoading(true);
     try {
       const response = await axiosClient.get(`admin-user/get-list`, {
         params: {
-          skip,
+          skip: currentSkip,
           take,
+          channelToken: import.meta.env.VITE_VENDURE_CHANNEL_TOKEN,
         },
       });
+
       const newSellers = response.data;
-      console.log('newSellers:', newSellers);
-      setSellers((prevSellers) => [...prevSellers, ...newSellers]);
-      setHasMore(newSellers?.length === take);
-      setSkip((prevSkip) => prevSkip + take);
+
+      if (currentSkip === 0) {
+        setSellers(newSellers);
+        setInitialLoaded(true); // mark first load as complete
+      } else {
+        setSellers((prev) => [...prev, ...newSellers]);
+      }
+
+      setHasMore(newSellers.length === take);
+      setSkip(currentSkip + take); // correctly advance skip
     } catch (error) {
       console.error('Error fetching items:', error);
     } finally {
       setLoading(false);
+      loadingRef.current = false;
     }
-  }, [skip]);
+  }, [skip, hasMore]);
 
   useEffect(() => {
     setSellers([]);
     setSkip(0);
     setHasMore(true);
-    loadMoreAdmins();
+    loadingRef.current = false;
+    lastRequestedSkipRef.current = 0;
+
+    setTimeout(() => {
+      loadMoreAdmins();
+    }, 0);
   }, []);
 
   // Infinite scrolling function
@@ -55,13 +79,15 @@ const SellerListingPage = () => {
     const handleScroll = () => {
       if (
         window.innerHeight + document.documentElement.scrollTop >=
-          document.documentElement.offsetHeight - 500 &&
+          document.documentElement.offsetHeight - 100 &&
         hasMore &&
-        !loading
+        !loading &&
+        initialLoaded // only fetch on scroll *after* initial load is done
       ) {
         loadMoreAdmins();
       }
     };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [loadMoreAdmins, hasMore, loading]);
@@ -84,7 +110,7 @@ const SellerListingPage = () => {
         ) : (
           <Grid container spacing={2} sx={{ width: '100%' }}>
             {sellers?.map((seller, index) => (
-              <>
+              <Fragment>
                 <Grid
                   item
                   container
@@ -150,7 +176,7 @@ const SellerListingPage = () => {
                     />
                   )}
                 </Grid>
-              </>
+              </Fragment>
             ))}
           </Grid>
         )}

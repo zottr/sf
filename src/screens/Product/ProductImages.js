@@ -3,8 +3,11 @@ import Box from '@mui/material/Box';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Container, Grid } from '@mui/material';
+import { Container, Grid, IconButton } from '@mui/material';
 import logo from '/logos/zottr_logo_small2_grey_white.svg';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
 
 function ProductImages({ images }) {
   const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -19,42 +22,42 @@ function ProductImages({ images }) {
     arrows: true,
     swipeToSlide: true,
     touchMove: true,
-    afterChange: (index) => setCurrentIndex(index), // Sync state on manual scroll
+    afterChange: (index) => setCurrentIndex(index),
   };
 
   const handleThumbnailClick = (index) => {
     setCurrentIndex(index);
-    sliderRef.current?.slickGoTo(index); // Move main slider
+    sliderRef.current?.slickGoTo(index);
   };
 
   return (
-    <Box
-      sx={{
-        maxWidth: '100%',
-      }}
-    >
+    <Box sx={{ maxWidth: '100%', position: 'relative' }}>
       <Slider {...settings} ref={sliderRef}>
         {images.map((image) => (
           <div key={image.id}>
-            <Box
-              component="img"
-              onError={(e) => {
-                e.target.onerror = null; // Prevent infinite loop
-                e.target.src = `${logo}`; // This should exist in /public
-              }}
-              sx={{
-                height: '240px',
-                display: 'block',
-                width: '100%',
-                objectFit: 'contain',
-                objectPosition: 'top', // 🟢 Align image to the top inside the container
-              }}
-              src={`${image.preview}?preset=medium`}
-              alt={image.name}
-            />
+            <Zoom overlayBgColorEnd="rgba(0,0,0,0.8)">
+              <Box
+                component="img"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = `${logo}`;
+                }}
+                sx={{
+                  height: '240px',
+                  display: 'block',
+                  width: '100%',
+                  objectFit: 'contain',
+                  objectPosition: 'top',
+                  cursor: 'zoom-in',
+                }}
+                src={`${image.preview}?preset=medium`}
+                alt={image.name}
+              />
+            </Zoom>
           </div>
         ))}
       </Slider>
+
       <Container sx={{ px: 2 }}>
         <Grid
           container
@@ -70,8 +73,8 @@ function ProductImages({ images }) {
                 alt={image.name}
                 onClick={() => handleThumbnailClick(index)}
                 onError={(e) => {
-                  e.target.onerror = null; // Prevent infinite loop
-                  e.target.src = `${logo}`; // This should exist in /public
+                  e.target.onerror = null;
+                  e.target.src = `${logo}`;
                 }}
                 sx={{
                   width: '100%',
@@ -80,7 +83,7 @@ function ProductImages({ images }) {
                   cursor: 'pointer',
                   border:
                     currentIndex === index
-                      ? '2px solid #FF8F00' // Active border
+                      ? '2px solid #FF8F00'
                       : '1px solid transparent',
                   borderRadius: '4px',
                   p: 0.3,

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import {
   Avatar,
   Box,
@@ -32,6 +32,8 @@ const PRODUCTS_FROM_SELLER = gql`
 `;
 
 function SellerScreen() {
+  const loadingRef = useRef(false);
+  const lastRequestedSkipRef = useRef(0);
   const navigate = useNavigate();
   const theme = useTheme();
   const query = useParams();
@@ -58,32 +60,45 @@ function SellerScreen() {
     {
       onCompleted: (data) => {
         const newProducts = data?.products?.items || [];
-        setProducts((prevProducts) => [...prevProducts, ...newProducts]);
+        // If skip is 0, this is an initial load — replace
+        if (lastRequestedSkipRef.current === 0) {
+          setProducts(newProducts);
+        } else {
+          // Otherwise, append
+          setProducts((prev) => [...prev, ...newProducts]);
+        }
         setInitialLoadCompleted(true);
         setHasMore(newProducts.length === take);
         setIsLoadingMore(false);
+        loadingRef.current = false;
       },
-      onError: (err) => handleError(err),
+      onError: (err) => {
+        handleError(err);
+        setIsLoadingMore(false);
+        loadingRef.current = false;
+      },
     }
   );
 
   const loadMoreProducts = useCallback(() => {
-    if (isLoadingMore || !hasMore || initialLoading) return;
-    setIsLoadingMore(true);
-    setSkip((prevSkip) => {
-      const newSkip = prevSkip + take;
-      fetchProducts({
-        variables: {
-          options: {
-            filter: { adminId: { eq: sellerId } },
-            skip: newSkip,
-            take,
-            sort: { updatedAt: 'DESC' },
-          },
+    if (loadingRef.current || !hasMore || initialLoading) return;
+
+    const newSkip = skip + take;
+    loadingRef.current = true;
+    lastRequestedSkipRef.current = newSkip;
+
+    fetchProducts({
+      variables: {
+        options: {
+          filter: { adminId: { eq: sellerId } },
+          skip: newSkip,
+          take,
+          sort: { updatedAt: 'DESC' },
         },
-      });
-      return newSkip;
+      },
     });
+
+    setSkip(newSkip);
   }, [fetchProducts, hasMore, isLoadingMore, skip, take]);
 
   useEffect(() => {
@@ -92,6 +107,8 @@ function SellerScreen() {
     setSkip(0);
     setHasMore(true);
     setIsLoadingMore(false);
+    loadingRef.current = false;
+    lastRequestedSkipRef.current = 0;
     setTimeout(() => {
       fetchProducts({
         variables: {
@@ -111,8 +128,7 @@ function SellerScreen() {
       if (
         window.innerHeight + document.documentElement.scrollTop >=
           document.documentElement.offsetHeight - 200 &&
-        hasMore &&
-        !isLoadingMore
+        hasMore
       ) {
         loadMoreProducts();
       }

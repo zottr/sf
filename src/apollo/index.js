@@ -77,7 +77,7 @@ export const client = new ApolloClient({
     // response, we attach it to all subsequent requests.
     setContext((request, operation) => {
       const authToken = localStorage.getItem(AUTH_TOKEN_KEY);
-      const channelToken = '8d8f0da4-d470-41fc-897c-7604c139f8cb'; //sample store token
+      const channelToken = import.meta.env.VITE_VENDURE_CHANNEL_TOKEN; //sample store token
       //const channelToken = '';
       let headers = {};
       if (authToken) {

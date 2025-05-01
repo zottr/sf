@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useContext } from 'react';
+import { useState, useEffect, useCallback, useContext, useRef } from 'react';
 import {
   Box,
   CircularProgress,
@@ -25,6 +25,9 @@ const PRODUCTS = gql`
 `;
 
 function Collection() {
+  const loadingRef = useRef(false);
+  const lastRequestedSkipRef = useRef(0);
+
   const theme = useTheme();
   const { slug } = useParams();
   const { collections, loading: collectionLoading } =
@@ -43,29 +46,41 @@ function Collection() {
   const [fetchProducts, { loading: initialLoading }] = useLazyQuery(PRODUCTS, {
     onCompleted: (data) => {
       const newProducts = data?.collection.productVariants?.items || [];
-      setProducts((prevProducts) => [...prevProducts, ...newProducts]);
+      // If skip is 0, this is an initial load — replace
+      if (lastRequestedSkipRef.current === 0) {
+        setProducts(newProducts);
+      } else {
+        // Otherwise, append
+        setProducts((prev) => [...prev, ...newProducts]);
+      }
       setInitialLoadCompleted(true);
-      setHasMore(newProducts.length === take); // Stop loading if fewer products than `take` are returned
+      setHasMore(newProducts.length === take);
       setIsLoadingMore(false);
+      loadingRef.current = false;
     },
-    onError: (err) => handleError(err),
+    onError: (err) => {
+      handleError(err);
+      setIsLoadingMore(false);
+      loadingRef.current = false;
+    },
   });
 
   const loadMoreProducts = useCallback(() => {
-    if (isLoadingMore || !hasMore || initialLoading) return;
+    if (loadingRef.current || !hasMore || initialLoading) return;
 
-    setIsLoadingMore(true);
-    setSkip((prevSkip) => {
-      const newSkip = prevSkip + take;
-      fetchProducts({
-        variables: {
-          slug: slug,
-          options: { skip: newSkip, take, sort: { updatedAt: 'DESC' } },
-        },
-      });
-      return newSkip;
+    const newSkip = skip + take;
+    loadingRef.current = true;
+    lastRequestedSkipRef.current = newSkip;
+
+    fetchProducts({
+      variables: {
+        slug,
+        options: { skip: newSkip, take, sort: { updatedAt: 'DESC' } },
+      },
     });
-  }, [fetchProducts, hasMore, isLoadingMore, skip, take]);
+
+    setSkip(newSkip);
+  }, [fetchProducts, hasMore, initialLoading, skip, take, slug]);
 
   // Reset state when `slug` changes
   useEffect(() => {
@@ -73,13 +88,13 @@ function Collection() {
     setSkip(0);
     setHasMore(true);
     setIsLoadingMore(false);
+    loadingRef.current = false;
+    lastRequestedSkipRef.current = 0;
 
-    // Fetch products for the new `slug`
-    // Wait for state to reset before fetching products
     setTimeout(() => {
       fetchProducts({
         variables: {
-          slug: slug,
+          slug,
           options: { skip: 0, take, sort: { updatedAt: 'DESC' } },
         },
       });
@@ -92,8 +107,7 @@ function Collection() {
       if (
         window.innerHeight + document.documentElement.scrollTop >=
           document.documentElement.offsetHeight - 200 &&
-        hasMore &&
-        !isLoadingMore
+        hasMore
       ) {
         loadMoreProducts();
       }
@@ -101,7 +115,7 @@ function Collection() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadMoreProducts, hasMore, isLoadingMore]);
+  }, [loadMoreProducts, hasMore]);
 
   return collectionLoading ? (
     <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2 }}>

@@ -22,14 +22,7 @@ function CollectionLinksView() {
         </Box>
       )}
       {!loading && (
-        <Box
-          className="horizontal-scroll"
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-          }}
-        >
+        <Box className="horizontal-scroll">
           {collections?.map((item) => (
             <CollectionLink key={item.id} item={item} />
           ))}
