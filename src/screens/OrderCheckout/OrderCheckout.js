@@ -176,37 +176,39 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
 
         const finalOrder = orderData.addPaymentToOrder;
 
-        let notificationError = false;
-        try {
-          await axiosClient.post('admin-user/notify-order', {
-            customer: userData.name,
-            orderId: finalOrder?.id,
-            adminId,
-          });
-        } catch (error) {
-          console.error(error);
-          notificationError = true;
-          setServiceError(true);
-          console.error('Service error set to true'); // add this
-          console.error('checkout open state:', checkout);
-          if (error.response) {
-            console.error('error.response.data:', error.response.data);
-          } else if (error.request) {
-            console.error('error.request:', error.request);
-          } else {
-            console.error('error.message:', error.message);
+        if (finalOrder?.id) {
+          let notificationError = false;
+          try {
+            await axiosClient.post('admin-user/notify-order', {
+              customer: userData.name,
+              orderId: finalOrder?.id,
+              adminId,
+            });
+          } catch (error) {
+            console.error(error);
+            notificationError = true;
+            setServiceError(true);
+            console.error('Service error set to true'); // add this
+            console.error('checkout open state:', checkout);
+            if (error.response) {
+              console.error('error.response.data:', error.response.data);
+            } else if (error.request) {
+              console.error('error.request:', error.request);
+            } else {
+              console.error('error.message:', error.message);
+            }
           }
-        }
-        if (!notificationError) {
-          // if (true) {
-          console.log('order placed and user notified successfully');
-          //setActiveOrder(null);
-          //fetch recently placed order
-          const fetchedOrder = await getOrder(finalOrder?.code);
-          //fetch admin info
-          const adminInfo = await getAdminInfo(adminId);
-          console.log('fetchedOrder:', fetchedOrder);
-          completeCheckout(fetchedOrder, adminInfo);
+          if (!notificationError) {
+            // if (true) {
+            console.log('order placed and user notified successfully');
+            //setActiveOrder(null);
+            //fetch recently placed order
+            const fetchedOrder = await getOrder(finalOrder?.code);
+            //fetch admin info
+            const adminInfo = await getAdminInfo(adminId);
+            console.log('fetchedOrder:', fetchedOrder);
+            completeCheckout(fetchedOrder, adminInfo);
+          }
         }
       } catch (err) {
         console.error('Place order error:', err);
