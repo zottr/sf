@@ -13,27 +13,24 @@ import { useCallback, useEffect, useState, useRef, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import axiosClient from '../../axiosClient';
 import placeholderLogo from '/logos/zottr_logo_small1_white.svg';
+import SellerBreadcrumbs from './SellerBreadcrumbs';
 
 const SellerListingPage = () => {
   const loadingRef = useRef(false);
-  const lastRequestedSkipRef = useRef(0);
-
   const theme = useTheme();
   const [sellers, setSellers] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [initialLoaded, setInitialLoaded] = useState(false);
   const [skip, setSkip] = useState(0);
-  const take = 10;
+  const take = 6;
 
-  const loadMoreAdmins = useCallback(async () => {
+  const loadMoreAdmins = async () => {
     if (loadingRef.current || !hasMore) return;
-
     loadingRef.current = true;
     const currentSkip = skip;
-    lastRequestedSkipRef.current = currentSkip;
-
-    setLoading(true);
+    if (initialLoaded) setLoadingMore(true);
     try {
       const response = await axiosClient.get(`admin-user/get-list`, {
         params: {
@@ -42,60 +39,60 @@ const SellerListingPage = () => {
           channelToken: import.meta.env.VITE_VENDURE_CHANNEL_TOKEN,
         },
       });
-
       const newSellers = response.data;
-
       if (currentSkip === 0) {
         setSellers(newSellers);
         setInitialLoaded(true); // mark first load as complete
       } else {
         setSellers((prev) => [...prev, ...newSellers]);
       }
-
       setHasMore(newSellers.length === take);
       setSkip(currentSkip + take); // correctly advance skip
     } catch (error) {
       console.error('Error fetching items:', error);
     } finally {
-      setLoading(false);
+      if (initialLoaded) setLoadingMore(false);
       loadingRef.current = false;
     }
-  }, [skip, hasMore]);
+  };
+
+  // useEffect(() => {
+  //   setSellers([]);
+  //   setSkip(0);
+  //   setHasMore(true);
+  //   loadingRef.current = false;
+  //   setTimeout(() => {
+  //     loadMoreAdmins();
+  //   }, 0);
+  // }, []);
 
   useEffect(() => {
-    setSellers([]);
-    setSkip(0);
-    setHasMore(true);
-    loadingRef.current = false;
-    lastRequestedSkipRef.current = 0;
-
-    setTimeout(() => {
-      loadMoreAdmins();
-    }, 0);
+    loadMoreAdmins();
   }, []);
 
   // Infinite scrolling function
   useEffect(() => {
+    console.log('called effect');
     const handleScroll = () => {
       if (
         window.innerHeight + document.documentElement.scrollTop >=
           document.documentElement.offsetHeight - 100 &&
         hasMore &&
-        !loading &&
         initialLoaded // only fetch on scroll *after* initial load is done
       ) {
+        console.log('scroll fetch');
         loadMoreAdmins();
       }
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadMoreAdmins, hasMore, loading]);
+  }, [loadMoreAdmins, hasMore, initialLoaded]);
 
   return (
     <>
+      <SellerBreadcrumbs />
       <Stack gap={4} sx={{ mx: 2 }}>
-        <Box sx={{ mt: 1, justifyContent: 'center', display: 'flex' }}>
+        <Box sx={{ mt: 2, justifyContent: 'center', display: 'flex' }}>
           <Typography
             variant="h5"
             sx={{ color: theme.palette.grey[800], fontWeight: 'bold' }}
@@ -103,9 +100,9 @@ const SellerListingPage = () => {
             All Sellers
           </Typography>
         </Box>
-        {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2 }}>
-            <CircularProgress />
+        {!initialLoaded ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 10 }}>
+            <CircularProgress thickness={4} size={50} />
           </Box>
         ) : (
           <Grid container spacing={2} sx={{ width: '100%' }}>
@@ -179,6 +176,11 @@ const SellerListingPage = () => {
               </Fragment>
             ))}
           </Grid>
+        )}
+        {loadingMore && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: -2 }}>
+            <CircularProgress thickness={4} />
+          </Box>
         )}
       </Stack>
       {!hasMore && sellers.length !== 0 && (

@@ -22,7 +22,7 @@ import CallActionButtons from '../../components/shared/CallActionButtons';
 import ReplaceItemsConfirmationDialog from './ReplaceItemsConfirmationDialog';
 import AddToCartButton from './AddToCartButton';
 import { useNavigate } from 'react-router-dom';
-import DoubleCellLayoutProducts from '../../components/ProuctsDisplay/DoubleCellLayoutProducts';
+import DoubleCellLayoutSellerProducts from '../../components/SellerProducts/DoubleCellLayoutSellerProducts';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { handleError } from '../../context/ErrorContext';
 import ShareButton from '../../components/shared/ShareButton';
@@ -112,7 +112,7 @@ function ProductScreen() {
 
   return (
     <Box sx={{ overflowX: 'clip', maxWidth: '100vw' }}>
-      <Container sx={{ px: 1, mb: 2 }}>
+      <Container sx={{ px: 1, mb: 3 }}>
         <SellerInfo
           imageUrl={adminData?.logo}
           name={adminData?.businessName}
@@ -148,9 +148,11 @@ function ProductScreen() {
               <Box sx={{ width: '100%', mt: 1 }}>
                 <AddToCartButton
                   productVariantId={productVariantId}
-                  adminId={adminId}
+                  adminId={product.customFields?.adminId}
+                  adminName={product.customFields?.adminName}
                   buttonTextVariant="button1"
                   buttonHeight="3rem"
+                  setSelectedProduct={null}
                 />
               </Box>
             )}
@@ -187,7 +189,7 @@ function ProductScreen() {
               Other {isService ? 'services' : 'products'} by{' '}
               {adminData?.businessName}
             </Typography>
-            <DoubleCellLayoutProducts products={similarProducts} />
+            <DoubleCellLayoutSellerProducts products={similarProducts} />
             <Container sx={{ px: 1, mt: 2 }}>
               <Button
                 onClick={() => {
@@ -220,7 +222,8 @@ function ProductScreen() {
       {/* Replace Items Confirmation Dialog */}
       <ReplaceItemsConfirmationDialog
         productVariantId={productVariantId}
-        adminId={adminId}
+        newSellerId={adminId}
+        newSellerName={product?.customFields?.adminName}
       />
     </Box>
   );

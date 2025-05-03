@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CircularProgress,
   Container,
   Grid,
   IconButton,
@@ -18,6 +19,7 @@ import useAdminInfo from '../../customhooks/useAdminInfo';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
+import WestIcon from '@mui/icons-material/West';
 
 function SellerPayments() {
   const theme = useTheme();
@@ -38,37 +40,59 @@ function SellerPayments() {
     setSnackbarOpen(true);
   };
 
-  return (
+  console.log('adminData:', adminData);
+
+  return loading ? (
+    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 30 }}>
+      <CircularProgress thickness={4} size={50} />
+    </Box>
+  ) : (
     adminData != null && (
       <Container sx={{ px: 3 }}>
-        <Stack gap={3} sx={{ mt: 12 }}>
-          <Stack
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Typography
-              variant="h5"
+        <Stack gap={4} sx={{ mt: 10 }}>
+          <Stack gap={1} className="flexCenter">
+            <Stack
+              direction="row"
+              className="flexCenter"
               sx={{
-                color: theme.palette.grey[900],
-                textAlign: 'center',
-                fontWeight: '700',
+                width: '100%',
               }}
             >
-              Pay via UPI
-            </Typography>
-            <Typography
-              variant="h7"
-              sx={{
-                color: theme.palette.grey[700],
-                textAlign: 'center',
-                fontWeight: '500',
-              }}
-            >
-              {adminData.businessName}
-            </Typography>
+              <Box display="flex" sx={{ position: 'absolute', mr: 30 }}>
+                <IconButton
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                >
+                  <WestIcon
+                    fontSize="medium"
+                    sx={{
+                      color: 'secondary.main',
+                    }}
+                  />
+                </IconButton>
+              </Box>
+              <Stack>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: theme.palette.grey[800],
+                    textAlign: 'center',
+                  }}
+                >
+                  Pay via UPI
+                </Typography>
+                <Typography
+                  variant="h7"
+                  sx={{
+                    color: theme.palette.grey[500],
+                    textAlign: 'center',
+                  }}
+                >
+                  {adminData.businessName}
+                </Typography>
+              </Stack>
+            </Stack>
             <Box
               sx={{
                 width: '100%',
@@ -84,7 +108,7 @@ function SellerPayments() {
                 }}
                 sx={{
                   borderRadius: '25px',
-                  bgcolor: 'rgba(249, 191, 59,1)',
+                  bgcolor: 'primary.main',
                 }}
               >
                 <Typography variant="button2" color={theme.palette.grey[800]}>
@@ -93,17 +117,17 @@ function SellerPayments() {
               </Button>
             </Box>
           </Stack>
-          <Stack>
-            <Stack gap={0.5}>
-              <Typography
-                variant="heavylabel2"
-                sx={{
-                  color: theme.palette.grey[700],
-                }}
-              >
-                Bank Customer Name
-              </Typography>
-              {adminData.upiName && (
+          <Stack gap={1}>
+            {adminData.upiName && (
+              <Stack gap={1}>
+                <Typography
+                  variant="heavylabel2"
+                  sx={{
+                    color: theme.palette.grey[700],
+                  }}
+                >
+                  Bank Customer Name
+                </Typography>
                 <TextField
                   multiline
                   value={adminData.upiName}
@@ -116,16 +140,16 @@ function SellerPayments() {
                     bgcolor: 'rgba(0, 0, 255,0.02)',
                   }}
                 />
-              )}
-            </Stack>
-            <Stack gap={0.5}>
-              <Typography
-                variant="heavylabel2"
-                sx={{ color: theme.palette.grey[700] }}
-              >
-                UPI Phone Number
-              </Typography>
-              {adminData.upiPhone && (
+              </Stack>
+            )}
+            {adminData.upiPhone && (
+              <Stack gap={1}>
+                <Typography
+                  variant="heavylabel2"
+                  sx={{ color: theme.palette.grey[700] }}
+                >
+                  UPI Phone Number
+                </Typography>
                 <TextField
                   fullWidth
                   value={adminData.upiPhone}
@@ -144,7 +168,7 @@ function SellerPayments() {
                           onClick={() =>
                             handleCopy(
                               adminData.upiPhone,
-                              'UPI phone number copied to clipboard!'
+                              'UPI Phone Number copied to clipboard!'
                             )
                           }
                         >
@@ -159,16 +183,16 @@ function SellerPayments() {
                     bgcolor: 'rgba(0, 0, 255,0.02)',
                   }}
                 />
-              )}
-            </Stack>
-            <Stack gap={0.5}>
-              <Typography
-                variant="heavylabel2"
-                sx={{ color: theme.palette.grey[700] }}
-              >
-                UPI ID
-              </Typography>
-              {adminData.upiId && (
+              </Stack>
+            )}
+            {adminData.upiId && (
+              <Stack gap={1}>
+                <Typography
+                  variant="heavylabel2"
+                  sx={{ color: theme.palette.grey[700] }}
+                >
+                  UPI ID
+                </Typography>
                 <TextField
                   multiline
                   value={adminData.upiId}
@@ -195,16 +219,16 @@ function SellerPayments() {
                     bgcolor: 'rgba(0, 0, 255,0.02)',
                   }}
                 />
-              )}
-            </Stack>
-            <Stack gap={1}>
-              <Typography
-                variant="heavylabel2"
-                sx={{ color: theme.palette.grey[700] }}
-              >
-                UPI QR Code
-              </Typography>
-              {adminData.upiScan && (
+              </Stack>
+            )}
+            {adminData.upiScan && (
+              <Stack gap={1}>
+                <Typography
+                  variant="heavylabel2"
+                  sx={{ color: theme.palette.grey[700] }}
+                >
+                  UPI QR Code
+                </Typography>
                 <Box
                   sx={{
                     display: 'flex',
@@ -223,21 +247,18 @@ function SellerPayments() {
                     }}
                   />
                 </Box>
-              )}
-            </Stack>
+              </Stack>
+            )}
           </Stack>
         </Stack>
         <Snackbar
           open={snackbarOpen}
           autoHideDuration={2000}
           onClose={handleCloseSnackbar}
-          message={snackbarMessage}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          message={<Typography variant="heavyb2">{snackbarMessage}</Typography>}
           action={
-            <IconButton
-              size="small"
-              color="inherit"
-              onClick={handleCloseSnackbar}
-            >
+            <IconButton color="inherit" onClick={handleCloseSnackbar}>
               <CloseIcon fontSize="small" />
             </IconButton>
           }

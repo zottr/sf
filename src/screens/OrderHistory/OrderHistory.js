@@ -15,7 +15,13 @@ import { Link as RouterLink } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import { useContext, useEffect, useState } from 'react';
 import OrderContext from '../../context/OrderContext';
-import { getDateTimeString } from '../../utils/CommonUtils';
+import {
+  getDateTimeString,
+  isLocalStorageAvailable,
+} from '../../utils/CommonUtils';
+import ErrorAlert from '../../components/shared/Alerts/ErrorAlert';
+import noItemsFoundImage from '/images/no_items_found.svg';
+import OrderHistoryBreadcrumbs from './OrderHistoryBreadcrumbs';
 
 function OrderHistory() {
   const theme = useTheme();
@@ -63,8 +69,9 @@ function OrderHistory() {
 
   return (
     <>
+      <OrderHistoryBreadcrumbs />
       <Container>
-        <Stack spacing={2.5}>
+        <Stack sx={{ mt: 2 }}>
           <Box sx={{ justifyContent: 'center', display: 'flex' }}>
             <Typography
               variant="h5"
@@ -73,71 +80,111 @@ function OrderHistory() {
               Your Orders
             </Typography>
           </Box>
-          {orders && orders.length < 1 && (
-            <Stack sx={{ pt: '100px' }}>
-              <Typography
-                variant="h6"
-                sx={{ color: theme.palette.grey[600], textAlign: 'center' }}
-              >
-                No orders found
-              </Typography>
-              <Typography
-                variant="heavyb1"
-                sx={{ color: theme.palette.grey[500], textAlign: 'center' }}
-              >
-                You haven't placed any orders yet.
-              </Typography>
-            </Stack>
-          )}
-          {orders && orders.length > 1 && (
-            <Stack>
-              {orders?.map((order, index) => (
-                <Box
-                  component={RouterLink}
-                  to={`/order/${order.code}`}
-                  sx={{ textDecoration: 'none', marginTop: '30px' }}
+          {!isLocalStorageAvailable() ? (
+            <Box>
+              <ErrorAlert
+                title="Your web browser's local storage is disabled"
+                description="We store your order history in web browser's storage. Please enable browser storage to use this feature."
+                variant="standard"
+              />
+            </Box>
+          ) : (
+            <>
+              {orders && orders.length < 1 && (
+                <Stack
+                  gap={4}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginTop: 5,
+                  }}
                 >
-                  <Grid container rowSpacing={0.5} alignItems={'center'}>
-                    <Grid item xs={12}>
-                      <Typography
-                        variant="h7"
-                        color={theme.palette.grey[700]}
-                        sx={{
-                          wordWrap: 'break-word', // Ensures long words break and wrap onto the next line
-                        }}
-                      >
-                        {getSellerName(order)}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography
-                        variant="heavyb2"
-                        color={theme.palette.grey[600]}
-                        sx={{
-                          fontStyle: 'italic',
-                          wordWrap: 'break-word', // Ensures long words break and wrap onto the next line
-                        }}
-                      >
-                        {getDateTimeString(order)}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography
-                        variant="heavyb1"
-                        color={theme.palette.grey[500]}
-                      >
-                        {getProducts(order)}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  <Divider
-                    variant="fullWidth"
-                    flexItem
-                    sx={{ marginTop: '30px', bgcolor: theme.palette.grey[200] }}
+                  <Stack sx={{ pt: '50px' }}>
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        color: theme.palette.grey[600],
+                        textAlign: 'center',
+                      }}
+                    >
+                      No orders found
+                    </Typography>
+                    <Typography
+                      variant="h7"
+                      sx={{
+                        color: theme.palette.grey[500],
+                        textAlign: 'center',
+                      }}
+                    >
+                      You haven't placed any orders yet.
+                    </Typography>
+                  </Stack>
+                  <Box
+                    component="img"
+                    sx={{
+                      width: '60%',
+                      objectFit: 'contain',
+                      objectPosition: 'center',
+                      borderRadius: '10px',
+                    }}
+                    src={noItemsFoundImage}
                   />
-                </Box>
-              ))}
-            </Stack>
+                </Stack>
+              )}
+              {orders && orders.length > 1 && (
+                <Stack>
+                  {orders?.map((order, index) => (
+                    <Box
+                      component={RouterLink}
+                      to={`/order/${order.code}`}
+                      sx={{ textDecoration: 'none', marginTop: '30px' }}
+                    >
+                      <Grid container rowSpacing={0.5} alignItems={'center'}>
+                        <Grid item xs={12}>
+                          <Typography
+                            variant="h7"
+                            color={theme.palette.grey[700]}
+                            sx={{
+                              wordWrap: 'break-word', // Ensures long words break and wrap onto the next line
+                            }}
+                          >
+                            {getSellerName(order)}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Typography
+                            variant="heavyb2"
+                            color={theme.palette.grey[600]}
+                            sx={{
+                              fontStyle: 'italic',
+                              wordWrap: 'break-word', // Ensures long words break and wrap onto the next line
+                            }}
+                          >
+                            {getDateTimeString(order)}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Typography
+                            variant="heavyb1"
+                            color={theme.palette.grey[500]}
+                          >
+                            {getProducts(order)}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                      <Divider
+                        variant="fullWidth"
+                        flexItem
+                        sx={{
+                          marginTop: '30px',
+                          bgcolor: theme.palette.grey[200],
+                        }}
+                      />
+                    </Box>
+                  ))}
+                </Stack>
+              )}
+            </>
           )}
         </Stack>
       </Container>

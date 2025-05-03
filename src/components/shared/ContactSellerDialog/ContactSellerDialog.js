@@ -190,7 +190,7 @@ function ContactSellerDialog({ open, onClose, order, admin }) {
               }}
             />
           </Button>
-          <Typography variant="heavybb1" sx={{ color: 'grey.500' }}>
+          <Typography variant="heavyb1" sx={{ color: 'secondary.main' }}>
             OR
           </Typography>
           <Button
@@ -205,7 +205,7 @@ function ContactSellerDialog({ open, onClose, order, admin }) {
                 borderColor: 'secondary.dark',
               },
             }}
-            onClick={() => initiateAudioCall(phoneNumber)}
+            onClick={() => initiateAudioCall(admin.phoneNumber)}
           >
             <Typography
               variant="button1"

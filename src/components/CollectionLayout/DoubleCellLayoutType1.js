@@ -42,7 +42,7 @@ function DoubleCellLayoutType1({ products }) {
                   width: '100%',
                   objectFit: 'contain',
                   objectPosition: 'center',
-                  // bgcolor: 'grey.100',
+                  bgcolor: 'grey.50',
                 }}
                 src={`${item.product.featuredAsset?.preview}?preset=medium`}
                 alt={item.product.name}

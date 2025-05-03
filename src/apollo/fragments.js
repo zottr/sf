@@ -39,6 +39,7 @@ export const CART_FRAGMENT = gql`
           slug
           customFields {
             adminId
+            adminName
           }
         }
       }

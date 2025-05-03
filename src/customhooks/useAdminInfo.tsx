@@ -26,16 +26,14 @@ const useAdminInfo = ({ adminId }: UseAdminInfoParams) => {
   useEffect(() => {
     const fetchAdminInfo = async () => {
       if (!adminId) return;
-
       setLoading(true);
       setError(null);
-
       try {
         const response = await axiosClient.get(
           `admin-user/get-info/${adminId}`
         );
-
         setAdminData(response.data);
+        console.log('response.data', response.data);
       } catch (err) {
         setError('Failed to fetch admin info.');
       } finally {

@@ -25,6 +25,7 @@ import './styles.css';
 import QuantityButton from '../Product/QuantityButton';
 import placeholderLogo from '/logos/zottr_logo_small2_grey_white.svg';
 import CartContext from '../../context/CartContext';
+import WestIcon from '@mui/icons-material/West';
 
 function FilledCart({
   activeOrder,
@@ -75,6 +76,8 @@ function FilledCart({
     setCheckout(false);
   };
 
+  console.log('activeOrder:', activeOrder);
+
   return (
     <>
       {loading && (
@@ -91,7 +94,41 @@ function FilledCart({
       )}
       <Container sx={{ px: 2, mb: 5 }}>
         <Box className="flexCenter" sx={{ mb: 4 }}>
-          <Typography variant="h5">Cart</Typography>
+          <Stack
+            direction="row"
+            sx={{
+              alignItems: 'center',
+              display: 'flex',
+              width: '100%',
+            }}
+          >
+            <Box display="flex" alignItems="center">
+              <IconButton
+                sx={{ position: 'absolute', marginLeft: '50px' }}
+                onClick={() => {
+                  navigate(-1);
+                }}
+              >
+                <WestIcon
+                  fontSize="medium"
+                  sx={{
+                    color: 'secondary.main',
+                  }}
+                />
+              </IconButton>
+            </Box>
+            <Typography
+              variant="h5"
+              sx={{
+                color: theme.palette.grey[800],
+                textAlign: 'center',
+                margin: 'auto',
+                width: '100%',
+              }}
+            >
+              Cart
+            </Typography>
+          </Stack>
         </Box>
         <Stack gap={3}>
           {activeOrder?.lines?.map((orderLine, index) => (
@@ -145,6 +182,15 @@ function FilledCart({
                         sx={{ wordBreak: 'break-word', color: 'grey.800' }}
                       >
                         {orderLine.productVariant.name}
+                      </Typography>
+                      <Typography
+                        variant="b2"
+                        sx={{ wordBreak: 'break-word', color: 'grey.600' }}
+                      >
+                        {
+                          orderLine?.productVariant?.product?.customFields
+                            .adminName
+                        }
                       </Typography>
                       <Typography
                         variant="heavyb1"

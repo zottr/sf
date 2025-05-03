@@ -80,9 +80,9 @@ const mainTheme = createTheme({
       contrastText: '#fff',
     },
     info: {
-      main: 'rgba(39,111,191,0.8)',
-      light: '#E1E5E8',
-      dark: '#CDD7D8',
+      main: '#0288d1',
+      light: '#03a9f4',
+      dark: '#01579b',
       contrastText: '#fff',
     },
     error: {
@@ -144,7 +144,7 @@ const mainTheme = createTheme({
     },
     heavyb1: {
       fontSize: '1rem',
-      fontWeight: 500,
+      fontWeight: 600,
       lineHeight: 1.2,
       letterSpacing: '0.00938em',
       fontStyle: 'normal',

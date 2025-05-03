@@ -101,6 +101,8 @@ function SearchScreen({ open, close }) {
     }
   }
 
+  console.log('suggestions:', suggestions);
+
   return (
     <>
       <Dialog
@@ -111,7 +113,7 @@ function SearchScreen({ open, close }) {
           close();
         }}
         TransitionComponent={Transition}
-        BackdropComponent={CustomBackdrop} // Use custom backdrop for the blur effect
+        // BackdropComponent={CustomBackdrop} // Use custom backdrop for the blur effect
         sx={{
           '& .MuiDialog-paper': {
             position: 'absolute',
@@ -134,7 +136,7 @@ function SearchScreen({ open, close }) {
                 display: 'flex',
                 alignItems: 'center',
                 height: '50px',
-                width: '90%',
+                width: '100%',
                 marginX: 'auto',
                 borderRadius: '50px',
                 backgroundColor: theme.palette.common.white,
@@ -176,10 +178,10 @@ function SearchScreen({ open, close }) {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  marginTop: 2,
+                  marginTop: 15,
                 }}
               >
-                <CircularProgress size={24} />
+                <CircularProgress size={50} thickness={4} />
               </Box>
             </Grid>
           )}
@@ -188,7 +190,7 @@ function SearchScreen({ open, close }) {
               <Paper
                 elevation={2}
                 sx={{
-                  width: '90%',
+                  width: '100%',
                   marginX: 'auto',
                   marginTop: '5px',
                   paddingBottom: '20px',

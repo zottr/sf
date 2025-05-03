@@ -17,7 +17,8 @@ export const CartProvider = (props) => {
   const [alertOpen, setAlertOpen] = useState(activeOrder != null);
   const [cartQuantity, setCartQuantity] = useState();
   const [currentSeller, setCurrentSeller] = useState();
-  const [showWarning, setShowWarning] = useState(false);
+  const [currentSellerName, setCurrentSellerName] = useState('');
+  const [showWarningVariantId, setShowWarningVariantId] = useState('');
   const [itemBeingModifiedId, setItemBeingModifiedId] = useState('');
   const [itemBeingRemovedId, setItemBeingRemovedId] = useState('');
   const [itemBeingAddedVariantId, setItemBeingAddedVariantId] = useState('');
@@ -53,18 +54,33 @@ export const CartProvider = (props) => {
       setCurrentSeller(
         activeOrder?.lines[0]?.productVariant?.product?.customFields?.adminId
       );
+      setCurrentSellerName(
+        activeOrder?.lines[0]?.productVariant?.product?.customFields?.adminName
+      );
+      console.log(
+        'seller name:',
+        activeOrder?.lines[0]?.productVariant?.product?.customFields?.adminName
+      );
+      console.log(
+        'seller id:',
+        activeOrder?.lines[0]?.productVariant?.product?.customFields?.adminId
+      );
     } else {
       setAlertOpen(false);
       setCartQuantity(0);
       setCurrentSeller(undefined);
+      setCurrentSellerName('');
     }
   }, [activeOrder]);
 
   async function addItemToCart(variantId, sellerId, skipCheck) {
-    setItemBeingAddedVariantId(variantId);
     try {
+      console.log('addItemToCart');
+      setItemBeingAddedVariantId(variantId);
       if (!skipCheck && currentSeller && currentSeller !== sellerId) {
-        setShowWarning(true);
+        console.log('show warning');
+        console.log('variantId:', variantId);
+        setShowWarningVariantId(variantId);
         return;
       }
 
@@ -139,9 +155,11 @@ export const CartProvider = (props) => {
     }
   }
 
-  async function clearExistingAddNewItems(variantId, sellerId) {
+  async function clearExistingAddNewItems(variantId, sellerId, sellerName) {
     try {
       setCurrentSeller(sellerId);
+      console.log('sellerName:', sellerName);
+      setCurrentSellerName(sellerName);
       await emptyCartItems();
       await addItemToCart(variantId, sellerId, true); // Skip check because the user confirmed replacement
     } catch (err) {
@@ -166,18 +184,19 @@ export const CartProvider = (props) => {
         snackMessage,
         alertOpen,
         cartQuantity,
-        showWarning,
+        showWarningVariantId,
         addItemToCart,
         modifyItemQtyInCart,
         removeItemFromCart,
         setActiveOrder,
         setSnackMessage,
         clearExistingAddNewItems,
-        setShowWarning,
+        setShowWarningVariantId,
         loading,
         itemBeingModifiedId,
         itemBeingRemovedId,
         itemBeingAddedVariantId,
+        currentSellerName,
       }}
     >
       {props.children}

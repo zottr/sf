@@ -16,7 +16,7 @@ import {
 import { useParams, useNavigate } from 'react-router-dom';
 import { gql, useLazyQuery } from '@apollo/client';
 import { GET_PRODUCTS_WITH_OPTIONS } from '../../apollo/server';
-import DoubleCellLayoutProducts from '../../components/ProuctsDisplay/DoubleCellLayoutProducts';
+import DoubleCellLayoutSellerProducts from '../../components/SellerProducts/DoubleCellLayoutSellerProducts';
 import useAdminInfo from '../../customhooks/useAdminInfo';
 import CallActionButtons from '../../components/shared/CallActionButtons';
 import FavButton from './FavButton';
@@ -212,7 +212,7 @@ function SellerScreen() {
                     Products
                   </Typography> */}
                   {products.length !== 0 && (
-                    <DoubleCellLayoutProducts products={products} />
+                    <DoubleCellLayoutSellerProducts products={products} />
                   )}
                   {products.length === 0 && initialLoadCompleted && (
                     <Stack

@@ -7,8 +7,10 @@ import LoadingButton from '../../components/shared/LoadingButton';
 function AddToCartButton({
   productVariantId,
   adminId,
+  adminName,
   buttonTextVariant,
   buttonHeight,
+  setSelectedProduct,
 }) {
   const theme = useTheme();
   let buttonSx = {
@@ -35,6 +37,15 @@ function AddToCartButton({
   }
 
   const handleAdd = () => {
+    console.log('handleadd');
+    if (typeof setSelectedProduct === 'function') {
+      console.log('handleadd2');
+      setSelectedProduct({
+        productVariantId: productVariantId,
+        adminId: adminId,
+        adminName: adminName,
+      });
+    }
     addItemToCart(productVariantId, adminId, false);
   };
 
@@ -106,7 +117,7 @@ function AddToCartButton({
             labelStyles={{
               color: 'grey.900',
             }}
-            labelVariant="button2"
+            labelVariant={buttonTextVariant}
             progressSize={24}
             progressThickness={7}
             progressStyles={{

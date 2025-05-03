@@ -125,7 +125,7 @@ function Collection() {
     <>
       {/* Collection header */}
       <CollectionBreadcrumbs name={collection?.name} />
-      <Stack sx={{ alignItems: 'center', display: 'flex', mt: 2, mb: 3 }}>
+      <Stack sx={{ alignItems: 'center', display: 'flex', mt: 2, mb: 4 }}>
         <Typography
           variant="h5"
           color={theme.palette.grey[900]}

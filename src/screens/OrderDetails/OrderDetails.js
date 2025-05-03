@@ -24,6 +24,10 @@ import WestIcon from '@mui/icons-material/West';
 import PhoneIcon from '@mui/icons-material/Phone';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { getDateTimeString } from '../../utils/CommonUtils';
+import ContactSellerDialog from '../../components/shared/ContactSellerDialog';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import ErrorAlert from '../../components/shared/Alerts/ErrorAlert';
 
 function OrderDetails() {
   const theme = useTheme();
@@ -34,6 +38,11 @@ function OrderDetails() {
   const [order, setOrder] = useState(null);
   const [adminId, setAdminId] = useState();
   const { adminData, loading: adminLoading, error } = useAdminInfo({ adminId });
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const closeDialog = () => {
+    setOpenDialog(false);
+  };
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -89,13 +98,13 @@ function OrderDetails() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            marginTop: 2,
+            marginTop: 30,
           }}
         >
-          <CircularProgress />
+          <CircularProgress thickness={4.5} size={50} />
         </Box>
       ) : order ? (
-        <Container>
+        <Container sx={{ mt: 10 }}>
           <Stack
             direction="row"
             sx={{
@@ -106,21 +115,21 @@ function OrderDetails() {
           >
             <Box display="flex" alignItems="center">
               <IconButton
-                sx={{ position: 'absolute', marginLeft: '50px' }}
+                sx={{ position: 'absolute', marginLeft: '30px' }}
                 onClick={() => {
                   navigate(-1);
                 }}
               >
                 <WestIcon
-                  fontSize="small"
+                  fontSize="medium"
                   sx={{
-                    color: 'brown',
+                    color: 'secondary.main',
                   }}
                 />
               </IconButton>
             </Box>
             <Typography
-              variant="h6"
+              variant="h5"
               sx={{
                 color: theme.palette.grey[800],
                 textAlign: 'center',
@@ -135,7 +144,7 @@ function OrderDetails() {
             <Grid
               item
               container
-              rowSpacing={2}
+              rowSpacing={3}
               xs={12}
               sx={{ display: 'flex', alignItems: 'center' }}
             >
@@ -166,32 +175,40 @@ function OrderDetails() {
               </Grid>
               <Grid
                 item
-                xs={4}
+                xs={6}
                 sx={{ display: 'flex', justifyContent: 'center' }}
               >
                 <Button
                   variant="outlined"
-                  onClick={handleClickForChat}
+                  onClick={() => {
+                    setOpenDialog(true);
+                  }}
                   sx={{
                     width: '90%',
                     height: '3rem',
                     borderRadius: '25px',
-                    borderColor: theme.palette.grey[500],
+                    borderColor: 'secondary.dark',
+                    '&:hover, &:focus, &:active': {
+                      borderColor: 'secondary.dark',
+                    },
                   }}
                 >
-                  <Typography variant="button2" color={theme.palette.grey[700]}>
-                    Chat
+                  <Typography
+                    variant="button2"
+                    sx={{ color: 'secondary.dark' }}
+                  >
+                    Talk to Seller
                   </Typography>
-                  <WhatsAppIcon
+                  <QuestionAnswerIcon
                     sx={{
+                      color: 'info.main',
                       ml: '8px',
                       fontSize: '24px',
                     }}
                   />
                 </Button>
               </Grid>
-
-              <Grid
+              {/* <Grid
                 item
                 xs={4}
                 sx={{ display: 'flex', justifyContent: 'center' }}
@@ -217,24 +234,40 @@ function OrderDetails() {
                     }}
                   />
                 </Button>
-              </Grid>
+              </Grid> */}
               <Grid
                 item
-                xs={4}
+                xs={6}
                 sx={{ display: 'flex', justifyContent: 'center' }}
               >
                 <Button
+                  onClick={() => {
+                    navigate(`/seller/${adminId}/payments`);
+                  }}
                   variant="outlined"
                   sx={{
                     width: '90%',
                     height: '3rem',
                     borderRadius: '25px',
-                    borderColor: theme.palette.grey[500],
+                    borderColor: 'secondary.dark',
+                    '&:hover, &:focus, &:active': {
+                      borderColor: 'secondary.dark',
+                    },
                   }}
                 >
-                  <Typography variant="button2" color={theme.palette.grey[700]}>
-                    Make payment
+                  <Typography
+                    variant="button2"
+                    sx={{ color: 'secondary.dark' }}
+                  >
+                    UPI Payments
                   </Typography>
+                  <CurrencyRupeeIcon
+                    sx={{
+                      color: 'green',
+                      ml: '8px',
+                      fontSize: '24px',
+                    }}
+                  />
                 </Button>
               </Grid>
             </Grid>
@@ -475,11 +508,20 @@ function OrderDetails() {
           </Grid>
         </Container>
       ) : (
-        <Typography align="center" variant="h6">
-          There is no recently placed order. Please refer to order history for
-          past order details.
-        </Typography>
+        <Box sx={{ mt: 15 }}>
+          <ErrorAlert
+            title="Order not found"
+            description="Couldn't find any valid order for this URL. Check your Order History for past orders."
+            variant="standard"
+          />
+        </Box>
       )}
+      <ContactSellerDialog
+        open={openDialog}
+        onClose={closeDialog}
+        order={order}
+        admin={adminData}
+      />
     </>
   );
 }

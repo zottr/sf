@@ -16,6 +16,7 @@ import placeholderLogo from '/logos/zottr_logo_small1_white.svg';
 import { isLocalStorageAvailable } from '../../utils/CommonUtils';
 import ErrorAlert from '../../components/shared/Alerts/ErrorAlert';
 import noItemsFoundImage from '/images/no_items_found.svg';
+import SellerBreadcrumbs from './SellerBreadcrumbs';
 
 const FavoriteSellerListing = () => {
   const theme = useTheme();
@@ -54,8 +55,9 @@ const FavoriteSellerListing = () => {
 
   return (
     <>
+      <SellerBreadcrumbs type="favorite" />
       <Stack gap={4} sx={{ mx: 2 }}>
-        <Box sx={{ mt: 1, justifyContent: 'center', display: 'flex' }}>
+        <Box sx={{ mt: 2, justifyContent: 'center', display: 'flex' }}>
           <Typography
             variant="h5"
             sx={{ color: theme.palette.grey[800], fontWeight: 'bold' }}

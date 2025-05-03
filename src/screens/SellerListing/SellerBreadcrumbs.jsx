@@ -5,7 +5,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { Link as RouterLink } from 'react-router-dom';
 
-export default function CollectionBreadcrumbs({ name }) {
+export default function SellerBreadcrumbs({ type = '' }) {
   return (
     <Breadcrumbs
       sx={{ ml: 1 }}
@@ -26,7 +26,7 @@ export default function CollectionBreadcrumbs({ name }) {
         </Typography>
       </Link>
       <Typography variant="label2" sx={{ color: 'grey.600' }}>
-        {name}
+        {type === 'favorite' ? 'Favorite Sellers' : 'All Sellers'}
       </Typography>
     </Breadcrumbs>
   );

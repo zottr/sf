@@ -125,7 +125,7 @@ function MainHeader() {
         <ListItemButton
           sx={{ mb: 0.5 }}
           onClick={() => {
-            handleLinkClick(`/favourites`);
+            handleLinkClick(`/favorite-sellers`);
           }}
         >
           <ListItemIcon>
