@@ -846,6 +846,7 @@ export const GET_PRODUCTS_WITH_OPTIONS = gql`
         customFields {
           adminId
           adminName
+          itemType
         }
       }
     }

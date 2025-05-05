@@ -32,30 +32,21 @@ const ShareButton = ({ title, text, url }) => {
       <Button
         onClick={handleShare}
         variant="outlined"
-        // sx={{ bgcolor: '#1976d2' }}
-        // sx={{ bgcolor: 'secondary.light' }}
         sx={{
-          // bgcolor: 'secondary.main',
-          borderColor: 'secondary.main',
+          // bgcolor: 'secondary.dark',
+          borderColor: 'secondary.dark',
           borderRadius: '30px',
           '&:hover, &:focus, &:active': {
-            borderColor: 'secondary.main',
+            borderColor: 'secondary.dark',
           },
-
-          // color: 'grey.800',
-          // borderColor: 'grey.800',
-          // borderRadius: '30px',
-          // '&:hover, &:focus, &:active': {
-          //   borderColor: 'grey.500',
-          // },
         }}
       >
-        <Typography variant="button2" sx={{ color: 'secondary.main' }}>
+        <Typography variant="button2" sx={{ color: 'secondary.dark' }}>
           Share
         </Typography>
         <ReplyIcon
           fontSize="medium"
-          sx={{ transform: 'scaleX(-1)', ml: 0.5, color: 'secondary.main' }}
+          sx={{ transform: 'scaleX(-1)', ml: 0.5, color: 'secondary.dark' }}
         />
       </Button>
       {/* Snackbar for toast message */}

@@ -103,7 +103,7 @@ function SellerScreen() {
               <Typography variant="h6" color={theme.palette.grey[700]}>
                 Products
               </Typography>
-              <DoubleCellLayoutSellerProducts products={products} />
+              <DoubleCellLayoutSellerProducts items={products} />
               {/* <DoubleCellLayoutType1 products={products} /> */}
             </Stack>
           </Container>

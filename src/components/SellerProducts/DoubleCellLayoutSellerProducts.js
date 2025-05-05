@@ -5,14 +5,14 @@ import AddToCartButton from '../../screens/Product/AddToCartButton';
 import ReplaceItemsConfirmationDialog from '../../screens/Product/ReplaceItemsConfirmationDialog';
 import placeholderLogo from '/logos/zottr_logo_small2_grey_white.svg';
 
-function DoubleCellLayoutSellerProducts({ products }) {
+function DoubleCellLayoutSellerProducts({ items }) {
   const theme = useTheme();
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   return (
     <>
       <Grid container columnSpacing={2} rowSpacing={4}>
-        {products?.map((product) => (
+        {items?.map((product) => (
           <>
             <Grid
               key={product.slug}

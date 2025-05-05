@@ -159,7 +159,7 @@ function SellerScreen() {
                 Products
               </Typography>
               {products.length !== 0 && (
-                <DoubleCellLayoutSellerProducts products={products} />
+                <DoubleCellLayoutSellerProducts items={products} />
               )}
               {products.length === 0 && initialLoadCompleted && (
                 <Stack

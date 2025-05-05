@@ -32,22 +32,35 @@ const PRODUCTS_FROM_SELLER = gql`
 `;
 
 function SellerScreen() {
-  const loadingRef = useRef(false);
-  const lastRequestedSkipRef = useRef(0);
   const navigate = useNavigate();
   const theme = useTheme();
   const query = useParams();
   const sellerId = query.sellerId;
-  const [products, setProducts] = useState([]);
   const [adminId, setAdminId] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
   const { adminData, loading: adminLoading, error } = useAdminInfo({ adminId });
-  const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
   const [tabIndex, setTabIndex] = useState(0);
   const take = 10;
-  const [skip, setSkip] = useState(0);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  //products states
+  const loadingRefProducts = useRef(false);
+  const lastRequestedSkipRefProducts = useRef(0);
+  const [products, setProducts] = useState([]);
+  const [initialLoadCompletedProducts, setInitialLoadCompletedProducts] =
+    useState(false);
+  const [hasMoreProducts, setHasMoreProducts] = useState(true);
+  const [skipProducts, setSkipProducts] = useState(0);
+  const [isLoadingMoreProducts, setIsLoadingMoreProducts] = useState(false);
+
+  //services states
+  const loadingRefServices = useRef(false);
+  const lastRequestedSkipRefServices = useRef(0);
+  const [services, setServices] = useState([]);
+  const [initialLoadCompletedServices, setInitialLoadCompletedServices] =
+    useState(false);
+  const [hasMoreServices, setHasMoreServices] = useState(true);
+  const [skipServices, setSkipServices] = useState(0);
+  const [isLoadingMoreServices, setIsLoadingMoreServices] = useState(false);
 
   const toggleDialog = () => setDialogOpen(!dialogOpen);
 
@@ -55,87 +68,211 @@ function SellerScreen() {
     setTabIndex(newValue);
   };
 
-  const [fetchProducts, { loading: initialLoading }] = useLazyQuery(
+  const [fetchProducts, { loading: initialLoadingProducts }] = useLazyQuery(
     PRODUCTS_FROM_SELLER,
     {
       onCompleted: (data) => {
-        const newProducts = data?.products?.items || [];
+        const newItems = data?.products?.items || [];
+        console.log('newItems:', newItems);
         // If skip is 0, this is an initial load — replace
-        if (lastRequestedSkipRef.current === 0) {
-          setProducts(newProducts);
+        if (lastRequestedSkipRefProducts.current === 0) {
+          setProducts(newItems);
         } else {
           // Otherwise, append
-          setProducts((prev) => [...prev, ...newProducts]);
+          setProducts((prev) => [...prev, ...newItems]);
         }
-        setInitialLoadCompleted(true);
-        setHasMore(newProducts.length === take);
-        setIsLoadingMore(false);
-        loadingRef.current = false;
+        setInitialLoadCompletedProducts(true);
+        setHasMoreProducts(newItems.length === take);
+        setIsLoadingMoreProducts(false);
+        loadingRefProducts.current = false;
       },
       onError: (err) => {
         handleError(err);
-        setIsLoadingMore(false);
-        loadingRef.current = false;
+        setIsLoadingMoreProducts(false);
+        loadingRefProducts.current = false;
+      },
+    }
+  );
+
+  const [fetchServices, { loading: initialLoadingServices }] = useLazyQuery(
+    PRODUCTS_FROM_SELLER,
+    {
+      onCompleted: (data) => {
+        const newItems = data?.products?.items || [];
+        console.log('newItems:', newItems);
+        // If skip is 0, this is an initial load — replace
+        if (lastRequestedSkipRefServices.current === 0) {
+          setServices(newItems);
+        } else {
+          // Otherwise, append
+          setServices((prev) => [...prev, ...newItems]);
+        }
+        setInitialLoadCompletedServices(true);
+        setHasMoreServices(newItems.length === take);
+        setIsLoadingMoreServices(false);
+        loadingRefServices.current = false;
+      },
+      onError: (err) => {
+        handleError(err);
+        setIsLoadingMoreServices(false);
+        loadingRefServices.current = false;
       },
     }
   );
 
   const loadMoreProducts = useCallback(() => {
-    if (loadingRef.current || !hasMore || initialLoading) return;
+    if (
+      loadingRefProducts.current ||
+      !hasMoreProducts ||
+      initialLoadingProducts ||
+      !initialLoadCompletedProducts
+    )
+      return;
 
-    const newSkip = skip + take;
-    loadingRef.current = true;
-    lastRequestedSkipRef.current = newSkip;
+    console.log('initialLoadingProducts:', initialLoadingProducts);
+
+    const newSkip = skipProducts + take;
+    loadingRefProducts.current = true;
+    lastRequestedSkipRefProducts.current = newSkip;
 
     fetchProducts({
       variables: {
         options: {
-          filter: { adminId: { eq: sellerId } },
+          filter: {
+            adminId: { eq: sellerId },
+            itemType: { notEq: 'service' },
+          },
           skip: newSkip,
           take,
           sort: { updatedAt: 'DESC' },
         },
       },
     });
+    setSkipProducts(newSkip);
+  }, [
+    fetchProducts,
+    hasMoreProducts,
+    isLoadingMoreProducts,
+    skipProducts,
+    take,
+  ]);
 
-    setSkip(newSkip);
-  }, [fetchProducts, hasMore, isLoadingMore, skip, take]);
+  const loadMoreServices = useCallback(() => {
+    if (
+      loadingRefServices.current ||
+      !hasMoreServices ||
+      initialLoadingServices ||
+      !initialLoadCompletedServices
+    )
+      return;
+    console.log('initialLoadingServices:', initialLoadingServices);
+    const newSkip = skipServices + take;
+    loadingRefServices.current = true;
+    lastRequestedSkipRefServices.current = newSkip;
 
-  useEffect(() => {
-    setAdminId(sellerId);
-    setProducts([]);
-    setSkip(0);
-    setHasMore(true);
-    setIsLoadingMore(false);
-    loadingRef.current = false;
-    lastRequestedSkipRef.current = 0;
-    setTimeout(() => {
-      fetchProducts({
-        variables: {
-          options: {
-            filter: { adminId: { eq: sellerId } },
-            skip: 0,
-            take,
-            sort: { updatedAt: 'DESC' },
+    fetchServices({
+      variables: {
+        options: {
+          filter: {
+            adminId: { eq: sellerId },
+            itemType: { eq: 'service' },
           },
+          skip: newSkip,
+          take,
+          sort: { updatedAt: 'DESC' },
         },
-      });
-    }, 0);
-  }, [sellerId]);
+      },
+    });
+    setSkipServices(newSkip);
+  }, [
+    fetchServices,
+    hasMoreServices,
+    isLoadingMoreServices,
+    skipServices,
+    take,
+  ]);
 
   useEffect(() => {
-    const handleScroll = () => {
+    if (tabIndex === 0) {
+      console.log('effect ran for tab 0');
+      setAdminId(sellerId);
+      setProducts([]);
+      setInitialLoadCompletedProducts(false);
+      setSkipProducts(0);
+      setHasMoreProducts(true);
+      setIsLoadingMoreProducts(false);
+      loadingRefProducts.current = false;
+      lastRequestedSkipRefProducts.current = 0;
+      setTimeout(() => {
+        fetchProducts({
+          variables: {
+            options: {
+              filter: {
+                adminId: { eq: sellerId },
+                itemType: { notEq: 'service' },
+              },
+              skip: 0,
+              take,
+              sort: { updatedAt: 'DESC' },
+            },
+          },
+        });
+      }, 0);
+    } else {
+      console.log('effect ran for tab 1');
+      setAdminId(sellerId);
+      setServices([]);
+      setInitialLoadCompletedServices(false);
+      setSkipServices(0);
+      setHasMoreServices(true);
+      setIsLoadingMoreServices(false);
+      loadingRefServices.current = false;
+      lastRequestedSkipRefServices.current = 0;
+      setTimeout(() => {
+        fetchServices({
+          variables: {
+            options: {
+              filter: {
+                adminId: { eq: sellerId },
+                itemType: { eq: 'service' },
+              },
+              skip: 0,
+              take,
+              sort: { updatedAt: 'DESC' },
+            },
+          },
+        });
+      }, 0);
+    }
+  }, [sellerId, tabIndex]);
+
+  useEffect(() => {
+    const handleScrollProducts = () => {
       if (
         window.innerHeight + document.documentElement.scrollTop >=
           document.documentElement.offsetHeight - 200 &&
-        hasMore
+        hasMoreProducts
       ) {
         loadMoreProducts();
       }
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadMoreProducts, hasMore, isLoadingMore]);
+    window.addEventListener('scroll', handleScrollProducts);
+    return () => window.removeEventListener('scroll', handleScrollProducts);
+  }, [loadMoreProducts, hasMoreProducts, isLoadingMoreProducts]);
+
+  useEffect(() => {
+    const handleScrollServices = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+          document.documentElement.offsetHeight - 200 &&
+        hasMoreServices
+      ) {
+        loadMoreServices();
+      }
+    };
+    window.addEventListener('scroll', handleScrollServices);
+    return () => window.removeEventListener('scroll', handleScrollServices);
+  }, [loadMoreServices, hasMoreServices, isLoadingMoreServices]);
 
   if (error) {
     return <>{handleError(error)}</>;
@@ -204,89 +341,197 @@ function SellerScreen() {
               </Tabs>
               {/* Products Tab */}
               {tabIndex === 0 && (
-                <Stack
-                  gap={3}
-                  sx={{ display: 'flex', alignItems: 'center', mt: 3, mb: 2 }}
-                >
-                  {/* <Typography variant="h5" color={theme.palette.grey[700]}>
-                    Products
-                  </Typography> */}
-                  {products.length !== 0 && (
-                    <DoubleCellLayoutSellerProducts products={products} />
-                  )}
-                  {products.length === 0 && initialLoadCompleted && (
-                    <Stack
-                      gap={1}
-                      sx={{ display: 'flex', alignItems: 'center', mt: 5 }}
-                    >
-                      <Typography
-                        variant="h7"
-                        sx={{ color: 'grey.500', textAlign: 'center' }}
-                      >
-                        {adminData.businessName} doesn't have any product
-                        listings.
-                      </Typography>
-                      <Box
-                        component="img"
-                        sx={{
-                          width: '60%',
-                          objectFit: 'contain',
-                          objectPosition: 'center',
-                          borderRadius: '10px',
-                        }}
-                        src={noItemsFoundImage}
-                      />
-                    </Stack>
-                  )}
-                  {/* Loading more spinner */}
-                  {isLoadingMore && products.length !== 0 && (
+                <>
+                  {!initialLoadCompletedProducts && (
                     <Box
                       sx={{
+                        height: '100vh',
                         display: 'flex',
+                        alignItems: 'center',
                         justifyContent: 'center',
-                        padding: 2,
+                        position: 'relative',
                       }}
                     >
-                      <CircularProgress />
+                      <CircularProgress
+                        thickness={4}
+                        size={45}
+                        sx={{ top: '50px', position: 'absolute' }}
+                      />
                     </Box>
                   )}
-                  {/* No more products message */}
-                  {!hasMore && products.length !== 0 && (
+                  {initialLoadCompletedProducts && (
                     <Stack
-                      direction="row"
+                      gap={3}
                       sx={{
-                        mt: 4,
                         display: 'flex',
-                        alignItems: 'baseline',
-                        justifyContent: 'center',
+                        alignItems: 'center',
+                        mt: 3,
+                        mb: 2,
                       }}
                     >
-                      <Typography variant="heavyb1" color="brown">
-                        That's all!
-                      </Typography>
-                      <Typography variant="b1" sx={{ fontSize: '20px' }}>
-                        &#x1F44B;
-                      </Typography>
+                      {products.length !== 0 && (
+                        <DoubleCellLayoutSellerProducts items={products} />
+                      )}
+                      {products.length === 0 &&
+                        initialLoadCompletedProducts && (
+                          <Stack
+                            gap={1}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              mt: 5,
+                            }}
+                          >
+                            <Typography
+                              variant="h7"
+                              sx={{ color: 'grey.500', textAlign: 'center' }}
+                            >
+                              {adminData.businessName} doesn't have any product
+                              listings.
+                            </Typography>
+                            <Box
+                              component="img"
+                              sx={{
+                                width: '60%',
+                                objectFit: 'contain',
+                                objectPosition: 'center',
+                                borderRadius: '10px',
+                              }}
+                              src={noItemsFoundImage}
+                            />
+                          </Stack>
+                        )}
+                      {/* Loading more spinner */}
+                      {isLoadingMoreProducts && products.length !== 0 && (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            padding: 2,
+                          }}
+                        >
+                          <CircularProgress />
+                        </Box>
+                      )}
+                      {/* No more products message */}
+                      {!hasMoreProducts && products.length !== 0 && (
+                        <Stack
+                          direction="row"
+                          sx={{
+                            mt: 4,
+                            display: 'flex',
+                            alignItems: 'baseline',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Typography variant="heavyb1" color="brown">
+                            That's all!
+                          </Typography>
+                          <Typography variant="b1" sx={{ fontSize: '20px' }}>
+                            &#x1F44B;
+                          </Typography>
+                        </Stack>
+                      )}
                     </Stack>
                   )}
-                </Stack>
+                </>
               )}
-
               {/* Services Tab */}
               {tabIndex === 1 && (
-                <Stack
-                  sx={{
-                    mt: 4,
-                    mb: 4,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Typography variant="h6" color="text.secondary">
-                    No services listed yet.
-                  </Typography>
-                </Stack>
+                <>
+                  {!initialLoadCompletedServices && (
+                    <Box
+                      sx={{
+                        height: '100vh',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        position: 'relative',
+                      }}
+                    >
+                      <CircularProgress
+                        thickness={4}
+                        size={45}
+                        sx={{ top: '50px', position: 'absolute' }}
+                      />
+                    </Box>
+                  )}
+                  {initialLoadCompletedServices && (
+                    <Stack
+                      gap={3}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        mt: 3,
+                        mb: 2,
+                      }}
+                    >
+                      {services.length !== 0 && (
+                        <DoubleCellLayoutSellerProducts items={services} />
+                      )}
+                      {services.length === 0 &&
+                        initialLoadCompletedServices && (
+                          <Stack
+                            gap={1}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              mt: 5,
+                            }}
+                          >
+                            <Typography
+                              variant="h7"
+                              sx={{ color: 'grey.500', textAlign: 'center' }}
+                            >
+                              {adminData.businessName} doesn't have any service
+                              listings.
+                            </Typography>
+                            <Box
+                              component="img"
+                              sx={{
+                                width: '60%',
+                                objectFit: 'contain',
+                                objectPosition: 'center',
+                                borderRadius: '10px',
+                              }}
+                              src={noItemsFoundImage}
+                            />
+                          </Stack>
+                        )}
+                      {/* Loading more spinner */}
+                      {isLoadingMoreServices && services.length !== 0 && (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            padding: 2,
+                          }}
+                        >
+                          <CircularProgress />
+                        </Box>
+                      )}
+                      {/* No more products message */}
+                      {!hasMoreServices && services.length !== 0 && (
+                        <Stack
+                          direction="row"
+                          sx={{
+                            mt: 4,
+                            display: 'flex',
+                            alignItems: 'baseline',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Typography variant="heavyb1" color="brown">
+                            That's all!
+                          </Typography>
+                          <Typography variant="b1" sx={{ fontSize: '20px' }}>
+                            &#x1F44B;
+                          </Typography>
+                        </Stack>
+                      )}
+                    </Stack>
+                  )}
+                </>
               )}
             </Box>
           </Container>

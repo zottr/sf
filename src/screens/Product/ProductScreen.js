@@ -60,6 +60,7 @@ function ProductScreen() {
     const product = data?.product;
     if (product) {
       setProduct(product);
+      console.log('product:', product);
       if (product.collections[0].slug === 'services') setIsService(true);
       setProductVariantId(product?.variantList?.items[0]?.id);
     }
@@ -189,7 +190,7 @@ function ProductScreen() {
               Other {isService ? 'services' : 'products'} by{' '}
               {adminData?.businessName}
             </Typography>
-            <DoubleCellLayoutSellerProducts products={similarProducts} />
+            <DoubleCellLayoutSellerProducts items={similarProducts} />
             <Container sx={{ px: 1, mt: 2 }}>
               <Button
                 onClick={() => {
