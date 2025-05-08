@@ -72,7 +72,6 @@ const SellerListingPage = () => {
 
   // Infinite scrolling function
   useEffect(() => {
-    console.log('called effect');
     const handleScroll = () => {
       if (
         window.innerHeight + document.documentElement.scrollTop >=
@@ -80,7 +79,6 @@ const SellerListingPage = () => {
         hasMore &&
         initialLoaded // only fetch on scroll *after* initial load is done
       ) {
-        console.log('scroll fetch');
         loadMoreAdmins();
       }
     };

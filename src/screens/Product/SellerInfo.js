@@ -63,7 +63,7 @@ function SellerInfo({ imageUrl, name, id }) {
             {/* Rohit's store */}
           </Typography>
           <Typography variant="heavyb3" className="customLink">
-            Visit the store
+            Visit the Store
           </Typography>
         </Stack>
       </Link>

@@ -12,8 +12,6 @@ function OrderSuccess2() {
   const navigate = useNavigate();
   const order = location.state?.order;
   const admin = location.state?.admin;
-  console.log('order:', order);
-  console.log('admin:', admin);
 
   const [openDialog, setOpenDialog] = useState(false);
   const closeDialog = () => {
@@ -43,7 +41,7 @@ function OrderSuccess2() {
           </Stack>
           <Typography
             variant="h7"
-            sx={{ color: 'secondary.light', textAlign: 'center' }}
+            sx={{ color: 'secondary.main', textAlign: 'center' }}
           >
             Order ID {order.id}
           </Typography>
@@ -103,7 +101,7 @@ function OrderSuccess2() {
               />
             </Button>
             <Button
-              variant="outlined"
+              variant="standard"
               className="flexCenter"
               onClick={() => {
                 navigate(`/`);
@@ -122,11 +120,11 @@ function OrderSuccess2() {
             >
               <Typography
                 variant="button1"
-                sx={{ mr: 1, color: 'secondary.light' }}
+                sx={{ mr: 1, color: 'primary.dark' }}
               >
                 Continue Shopping
               </Typography>
-              <ReplyIcon sx={{ color: 'secondary.light' }} />
+              <ReplyIcon sx={{ color: 'primary.dark' }} />
             </Button>
           </Stack>
         </Stack>

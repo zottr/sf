@@ -9,7 +9,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import CallIcon from '@mui/icons-material/Call';
@@ -18,6 +18,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useFavorites } from '../../context/FavoriteSellerContext';
 import { useNavigate, useParams } from 'react-router-dom';
+import ContactSellerDialog from '../../components/shared/ContactSellerDialog';
 
 function SellerInfo({ adminData }) {
   const theme = useTheme();
@@ -25,6 +26,11 @@ function SellerInfo({ adminData }) {
   const isFavorite = favoriteSellers.includes(adminData.id);
   const navigate = useNavigate();
   const query = useParams();
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const closeDialog = () => {
+    setOpenDialog(false);
+  };
 
   return (
     <Container
@@ -224,6 +230,11 @@ function SellerInfo({ adminData }) {
             </Typography>
           </Button> */}
       </Stack>
+      <ContactSellerDialog
+        open={openDialog}
+        onClose={closeDialog}
+        admin={adminData}
+      />
     </Container>
   );
 }

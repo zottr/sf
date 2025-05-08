@@ -8,8 +8,10 @@ import logo from '/logos/zottr_logo_small2_grey_white.svg';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import placeholderLogo from '/logos/zottr_logo_small2_grey_white.svg';
 
 function ProductImages({ images }) {
+  console.log('images:', images);
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const sliderRef = React.useRef(null);
 
@@ -58,6 +60,21 @@ function ProductImages({ images }) {
         ))}
       </Slider>
 
+      {images.length === 0 && (
+        <Box
+          component="img"
+          src={placeholderLogo}
+          sx={{
+            height: '200px',
+            display: 'block',
+            width: '100%',
+            objectFit: 'contain',
+            objectPosition: 'top',
+            cursor: 'zoom-in',
+          }}
+        />
+      )}
+
       <Container sx={{ px: 2 }}>
         <Grid
           container
@@ -88,7 +105,7 @@ function ProductImages({ images }) {
                   borderRadius: '4px',
                   p: 0.3,
                 }}
-                src={`${image.preview}?preset=thumb`}
+                src={`${image.preview}?preset=small`}
               />
             </Grid>
           ))}

@@ -57,7 +57,7 @@ const ViewCartSnackbar = ({ open, message, activeOrder }) => {
           >
             <AvatarGroup spacing={28} variant="circular">
               {topItems?.map((item) => (
-                <Avatar src={`${item?.featuredAsset?.preview}?preset=thumb`}>
+                <Avatar src={`${item?.featuredAsset?.preview}?preset=small`}>
                   <Box
                     component="img"
                     src={placeholderLogo}

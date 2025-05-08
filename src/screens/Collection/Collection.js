@@ -39,10 +39,8 @@ function Collection() {
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
   const [skip, setSkip] = useState(0);
   const take = 10;
-
   // Fetch collection details from slug
   const collection = collections?.find((c) => c.slug === slug);
-
   const [fetchProducts, { loading: initialLoading }] = useLazyQuery(PRODUCTS, {
     onCompleted: (data) => {
       const newProducts = data?.collection.productVariants?.items || [];
@@ -88,6 +86,7 @@ function Collection() {
     setSkip(0);
     setHasMore(true);
     setIsLoadingMore(false);
+    setInitialLoadCompleted(false);
     loadingRef.current = false;
     lastRequestedSkipRef.current = 0;
 
@@ -117,7 +116,7 @@ function Collection() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [loadMoreProducts, hasMore]);
 
-  return collectionLoading ? (
+  return collectionLoading && !initialLoadCompleted ? (
     <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2 }}>
       <CircularProgress />
     </Box>
@@ -137,7 +136,7 @@ function Collection() {
       {collection?.slug !== 'services' && products.length !== 0 && (
         <DoubleCellLayoutType1 products={products} />
       )}
-      {products.length === 0 && initialLoadCompleted && (
+      {initialLoadCompleted && products.length === 0 && (
         <Stack gap={2} sx={{ display: 'flex', alignItems: 'center', mt: 5 }}>
           <Typography
             variant="h6"

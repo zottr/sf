@@ -271,7 +271,6 @@ function OrderDetails() {
                 </Button>
               </Grid>
             </Grid>
-
             <Grid item xs={12}>
               <Stack
                 gap={2}
@@ -504,6 +503,30 @@ function OrderDetails() {
                   </Typography>
                 </Box>
               </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Stack
+                sx={{
+                  bgcolor: 'primary.lightsurface',
+                  p: 2,
+                  mt: 2,
+                  border: '1px solid grey',
+                }}
+              >
+                <Typography variant="h8" sx={{ mb: 1, color: 'grey.900' }}>
+                  Order Instructions
+                </Typography>
+                <Typography
+                  variant="heavyb2"
+                  sx={{
+                    mb: 1,
+                    color: 'grey.900',
+                    wordWrap: 'break-word', // Ensures long words break and wrap onto the next line
+                  }}
+                >
+                  {order.customFields?.notes}
+                </Typography>
+              </Stack>
             </Grid>
           </Grid>
         </Container>

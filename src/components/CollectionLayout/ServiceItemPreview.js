@@ -44,13 +44,13 @@ function ServiceItemPreview({ item, index, totalItems }) {
           </Grid>
           <Grid item xs={8}>
             <Stack>
-              <Typography variant="heavyb1" sx={{ color: 'grey.800' }}>
+              <Typography variant="h8" sx={{ color: 'grey.700' }}>
                 {item.product.name}
               </Typography>
               <Typography variant="heavyb2" sx={{ color: 'grey.600' }}>
                 {item.product?.customFields?.adminName}
               </Typography>
-              <Typography variant="b2" sx={{ color: 'grey.900' }}>
+              <Typography variant="b2" sx={{ color: 'grey.800' }}>
                 {strippedDescription.length > 75
                   ? `${strippedDescription.substring(0, 75)}`
                   : strippedDescription}

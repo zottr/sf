@@ -26,7 +26,6 @@ function ReplaceItemsConfirmationDialog({
   } = useContext(CartContext);
 
   useEffect(() => {
-    console.log('hii');
     if (showWarningVariantId === productVariantId) {
       setDialogOpen(true);
     }

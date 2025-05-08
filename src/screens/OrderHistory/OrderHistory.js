@@ -35,7 +35,6 @@ function OrderHistory() {
     const fetchedOrders = getSavedOrdersFromLocalStorage();
     if (fetchedOrders) {
       setOrders([...fetchedOrders].reverse()); // Reverse orders here
-      console.log('fetchedOrders:', fetchedOrders);
     }
     setLoading(false);
   }, [getSavedOrdersFromLocalStorage]);
@@ -90,7 +89,7 @@ function OrderHistory() {
             </Box>
           ) : (
             <>
-              {orders && orders.length < 1 && (
+              {orders && orders.length === 0 && (
                 <Stack
                   gap={4}
                   sx={{
@@ -131,7 +130,7 @@ function OrderHistory() {
                   />
                 </Stack>
               )}
-              {orders && orders.length > 1 && (
+              {orders && orders.length > 0 && (
                 <Stack>
                   {orders?.map((order, index) => (
                     <Box

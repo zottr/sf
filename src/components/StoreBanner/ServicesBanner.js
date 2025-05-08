@@ -8,6 +8,7 @@ function ServicesBanner() {
         overflow: 'hidden', // hides any overflow caused by zoom
         width: '100%',
         mr: -1,
+        mb: 2,
         height: '240px',
       }}
     >

@@ -44,6 +44,8 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
     address: '',
   });
 
+  const [orderNotes, setOrderNotes] = useState('');
+
   const [saveFormData, setSaveFormData] = useState(true); // checkbox state
   const [fetchedFromStorage, setFetchedFromStorage] = useState(false); // to show badge
 
@@ -144,6 +146,7 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
         customFields: {
           adminId: adminId,
           adminStatus: 'new',
+          notes: orderNotes,
         },
       };
       try {
@@ -177,6 +180,7 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
         const finalOrder = orderData.addPaymentToOrder;
 
         if (finalOrder?.id) {
+          console.log('finalOrder:', finalOrder);
           let notificationError = false;
           try {
             await axiosClient.post('admin-user/notify-order', {
@@ -200,13 +204,11 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
           }
           if (!notificationError) {
             // if (true) {
-            console.log('order placed and user notified successfully');
             //setActiveOrder(null);
             //fetch recently placed order
             const fetchedOrder = await getOrder(finalOrder?.code);
             //fetch admin info
             const adminInfo = await getAdminInfo(adminId);
-            console.log('fetchedOrder:', fetchedOrder);
             completeCheckout(fetchedOrder, adminInfo);
           }
         }
@@ -241,11 +243,6 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
       localStorage.setItem('checkout_save_form_checkbox', checked);
   };
 
-  console.log('Render check:', { serviceError, isPlacingOrder });
-  useEffect(() => {
-    console.log('Service error changed:', serviceError);
-  }, [serviceError]);
-
   useEffect(() => {
     if (checkout) {
       // Reset error states when dialog opens
@@ -262,8 +259,6 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
         const savedCheckbox = localStorage.getItem(
           'checkout_save_form_checkbox'
         );
-        console.log('savedForm:', savedForm);
-        console.log('savedCheckbox:', savedCheckbox);
         if (savedCheckbox !== null) {
           setSaveFormData(savedCheckbox === 'true');
         }
@@ -428,6 +423,32 @@ function OrderCheckout({ checkout, completeCheckout, closeCheckout }) {
                     sx={{ width: '80%', input: { color: 'grey.900' } }}
                   />
                 </Stack>
+                <TextField
+                  multiline
+                  minRows={1}
+                  inputProps={{ maxLength: 200 }} // <-- limit to 200 characters
+                  id="address"
+                  name="address"
+                  label=<Typography variant="b1" sx={{ color: 'grey.700' }}>
+                    Order Instructions (if any)
+                  </Typography>
+                  variant="standard"
+                  value={orderNotes}
+                  onChange={(e) => {
+                    setOrderNotes(e.target.value);
+                  }}
+                  helperText={
+                    validationErrors.address && validationErrorMessages.address
+                  }
+                  sx={{
+                    width: '100%',
+                    // input: { color: 'grey.900' }, - for single line input
+                    '& .MuiInputBase-input': {
+                      //for multi-line input (text area)
+                      color: 'grey.900',
+                    },
+                  }}
+                />
                 <FormControlLabel
                   control={
                     <Checkbox

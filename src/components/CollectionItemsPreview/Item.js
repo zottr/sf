@@ -10,7 +10,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import { Link as RouterLink } from 'react-router-dom';
 import placeholderLogo from '/logos/zottr_logo_small2_grey_white.svg';
 
-function Item({ item }) {
+function Item({ item, collectionSlug }) {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -37,9 +37,7 @@ function Item({ item }) {
             objectPosition: 'center',
             borderRadius: '10px',
           }}
-          src={`${item.featuredAsset?.preview}?preset=${
-            isDesktop ? 'medium' : 'thumb'
-          }`}
+          src={`${item.featuredAsset?.preview}?preset=small`}
           alt={item.name}
         />
       </Box>
@@ -47,7 +45,6 @@ function Item({ item }) {
         <Typography
           variant="heavyb2"
           sx={{
-            // textAlign: 'center',
             color: theme.palette.grey[900],
             //avoid word spilling
             wordWrap: 'break-word', // Ensures long words break and wrap onto the next line
@@ -66,7 +63,6 @@ function Item({ item }) {
           variant="b3"
           sx={{
             color: theme.palette.grey[700],
-            // textAlign: 'center',
             //avoid word spilling
             wordWrap: 'break-word', // Ensures long words break and wrap onto the next line
             whiteSpace: 'normal', // Allows the text to wrap within the container
@@ -80,23 +76,25 @@ function Item({ item }) {
         >
           {item?.customFields?.adminName}
         </Typography>
-        <Typography
-          variant="heavyb2"
-          sx={{
-            color: 'hsl(39,100%,40%)',
-            // textAlign: 'center',
-            //avoid word spilling
-            wordWrap: 'break-word', // Ensures long words break and wrap onto the next line
-            whiteSpace: 'normal', // Allows the text to wrap within the container
-            width: '100%', // Ensure the text takes up the full width of its container
-            //price shouldn't extend more than 1 line
-            display: 'block',
-            maxHeight: '1.43em',
-            overflow: 'hidden',
-          }}
-        >
-          ₹{Number(item.variants[0].price ?? 0) / 100}
-        </Typography>
+        {collectionSlug !== 'services' && (
+          <Typography
+            variant="heavyb2"
+            sx={{
+              color: 'hsl(39,100%,40%)',
+              // textAlign: 'center',
+              //avoid word spilling
+              wordWrap: 'break-word', // Ensures long words break and wrap onto the next line
+              whiteSpace: 'normal', // Allows the text to wrap within the container
+              width: '100%', // Ensure the text takes up the full width of its container
+              //price shouldn't extend more than 1 line
+              display: 'block',
+              maxHeight: '1.43em',
+              overflow: 'hidden',
+            }}
+          >
+            ₹{Number(item.variants[0].price ?? 0) / 100}
+          </Typography>
+        )}
       </Stack>
     </Box>
   );

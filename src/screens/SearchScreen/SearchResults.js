@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import { handleError } from '../../context/ErrorContext';
+import noItemsFoundImage from '/images/no_items_found.svg';
 
 const SEARCH_PRODUCTS_QUERY = gql`
   ${SEARCH_PRODUCTS}
@@ -148,11 +149,8 @@ function SearchResults() {
       <Grid container rowSpacing={2}>
         <Grid item xs={12}>
           <Container>
-            <Typography
-              variant="heavylabel1"
-              sx={{ color: theme.palette.grey[800] }}
-            >
-              Search results for "{input}"
+            <Typography variant="h6" sx={{ color: theme.palette.grey[800] }}>
+              Search results for "{input}" :
             </Typography>
           </Container>
         </Grid>
@@ -171,33 +169,30 @@ function SearchResults() {
           }}
         >
           {!loading && results.length === 0 && (
-            <Stack sx={{ marginTop: '20px' }}>
+            <Stack gap={2} sx={{ marginTop: '20px' }}>
+              <Stack className="flexCenter" gap={0.5}>
+                <Typography
+                  variant="h5"
+                  sx={{ color: theme.palette.grey[600], textAlign: 'center' }}
+                >
+                  No items found
+                </Typography>
+                <Typography
+                  variant="heavyb1"
+                  sx={{ color: theme.palette.grey[500], textAlign: 'center' }}
+                >
+                  Try modifying the search query.
+                </Typography>
+              </Stack>
               <Box
+                component="img"
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
+                  width: '14rem',
+                  objectFit: 'contain',
+                  objectPosition: 'center',
                 }}
-              >
-                <SearchOffIcon
-                  sx={{
-                    fontSize: '48px',
-                    color: theme.palette.grey[500],
-                    marginX: 'auto',
-                  }}
-                />
-              </Box>
-              <Typography
-                variant="h6"
-                sx={{ color: theme.palette.grey[500], textAlign: 'center' }}
-              >
-                No results found
-              </Typography>
-              <Typography
-                variant="heavyb2"
-                sx={{ color: theme.palette.grey[500], textAlign: 'center' }}
-              >
-                Try searching again
-              </Typography>
+                src={noItemsFoundImage}
+              />
             </Stack>
           )}
         </Grid>
@@ -213,6 +208,27 @@ function SearchResults() {
             >
               <CircularProgress />
             </Box>
+          )}
+        </Grid>
+        <Grid item xs={12}>
+          {/* No more products message */}
+          {!hasMore && results.length !== 0 && (
+            <Stack
+              direction="row"
+              sx={{
+                display: 'flex',
+                alignItems: 'baseline',
+                justifyContent: 'center',
+                mt: -4,
+              }}
+            >
+              <Typography variant="heavyb1" color="brown">
+                That's all!
+              </Typography>
+              <Typography variant="b1" sx={{ fontSize: '20px' }}>
+                &#x1F44B;
+              </Typography>
+            </Stack>
           )}
         </Grid>
       </Grid>

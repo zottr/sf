@@ -33,7 +33,6 @@ const useAdminInfo = ({ adminId }: UseAdminInfoParams) => {
           `admin-user/get-info/${adminId}`
         );
         setAdminData(response.data);
-        console.log('response.data', response.data);
       } catch (err) {
         setError('Failed to fetch admin info.');
       } finally {

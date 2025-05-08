@@ -63,7 +63,6 @@ function FilledCart({
   };
 
   const completeCheckout = (order, admin) => {
-    console.log('called');
     setCheckout(false);
     localStorage.removeItem('userToken');
     setActiveOrder(null);
@@ -75,8 +74,6 @@ function FilledCart({
   const closeCheckout = () => {
     setCheckout(false);
   };
-
-  console.log('activeOrder:', activeOrder);
 
   return (
     <>
@@ -163,7 +160,7 @@ function FilledCart({
                         // border: '1px solid hsl(84, 100%, 50%)',
                         borderRadius: '10px',
                       }}
-                      src={`${orderLine.featuredAsset?.preview}?preset=thumb`}
+                      src={`${orderLine.featuredAsset?.preview}?preset=small`}
                     />
                   </Box>
                 </Grid>

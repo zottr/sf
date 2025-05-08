@@ -24,7 +24,7 @@ function ServicesCollectionLayout({ products }) {
   return (
     <>
       <Container>
-        <Stack gap={2}>
+        <Stack gap={1}>
           {products.map((item, index) => (
             <ServiceItemPreview
               item={item}

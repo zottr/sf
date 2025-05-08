@@ -627,6 +627,10 @@ export const GET_ORDER_BY_CODE = gql`
       ...OrderDetails
       updatedAt
       createdAt
+      customFields {
+        adminId
+        notes
+      }
       customer {
         id
         emailAddress

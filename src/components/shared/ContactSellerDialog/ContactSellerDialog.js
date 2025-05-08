@@ -23,9 +23,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 function ContactSellerDialog({ open, onClose, order, admin }) {
-  console.log(order);
-  console.log('admin:', admin);
-
   // const chatWithSeller = () => {
   //   const adminId =
   //     order.lines?.[0]?.productVariant?.product?.customFields?.adminId;
@@ -75,68 +72,72 @@ function ContactSellerDialog({ open, onClose, order, admin }) {
   // };
 
   const chatWithSeller = () => {
-    const adminId =
-      order.lines?.[0]?.productVariant?.product?.customFields?.adminId;
-    const sellerStoreUrl = `https://urbanahaat.zottr.com/seller/${adminId}`;
+    if (order) {
+      const adminId =
+        order.lines?.[0]?.productVariant?.product?.customFields?.adminId;
+      const sellerStoreUrl = `https://urbanahaat.zottr.com/seller/${adminId}`;
 
-    const orderItems = order.lines
-      .map((line) => {
-        const name = line.productVariant.name;
-        const quantity = line.quantity;
-        return `${name} (_quantity_ : ${quantity})`;
-      })
-      .join('\n');
+      const orderItems = order.lines
+        .map((line) => {
+          const name = line.productVariant.name;
+          const quantity = line.quantity;
+          return `${name} (_quantity_ : ${quantity})`;
+        })
+        .join('\n');
 
-    const fullName =
-      `${order.customer.firstName} ${order.customer.lastName}`.trim();
-    const address = order.shippingAddress?.streetLine1 ?? '';
-    const phone = order.customer?.phoneNumber ?? '';
-    //   const inquiryText =
-    //     `Hi, I've placed an order on ${sellerStoreUrl} with order ID *#${order.id}*.\n` +
-    //     `Can you give order status and expected delivery time?\n\n` +
-    //     `🛍️ *Order Items*\n\n` +
-    //     `${orderItems
-    //       .split('\n')
-    //       .map((item) => `• ${item}`)
-    //       .join('\n')}\n\n` +
-    //     `📦 *Delivery Details*\n\n` +
-    //     `👤 Name: ${fullName}\n` +
-    //     `🏠 Address: ${address}\n` +
-    //     `📞 Contact: +91${phone}`;
+      const fullName =
+        `${order.customer.firstName} ${order.customer.lastName}`.trim();
+      const address = order.shippingAddress?.streetLine1 ?? '';
+      const phone = order.customer?.phoneNumber ?? '';
+      //   const inquiryText =
+      //     `Hi, I've placed an order on ${sellerStoreUrl} with order ID *#${order.id}*.\n` +
+      //     `Can you give order status and expected delivery time?\n\n` +
+      //     `🛍️ *Order Items*\n\n` +
+      //     `${orderItems
+      //       .split('\n')
+      //       .map((item) => `• ${item}`)
+      //       .join('\n')}\n\n` +
+      //     `📦 *Delivery Details*\n\n` +
+      //     `👤 Name: ${fullName}\n` +
+      //     `🏠 Address: ${address}\n` +
+      //     `📞 Contact: +91${phone}`;
 
-    //   const inquiryText = `
-    //   Hi, I've placed an order on ${sellerStoreUrl} with order ID *#${order.id}*.
-    //   Can you give order status and expected delivery time?
+      //   const inquiryText = `
+      //   Hi, I've placed an order on ${sellerStoreUrl} with order ID *#${order.id}*.
+      //   Can you give order status and expected delivery time?
 
-    //   🛍️ *Order Items*
-    //   ------------------
-    //   ${orderItems
-    //     .split('\n')
-    //     .map((item) => `• ${item}`)
-    //     .join('\n')}
+      //   🛍️ *Order Items*
+      //   ------------------
+      //   ${orderItems
+      //     .split('\n')
+      //     .map((item) => `• ${item}`)
+      //     .join('\n')}
 
-    //   📦 *Delivery Details*
-    //   -----------------------
-    //   👤 Name: ${fullName}
-    //   🏠 Address: ${address}
-    //   📞 Contact: +91${phone}
-    // `;
-    const inquiryText =
-      `Hi, I've placed an order on ${sellerStoreUrl} with order ID *#${order.id}*.\n` +
-      `Can you give order status and expected delivery time?\n\n` +
-      `🛍️ *Order Items*\n` +
-      `------------------\n` +
-      `${orderItems
-        .split('\n')
-        .map((item) => `• ${item}`)
-        .join('\n')}\n\n` +
-      `🛵 *Delivery Details*\n` +
-      `----------------------\n` +
-      `👤 _Name_ : ${fullName}\n` +
-      `🏠 _Address_ : ${address}\n` +
-      `📞 _Contact_ : +91${phone}`;
+      //   📦 *Delivery Details*
+      //   -----------------------
+      //   👤 Name: ${fullName}
+      //   🏠 Address: ${address}
+      //   📞 Contact: +91${phone}
+      // `;
+      const inquiryText =
+        `Hi, I've placed an order on ${sellerStoreUrl} with order ID *#${order.id}*.\n` +
+        `Can you give order status and expected delivery time?\n\n` +
+        `🛍️ *Order Items*\n` +
+        `------------------\n` +
+        `${orderItems
+          .split('\n')
+          .map((item) => `• ${item}`)
+          .join('\n')}\n\n` +
+        `🛵 *Delivery Details*\n` +
+        `----------------------\n` +
+        `👤 _Name_ : ${fullName}\n` +
+        `🏠 _Address_ : ${address}\n` +
+        `📞 _Contact_ : +91${phone}`;
 
-    openWhatsAppChat(admin.phoneNumber, inquiryText);
+      openWhatsAppChat(admin.phoneNumber, inquiryText);
+    } else {
+      openWhatsAppChat(admin.phoneNumber);
+    }
 
     // const encodedMessage = encodeURIComponent(inquiryText);
     // const whatsappUrl = `https://wa.me/91${phoneNumber}?text=${encodedMessage}`;
@@ -157,9 +158,10 @@ function ContactSellerDialog({ open, onClose, order, admin }) {
     >
       <DialogTitle>
         <Typography variant="h6" sx={{ color: 'secondary.dark' }}>
-          Check Order Status
+          {order ? 'Check Order Status' : 'Contact Seller'}
         </Typography>
       </DialogTitle>
+
       <DialogContent>
         <Stack gap={1.5} className="flexCenter">
           <Button

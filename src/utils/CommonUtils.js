@@ -1,12 +1,26 @@
 // utils.js
 export const openWhatsAppChat = (phoneNumber, text = '') => {
-  const cleanedNumber = phoneNumber.replace(/\D/g, ''); // removes + and non-digits
+  const defaultCountryCode = '91';
+  let cleanedNumber = phoneNumber.replace(/\D/g, ''); // removes + and non-digits
+  if (cleanedNumber.length == 10) {
+    cleanedNumber = defaultCountryCode + cleanedNumber;
+  }
   const encodedText = encodeURIComponent(text);
-  const url = text
-    ? `https://wa.me/${cleanedNumber}?text=${encodedText}`
-    : `https://wa.me/${cleanedNumber}`;
-  window.location.href = url;
+  const url =
+    text !== ''
+      ? `https://api.whatsapp.com/send/?phone=${cleanedNumber}&text=${encodedText}&type=phone_number&app_absent=0`
+      : `https://wa.me/${cleanedNumber}`;
+  window.open(url, '_blank');
 };
+
+// export const openWhatsAppChat = (phoneNumber, text = '') => {
+//   const cleanedNumber = phoneNumber.replace(/\D/g, ''); // removes + and non-digits
+//   const encodedText = encodeURIComponent(text);
+//   const url = text
+//     ? `https://wa.me/${cleanedNumber}?text=${encodedText}`
+//     : `https://wa.me/${cleanedNumber}`;
+//   window.location.href = url;
+// };
 
 export const initiateAudioCall = (phoneNumber) => {
   const audioCallUrl = `tel:+91${phoneNumber}`;

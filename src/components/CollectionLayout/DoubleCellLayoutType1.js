@@ -44,7 +44,7 @@ function DoubleCellLayoutType1({ products }) {
                   objectPosition: 'center',
                   bgcolor: 'grey.50',
                 }}
-                src={`${item.product.featuredAsset?.preview}?preset=medium`}
+                src={`${item.product.featuredAsset?.preview}?preset=small`}
                 alt={item.product.name}
               />
               <Stack sx={{ display: 'flex' }}>

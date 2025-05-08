@@ -73,7 +73,7 @@ function SellerScreen() {
     {
       onCompleted: (data) => {
         const newItems = data?.products?.items || [];
-        console.log('newItems:', newItems);
+
         // If skip is 0, this is an initial load — replace
         if (lastRequestedSkipRefProducts.current === 0) {
           setProducts(newItems);
@@ -99,7 +99,7 @@ function SellerScreen() {
     {
       onCompleted: (data) => {
         const newItems = data?.products?.items || [];
-        console.log('newItems:', newItems);
+
         // If skip is 0, this is an initial load — replace
         if (lastRequestedSkipRefServices.current === 0) {
           setServices(newItems);
@@ -128,8 +128,6 @@ function SellerScreen() {
       !initialLoadCompletedProducts
     )
       return;
-
-    console.log('initialLoadingProducts:', initialLoadingProducts);
 
     const newSkip = skipProducts + take;
     loadingRefProducts.current = true;
@@ -165,7 +163,6 @@ function SellerScreen() {
       !initialLoadCompletedServices
     )
       return;
-    console.log('initialLoadingServices:', initialLoadingServices);
     const newSkip = skipServices + take;
     loadingRefServices.current = true;
     lastRequestedSkipRefServices.current = newSkip;
@@ -194,7 +191,6 @@ function SellerScreen() {
 
   useEffect(() => {
     if (tabIndex === 0) {
-      console.log('effect ran for tab 0');
       setAdminId(sellerId);
       setProducts([]);
       setInitialLoadCompletedProducts(false);
@@ -219,7 +215,6 @@ function SellerScreen() {
         });
       }, 0);
     } else {
-      console.log('effect ran for tab 1');
       setAdminId(sellerId);
       setServices([]);
       setInitialLoadCompletedServices(false);
@@ -467,7 +462,10 @@ function SellerScreen() {
                       }}
                     >
                       {services.length !== 0 && (
-                        <DoubleCellLayoutSellerProducts items={services} />
+                        <DoubleCellLayoutSellerProducts
+                          items={services}
+                          itemType="service"
+                        />
                       )}
                       {services.length === 0 &&
                         initialLoadCompletedServices && (

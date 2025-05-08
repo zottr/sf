@@ -5,7 +5,7 @@ import AddToCartButton from '../../screens/Product/AddToCartButton';
 import ReplaceItemsConfirmationDialog from '../../screens/Product/ReplaceItemsConfirmationDialog';
 import placeholderLogo from '/logos/zottr_logo_small2_grey_white.svg';
 
-function DoubleCellLayoutSellerProducts({ items }) {
+function DoubleCellLayoutSellerProducts({ items, itemType = 'product' }) {
   const theme = useTheme();
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -46,7 +46,7 @@ function DoubleCellLayoutSellerProducts({ items }) {
                       objectPosition: 'center',
                       bgcolor: 'grey.50',
                     }}
-                    src={`${product.featuredAsset?.preview}`}
+                    src={`${product.featuredAsset?.preview}?preset=small`}
                     alt={product.name}
                   />
                   <Stack sx={{ display: 'flex', mt: 1 }}>
@@ -78,39 +78,36 @@ function DoubleCellLayoutSellerProducts({ items }) {
                     >
                       {product.customFields?.adminName}
                     </Typography>
-                    <Typography
-                      variant="heavyb2"
-                      sx={{
-                        color: 'hsl(39,100%,40%)',
-                        wordWrap: 'break-word',
-                        whiteSpace: 'normal',
-                        width: '100%',
-                        display: 'block',
-                        maxHeight: '1.43em',
-                        overflow: 'hidden',
-                      }}
-                    >
-                      ₹{Number(product.variants[0]?.price ?? 0) / 100}
-                    </Typography>
+                    {itemType !== 'service' && (
+                      <Typography
+                        variant="heavyb2"
+                        sx={{
+                          color: 'hsl(39,100%,40%)',
+                          wordWrap: 'break-word',
+                          whiteSpace: 'normal',
+                          width: '100%',
+                          display: 'block',
+                          maxHeight: '1.43em',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        ₹{Number(product.variants[0]?.price ?? 0) / 100}
+                      </Typography>
+                    )}
                   </Stack>
                 </Link>
-                <Box sx={{ width: '90%', mt: 1 }}>
-                  <AddToCartButton
-                    productVariantId={product.variants[0]?.id}
-                    adminId={product.customFields?.adminId}
-                    adminName={product.customFields?.adminName}
-                    buttonTextVariant="label2"
-                    buttonHeight="2.1rem"
-                    setSelectedProduct={setSelectedProduct}
-                    // onClick={() =>
-                    //   setSelectedProduct({
-                    //     productVariantId: product.variants[0]?.id,
-                    //     adminId: product.customFields?.adminId,
-                    //     adminName: product.customFields?.adminName,
-                    //   })
-                    // }
-                  />
-                </Box>
+                {itemType !== 'service' && (
+                  <Box sx={{ width: '90%', mt: 1 }}>
+                    <AddToCartButton
+                      productVariantId={product.variants[0]?.id}
+                      adminId={product.customFields?.adminId}
+                      adminName={product.customFields?.adminName}
+                      buttonTextVariant="label2"
+                      buttonHeight="2.1rem"
+                      setSelectedProduct={setSelectedProduct}
+                    />
+                  </Box>
+                )}
               </Stack>
             </Grid>
             {/* <ReplaceItemsConfirmationDialog

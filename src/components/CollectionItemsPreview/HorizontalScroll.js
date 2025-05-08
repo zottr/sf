@@ -8,6 +8,7 @@ import {
   Box,
   Divider,
   useMediaQuery,
+  Link,
 } from '@mui/material';
 import CollectionLinkItem from './CollectionLinkItem';
 import Item from './Item';
@@ -79,23 +80,32 @@ const HorizontalScroll = ({ collection }) => {
           {collection.slug !== 'services' && <Divider />}
         </Stack>
       </Container>
-      {collection.slug === 'services' && <ServicesBanner />}
+      {collection.slug === 'services' && (
+        <Link
+          component={RouterLink}
+          to={`/collection/${collection.slug}`}
+          style={{ textDecoration: 'none' }}
+        >
+          <ServicesBanner />
+        </Link>
+      )}
       {loading && <ItemsSkeleton />}
       {!loading && (
         <Box className="horizontal-scroll">
           {items.map((product) => (
-            <Item key={product.product.slug} item={product.product} />
+            <Item
+              key={product.product.slug}
+              item={product.product}
+              collectionSlug={collection.slug}
+            />
           ))}
           <CollectionLinkItem
             name={collection.name}
-            preview={`${collection?.featuredAsset?.preview}?preset=${
-              isDesktop ? 'medium' : 'thumb'
-            }`}
+            preview={`${collection?.featuredAsset?.preview}?preset=small`}
             slug={collection.slug}
           />
         </Box>
       )}
-
       <Container>
         <Box
           sx={{

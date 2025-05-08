@@ -101,8 +101,6 @@ function SearchScreen({ open, close }) {
     }
   }
 
-  console.log('suggestions:', suggestions);
-
   return (
     <>
       <Dialog
@@ -230,7 +228,7 @@ function SearchScreen({ open, close }) {
                           >
                             <Avatar
                               alt={suggestion.productName}
-                              src={`${suggestion.productAsset?.preview}?preset=thumb`}
+                              src={`${suggestion.productAsset?.preview}?preset=small`}
                               variant="rounded"
                               sx={{
                                 width: '60px',

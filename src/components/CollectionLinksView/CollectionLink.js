@@ -31,7 +31,7 @@ function CollectionLink(props) {
             backgroundImage: `url(${props.item?.featuredAsset?.preview.replace(
               /\\/g,
               '/'
-            )}?preset=thumb)`,
+            )}?preset=small)`,
             width: '100%',
             height: '100%',
             objectFit: 'cover',

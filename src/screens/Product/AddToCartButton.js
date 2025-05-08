@@ -37,9 +37,7 @@ function AddToCartButton({
   }
 
   const handleAdd = () => {
-    console.log('handleadd');
     if (typeof setSelectedProduct === 'function') {
-      console.log('handleadd2');
       setSelectedProduct({
         productVariantId: productVariantId,
         adminId: adminId,

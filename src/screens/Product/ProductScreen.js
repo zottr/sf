@@ -17,7 +17,6 @@ import { GET_PRODUCT, GET_PRODUCTS_WITH_OPTIONS } from '../../apollo/server';
 import ProductImages from './ProductImages';
 import useAdminInfo from '../../customhooks/useAdminInfo';
 import SellerInfo from './SellerInfo';
-import Item from '../../components/CollectionItemsPreview/Item';
 import CallActionButtons from '../../components/shared/CallActionButtons';
 import ReplaceItemsConfirmationDialog from './ReplaceItemsConfirmationDialog';
 import AddToCartButton from './AddToCartButton';
@@ -60,7 +59,6 @@ function ProductScreen() {
     const product = data?.product;
     if (product) {
       setProduct(product);
-      console.log('product:', product);
       if (product.collections[0].slug === 'services') setIsService(true);
       setProductVariantId(product?.variantList?.items[0]?.id);
     }
@@ -122,7 +120,7 @@ function ProductScreen() {
         <Stack
           direction="row"
           gap={1}
-          sx={{ display: 'flex', alignItems: 'center', mt: 1 }}
+          sx={{ display: 'flex', alignItems: 'center', mt: 2 }}
         >
           <Typography variant="h8" sx={{ color: 'grey.700' }}>
             {product.name}
@@ -131,19 +129,19 @@ function ProductScreen() {
       </Container>
       <ProductImages images={product.assets} />
       <Container sx={{ px: 1 }}>
-        <Stack gap={1} sx={{ mt: 2, px: 0.5 }}>
+        <Stack gap={1} sx={{ px: 0.5 }}>
           <Stack gap={1}>
-            <Stack direction="row" gap={2} sx={{ my: 1 }}>
+            <Stack direction="row" gap={2} sx={{}}>
               {!isService && (
                 <Typography variant="h5" sx={{ color: 'grey.900' }}>
                   ₹{Number(product?.variantList?.items[0]?.price ?? 0) / 100}
                 </Typography>
               )}
-              <ShareButton
+              {/* <ShareButton
                 text={product.description}
                 title={product.name}
                 url={`${window.location.href.replace(/\/$/, '')}/share`}
-              />
+              /> */}
             </Stack>
             {!isService && (
               <Box sx={{ width: '100%', mt: 1 }}>
@@ -175,50 +173,64 @@ function ProductScreen() {
           >
             {/* {product.description} */}
           </Typography>
+          <ShareButton
+            text={product.description}
+            title={product.name}
+            url={`${window.location.href.replace(/\/$/, '')}/share`}
+          />
         </Stack>
         {/* Similar Products */}
-        {similarProductsLoading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2 }}>
-            <CircularProgress />
-          </Box>
-        ) : similarProducts.length > 1 ? (
-          <Stack
-            gap={2}
-            sx={{ display: 'flex', alignItems: 'flex-start', mt: 2, mb: 1 }}
-          >
-            <Typography variant="h7" sx={{ color: theme.palette.grey[700] }}>
-              Other {isService ? 'services' : 'products'} by{' '}
-              {adminData?.businessName}
-            </Typography>
-            <DoubleCellLayoutSellerProducts items={similarProducts} />
-            <Container sx={{ px: 1, mt: 2 }}>
-              <Button
-                onClick={() => {
-                  navigate(`/seller/${adminId}`);
-                }}
-                variant="outlined"
-                sx={{
-                  width: '100%',
-                  borderRadius: '25px',
-                  borderColor: 'secondary.dark',
-                }}
+        {!isService && (
+          <>
+            {similarProductsLoading ? (
+              <Box
+                sx={{ display: 'flex', justifyContent: 'center', padding: 2 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography
-                    variant="button1"
-                    sx={{ color: 'secondary.dark' }}
+                <CircularProgress />
+              </Box>
+            ) : similarProducts.length > 1 ? (
+              <Stack
+                gap={2}
+                sx={{ display: 'flex', alignItems: 'flex-start', mt: 3 }}
+              >
+                <Typography
+                  variant="h7"
+                  sx={{ color: theme.palette.grey[600] }}
+                >
+                  Other products by {adminData?.businessName}
+                </Typography>
+                <DoubleCellLayoutSellerProducts items={similarProducts} />
+                <Container sx={{ px: 1, mt: 2 }}>
+                  <Button
+                    onClick={() => {
+                      navigate(`/seller/${adminId}`);
+                    }}
+                    variant="outlined"
+                    sx={{
+                      height: '3rem',
+                      width: '100%',
+                      borderRadius: '25px',
+                      borderColor: 'secondary.dark',
+                    }}
                   >
-                    View all products
-                  </Typography>
-                  <ArrowRightIcon
-                    fontSize="large"
-                    sx={{ color: 'secondary.dark' }}
-                  />
-                </Box>
-              </Button>
-            </Container>
-          </Stack>
-        ) : null}
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Typography
+                        variant="button1"
+                        sx={{ color: 'secondary.dark' }}
+                      >
+                        View all products
+                      </Typography>
+                      <ArrowRightIcon
+                        fontSize="large"
+                        sx={{ color: 'secondary.dark' }}
+                      />
+                    </Box>
+                  </Button>
+                </Container>
+              </Stack>
+            ) : null}
+          </>
+        )}
       </Container>
       {/* Replace Items Confirmation Dialog */}
       <ReplaceItemsConfirmationDialog

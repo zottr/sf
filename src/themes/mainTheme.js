@@ -12,7 +12,7 @@ const mainTheme = createTheme({
       light: '#FFD54F', // Soft Gold
       dark: '#FF8F00', // Deep Golden
       surface: 'hsl(42, 80%, 90%)', // Light golden cream
-      lightsurface: 'hsl(42, 80%, 97%)', // Light golden cream
+      lightsurface: 'hsl(42, 80%, 99%)', // Light golden cream
       contrastText: '#000',
     },
     secondary: {
@@ -20,6 +20,7 @@ const mainTheme = createTheme({
       light: '#4DB6AC', // Soft Aqua
       dark: '#00695C', // Dark Teal
       surface: 'hsl(174, 30%, 90%)', // Cool mint
+      lightSurface: 'hsl(174, 30%, 99%)', // Cool mint
       contrastText: '#fff',
     },
     // secondary: {

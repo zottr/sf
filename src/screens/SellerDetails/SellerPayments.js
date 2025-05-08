@@ -20,6 +20,7 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
 import WestIcon from '@mui/icons-material/West';
+import ErrorAlert from '../../components/shared/Alerts/ErrorAlert';
 
 function SellerPayments() {
   const theme = useTheme();
@@ -39,8 +40,6 @@ function SellerPayments() {
     setSnackbarMessage(message);
     setSnackbarOpen(true);
   };
-
-  console.log('adminData:', adminData);
 
   return loading ? (
     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 30 }}>
@@ -117,6 +116,18 @@ function SellerPayments() {
               </Button>
             </Box>
           </Stack>
+          {!adminData.upiName &&
+            !adminData.upiPhone &&
+            !adminData.upiId &&
+            !adminData.upiScan && (
+              <Stack className="flexCenter">
+                <ErrorAlert
+                  title="No UPI payment information available"
+                  description={`Contact ${adminData.businessName} directly to get payment details.`}
+                  variant="standard"
+                />
+              </Stack>
+            )}
           <Stack gap={1}>
             {adminData.upiName && (
               <Stack gap={1}>
@@ -246,6 +257,57 @@ function SellerPayments() {
                       border: '1px solid rgb(180,180,180)',
                     }}
                   />
+                </Box>
+                {/* Download Button */}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Button
+                    size="large"
+                    variant="contained"
+                    sx={{
+                      width: '75%',
+                      borderRadius: '25px',
+                      bgcolor: 'secondary.light',
+                      '&:hover, &:focus, &:active': {
+                        bgcolor: 'secondary.light',
+                      },
+                    }}
+                    onClick={async () => {
+                      try {
+                        const response = await fetch(adminData.upiScan, {
+                          mode: 'cors',
+                        });
+                        const blob = await response.blob();
+                        const blobUrl = window.URL.createObjectURL(blob);
+
+                        const urlParts = adminData.upiScan.split('/');
+                        const fileName =
+                          urlParts[urlParts.length - 1].split('?')[0];
+
+                        const link = document.createElement('a');
+                        link.href = blobUrl;
+                        link.download = fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        window.URL.revokeObjectURL(blobUrl);
+
+                        // ✅ Show snackbar after successful download
+                        setSnackbarMessage('QR Code downloaded successfully!');
+                        setSnackbarOpen(true);
+                      } catch (error) {
+                        console.error('Failed to download image:', error);
+                      }
+                    }}
+                  >
+                    <Typography variant="button1" sx={{ color: 'white' }}>
+                      Download QR Code
+                    </Typography>
+                  </Button>
                 </Box>
               </Stack>
             )}
