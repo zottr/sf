@@ -15,7 +15,7 @@ function Home() {
       <CollectionLinksView />
       <StoreBanner />
       {/* <Stack sx={CollectionItemsPreviewStyles}> */}
-      <Stack sx={{ margin: { md: 'auto' }, width: '100%', mt: 2 }}>
+      <Stack sx={{ width: '100%', mt: 2 }}>
         <CollectionItemsPreview />
       </Stack>
     </Stack>

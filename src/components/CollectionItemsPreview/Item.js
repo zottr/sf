@@ -12,10 +12,9 @@ import placeholderLogo from '/logos/zottr_logo_small2_grey_white.svg';
 
 function Item({ item, collectionSlug }) {
   const theme = useTheme();
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
   return (
-    <Box sx={{ width: { xs: '8rem', md: '15rem' }, marginLeft: '10px' }}>
+    <Box sx={{ width: { xs: '8rem' }, marginLeft: '10px' }}>
       <Box
         sx={{
           overflow: 'hidden',
@@ -31,8 +30,8 @@ function Item({ item, collectionSlug }) {
             e.target.src = `${placeholderLogo}`; // This should exist in /public
           }}
           sx={{
-            width: { xs: '7.5rem', md: '12rem' },
-            height: { xs: '7.5rem', md: '12rem' },
+            width: { xs: '7.5rem' },
+            height: { xs: '7.5rem' },
             objectFit: 'contain',
             objectPosition: 'center',
             borderRadius: '10px',

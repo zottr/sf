@@ -26,7 +26,6 @@ const PRODUCTS = gql`
 
 const HorizontalScroll = ({ collection }) => {
   const theme = useTheme();
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const navigate = useNavigate();
   const take = 6;
 
@@ -51,7 +50,7 @@ const HorizontalScroll = ({ collection }) => {
         >
           <Box>
             <Typography
-              variant={isDesktop ? 'h4' : 'h6'}
+              variant="h6"
               sx={{
                 textDecoration: 'none',
                 color: 'grey.900',

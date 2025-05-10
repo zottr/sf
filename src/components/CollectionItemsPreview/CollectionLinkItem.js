@@ -11,7 +11,6 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 function CollectionLinkItem(props) {
   const theme = useTheme();
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   return (
     <Link
       component={RouterLink}
@@ -21,8 +20,8 @@ function CollectionLinkItem(props) {
       <Box
         sx={{
           marginX: '10px',
-          width: { xs: '7.5rem', md: '12rem' },
-          height: { xs: '7.5rem', md: '12rem' },
+          width: { xs: '7.5rem' },
+          height: { xs: '7.5rem' },
           backgroundSize: 'cover',
           backgroundPositionX: 'center',
           backgroundPositionY: 'center',
