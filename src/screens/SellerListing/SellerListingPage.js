@@ -26,6 +26,9 @@ const SellerListingPage = () => {
   const [skip, setSkip] = useState(0);
   const take = 6;
 
+  const hostname = window.location.hostname;
+  const subdomain = hostname.split('.')[0];
+
   const loadMoreAdmins = async () => {
     if (loadingRef.current || !hasMore) return;
     loadingRef.current = true;
@@ -36,7 +39,10 @@ const SellerListingPage = () => {
         params: {
           skip: currentSkip,
           take,
-          channelToken: import.meta.env.VITE_VENDURE_CHANNEL_TOKEN,
+          channelToken:
+            subdomain === 'demo'
+              ? import.meta.env.VITE_VENDURE_DEMO_CHANNEL_TOKEN
+              : import.meta.env.VITE_VENDURE_UH_CHANNEL_TOKEN,
         },
       });
       const newSellers = response.data;
