@@ -17,27 +17,26 @@ function RemoveItemDialog({ open, item, handleItem, itemBeingRemovedId }) {
     <>
       <Dialog open={open}>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {!isItemBeingRemoved && (
+          {!isItemBeingRemoved && (
+            <Typography variant="heavyb1" sx={{ color: 'grey.700' }}>
+              Remove '{item?.productVariant?.name}' from cart?
+            </Typography>
+          )}
+          {isItemBeingRemoved && (
+            <>
               <Typography variant="heavyb1" sx={{ color: 'grey.700' }}>
-                Remove '{item?.productVariant?.name}' from cart ?
+                Removing '{item?.productVariant?.name}' from cart...
               </Typography>
-            )}
-            {isItemBeingRemoved && (
-              <>
-                <Typography variant="heavyb1" sx={{ color: 'grey.700' }}>
-                  Removing '{item?.productVariant?.name}' from cart...
-                </Typography>
-                <Box className="flexCenter">
-                  <CircularProgress
-                    thickness={4}
-                    sx={{ color: 'primary.main' }}
-                  />
-                </Box>
-              </>
-            )}
-          </DialogContentText>
+              <Box className="flexCenter">
+                <CircularProgress
+                  thickness={4}
+                  sx={{ color: 'primary.main' }}
+                />
+              </Box>
+            </>
+          )}
         </DialogContent>
+
         {!isItemBeingRemoved && (
           <DialogActions>
             <Button

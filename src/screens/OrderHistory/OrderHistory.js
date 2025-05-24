@@ -134,6 +134,7 @@ function OrderHistory() {
                 <Stack>
                   {orders?.map((order, index) => (
                     <Box
+                      key={order.code}
                       component={RouterLink}
                       to={`/order/${order.code}`}
                       sx={{ textDecoration: 'none', marginTop: '30px' }}

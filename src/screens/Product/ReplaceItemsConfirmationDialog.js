@@ -46,7 +46,7 @@ function ReplaceItemsConfirmationDialog({
   return (
     <Dialog open={dialogOpen} onClose={handleCancel}>
       <DialogTitle color="black">
-        <Typography variant="h6" sx={{ color: 'grey.900' }}>
+        <Typography variant="h6" component="span" sx={{ color: 'grey.900' }}>
           Replace cart items?
         </Typography>
       </DialogTitle>

@@ -105,7 +105,7 @@ const SellerListingPage = () => {
         ) : (
           <Grid container spacing={2} sx={{ width: '100%' }}>
             {sellers?.map((seller, index) => (
-              <Fragment>
+              <Fragment key={seller.id || index}>
                 <Grid
                   item
                   container

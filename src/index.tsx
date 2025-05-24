@@ -14,10 +14,7 @@ import i18n from './i18n';
 import { OrderProvider } from './context/OrderContext';
 import { FavoriteSellerProvider } from './context/FavoriteSellerContext';
 import mainTheme from './themes/mainTheme';
-import { ErrorProvider } from './context/ErrorContext';
-import ErrorBoundary from './components/ErrorHandling/ErrorBoundary';
 import { InstallPromptProvider } from './context/InstallPromptContext';
-import AppLayout from './AppLayout';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

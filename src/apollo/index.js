@@ -8,6 +8,8 @@ import { setContext } from '@apollo/client/link/context';
 import { setGlobalError } from '../context/ErrorContext';
 import { onError } from '@apollo/client/link/error';
 
+const hostname = window.location.hostname;
+const subdomain = hostname.split('.')[0];
 // const API_URL = `http://api.zottr.com/shop-api`;
 const API_URL = `https://shop-api.zottr.com/`;
 // const API_URL = `http://172.18.121.156:3000/shop-api`;
@@ -77,8 +79,10 @@ export const client = new ApolloClient({
     // response, we attach it to all subsequent requests.
     setContext((request, operation) => {
       const authToken = localStorage.getItem(AUTH_TOKEN_KEY);
-      const channelToken = import.meta.env.VITE_VENDURE_CHANNEL_TOKEN; //sample store token
-      //const channelToken = '';
+      let channelToken = import.meta.env.VITE_VENDURE_UH_CHANNEL_TOKEN; //urbana store token
+      if (subdomain === 'demo') {
+        channelToken = import.meta.env.VITE_VENDURE_DEMO_CHANNEL_TOKEN; //sample store token
+      }
       let headers = {};
       if (authToken) {
         headers.authorization = `Bearer ${authToken}`;
@@ -114,8 +118,21 @@ export const client = new ApolloClient({
           },
         },
       },
+      Product: {
+        fields: {
+          customFields: {
+            merge(existing = {}, incoming) {
+              return {
+                ...existing,
+                ...incoming,
+              };
+            },
+          },
+        },
+      },
     },
   }),
+
   defaultOptions: {
     watchQuery: {
       fetchPolicy: 'cache-and-network', // or 'network-only' if you want absolutely fresh data always

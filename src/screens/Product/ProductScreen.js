@@ -75,7 +75,13 @@ function ProductScreen() {
     async function fetchProducts() {
       const response = await fetchSellerProducts({
         variables: {
-          options: { filter: { adminId: { eq: adminData?.id } }, take: 5 },
+          options: {
+            filter: {
+              adminId: { eq: adminData?.id },
+              itemType: { notEq: 'service' },
+            },
+            take: 5,
+          },
         },
       });
       if (response.data) {

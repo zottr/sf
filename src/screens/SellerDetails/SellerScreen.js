@@ -303,7 +303,6 @@ function SellerScreen() {
                 value={tabIndex}
                 onChange={handleTabChange}
                 centered
-                fullWidth
                 textColor="primary"
                 indicatorColor="primary"
               >

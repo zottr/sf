@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Grid, Stack, Typography, useTheme } from '@mui/material';
 import AddToCartButton from '../../screens/Product/AddToCartButton';
@@ -13,7 +13,7 @@ function DoubleCellLayoutSellerProducts({ items, itemType = 'product' }) {
     <>
       <Grid container columnSpacing={2} rowSpacing={4}>
         {items?.map((product) => (
-          <>
+          <React.Fragment key={product.slug}>
             <Grid
               key={product.slug}
               item
@@ -115,7 +115,7 @@ function DoubleCellLayoutSellerProducts({ items, itemType = 'product' }) {
               newSellerId={product.customFields?.adminId}
               newSellerName={product.customFields?.adminName}
             /> */}
-          </>
+          </React.Fragment>
         ))}
       </Grid>
       {selectedProduct && (

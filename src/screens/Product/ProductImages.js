@@ -11,7 +11,6 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import placeholderLogo from '/logos/zottr_logo_small2_grey_white.svg';
 
 function ProductImages({ images }) {
-  console.log('images:', images);
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const sliderRef = React.useRef(null);
 

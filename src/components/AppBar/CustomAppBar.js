@@ -8,10 +8,13 @@ import UserIcon from '@mui/icons-material/PersonOutlined';
 import LocalMallIcon from '@mui/icons-material/LocalMallOutlined';
 import { Badge, Box, Stack, useTheme } from '@mui/material';
 import LogoRed from '../../assets/logos/LogoOrange.png';
+import DemoLogo from '../../assets/logos/DemoHaatLogo.png';
 import { Link } from 'react-router-dom';
 import CartContext from '../../context/CartContext';
 
 const CustomAppBar = ({ onMenuClick, onSearchClick, onUserClick }) => {
+  const hostname = window.location.hostname;
+  const subdomain = hostname.split('.')[0];
   const theme = useTheme();
   const { cartQuantity } = React.useContext(CartContext);
 
@@ -44,7 +47,11 @@ const CustomAppBar = ({ onMenuClick, onSearchClick, onUserClick }) => {
             </IconButton>
             {/* Logo */}
             <Link to="/">
-              <img src={LogoRed} alt="Logo" style={{ height: '80px' }} />
+              <img
+                src={subdomain === 'demo' ? DemoLogo : LogoRed}
+                alt="Logo"
+                style={{ height: '80px' }}
+              />
             </Link>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
