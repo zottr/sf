@@ -133,6 +133,18 @@ function Collection() {
           {collection?.name}
         </Typography>
       </Stack>
+      {initialLoading && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            padding: 2,
+            mt: 10,
+          }}
+        >
+          <CircularProgress thickness={4} size={50} />
+        </Box>
+      )}
       {collection?.slug !== 'services' && products.length !== 0 && (
         <DoubleCellLayoutType1 products={products} />
       )}

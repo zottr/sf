@@ -101,8 +101,10 @@ function ProductScreen() {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2 }}>
-        <CircularProgress />
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', padding: 2, mt: 15 }}
+      >
+        <CircularProgress thickness={4} size={55} />
       </Box>
     );
   }

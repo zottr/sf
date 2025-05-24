@@ -26,11 +26,11 @@ function ServiceItemPreview({ item, index, totalItems }) {
         to={`/product/${item.product.slug}`}
         style={{ textDecoration: 'none' }}
       >
-        <Grid container>
-          <Grid item xs={4}>
+        <Grid container columnSpacing={2}>
+          <Grid item xs={4} className="flexCenter">
             <Avatar
               alt={item.product.name}
-              src={item.product.featuredAsset?.preview}
+              src={`${item.product.featuredAsset?.preview}?preset=small`}
               variant="rounded"
               sx={{
                 width: '6rem',
@@ -43,13 +43,16 @@ function ServiceItemPreview({ item, index, totalItems }) {
             </Avatar>
           </Grid>
           <Grid item xs={8}>
-            <Stack>
-              <Typography variant="h8" sx={{ color: 'grey.700' }}>
-                {item.product.name}
-              </Typography>
-              <Typography variant="heavyb2" sx={{ color: 'grey.600' }}>
-                {item.product?.customFields?.adminName}
-              </Typography>
+            <Stack gap={1}>
+              <Stack>
+                {' '}
+                <Typography variant="h8" sx={{ color: 'grey.900' }}>
+                  {item.product.name}
+                </Typography>
+                <Typography variant="heavyb2" sx={{ color: 'grey.600' }}>
+                  {item.product?.customFields?.adminName}
+                </Typography>
+              </Stack>
               <Typography variant="b2" sx={{ color: 'grey.800' }}>
                 {strippedDescription.length > 75
                   ? `${strippedDescription.substring(0, 75)}`
