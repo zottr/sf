@@ -29,6 +29,7 @@ const ViewCartSnackbar = ({ open, message, activeOrder }) => {
           justifyContent: 'center',
           position: 'fixed',
           bottom: '10px',
+          left: { md: '3px' },
           zIndex: 1200,
         }}
       >

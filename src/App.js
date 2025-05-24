@@ -24,9 +24,25 @@ import FavoriteSellerListing from './screens/SellerListing/FavoriteSellerListing
 import SearchResults from './screens/SearchScreen/SearchResults';
 import SellerPayments from './screens/SellerDetails/SellerPayments';
 import OrderSuccess2 from './screens/OrderSuccess/OrderSuccess2';
+import { useEffect } from 'react';
 
 function App() {
   const hostname = window.location.hostname;
+
+  useEffect(() => {
+    const hostname = window.location.hostname;
+    const subdomain = hostname.split('.')[0];
+
+    let pageTitle = 'Urbana Haat';
+
+    if (subdomain === 'demo') {
+      pageTitle = 'Demo Haat';
+    } else if (subdomain === 'urbanahaat') {
+      pageTitle = 'Urbana Haat';
+    }
+    document.title = pageTitle;
+  }, []);
+
   return (
     <BrowserRouter basename="/">
       <Layout>

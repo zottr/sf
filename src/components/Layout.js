@@ -33,6 +33,9 @@ const Layout = ({ children }) => {
         }}
       >
         <MainHeader />
+        <main style={{ marginTop: '90px', marginBottom: '30px', flex: 1 }}>
+          {children}
+        </main>
         {!isCartPage && (
           <ViewCartSnackbar
             open={alertOpen}
@@ -40,9 +43,6 @@ const Layout = ({ children }) => {
             activeOrder={activeOrder}
           />
         )}
-        <main style={{ marginTop: '90px', marginBottom: '30px', flex: 1 }}>
-          {children}
-        </main>
         <Footer />
       </Box>
     </Box>
