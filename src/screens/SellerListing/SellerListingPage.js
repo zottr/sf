@@ -24,7 +24,7 @@ const SellerListingPage = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [initialLoaded, setInitialLoaded] = useState(false);
   const [skip, setSkip] = useState(0);
-  const take = 6;
+  const take = 100;
 
   const hostname = window.location.hostname;
   const subdomain = hostname.split('.')[0];
