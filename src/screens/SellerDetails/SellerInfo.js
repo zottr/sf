@@ -61,16 +61,10 @@ function SellerInfo({ adminData }) {
     <Container
       sx={{
         backgroundColor: 'hsl(48 88.2% 99.7%)',
-        // backgroundColor: 'secondary.surface',
-        // boxShadow: '0px 3px 3px rgba(0, 0, 0, 0.2)',
-        // boxShadow: '0px 1px 1px #4DB6AC',
-        // boxShadow: '1px 1px 1px 4px #FFD54F',
-        // borderBottomLeftRadius: '40px',
-        // borderBottomRightRadius: '40px',
         borderRadius: '50px',
         border: '1px solid #FFD54F',
         width: '95%',
-        p: 3,
+        p: 2,
       }}
     >
       <Stack className="flexCenter">
@@ -229,13 +223,13 @@ function SellerInfo({ adminData }) {
               }}
             >
               <Typography
-                variant="button2"
+                variant="button1"
                 sx={{ color: 'info.main', mr: 0.5 }}
               >
                 Share
               </Typography>
               <ReplyIcon
-                fontSize="small"
+                fontSize="medium"
                 sx={{ transform: 'scaleX(-1)', color: 'info.main' }}
               />
             </Button>
