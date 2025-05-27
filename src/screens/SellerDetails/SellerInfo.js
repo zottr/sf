@@ -56,7 +56,7 @@ function SellerInfo({ adminData }) {
       }
     }
   };
-  let x = 0;
+
   return (
     <Container
       sx={{
