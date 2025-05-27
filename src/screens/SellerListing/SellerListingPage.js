@@ -39,10 +39,14 @@ const SellerListingPage = () => {
         params: {
           skip: currentSkip,
           take,
+          // channelToken:
+          //   subdomain === 'demo'
+          //     ? import.meta.env.VITE_VENDURE_DEMO_CHANNEL_TOKEN
+          //     : import.meta.env.VITE_VENDURE_UH_CHANNEL_TOKEN,
           channelToken:
-            subdomain === 'demo'
-              ? import.meta.env.VITE_VENDURE_DEMO_CHANNEL_TOKEN
-              : import.meta.env.VITE_VENDURE_UH_CHANNEL_TOKEN,
+            subdomain === 'urbanahaat'
+              ? import.meta.env.VITE_VENDURE_UH_CHANNEL_TOKEN
+              : import.meta.env.VITE_VENDURE_DEMO_CHANNEL_TOKEN,
         },
       });
       const newSellers = response.data;

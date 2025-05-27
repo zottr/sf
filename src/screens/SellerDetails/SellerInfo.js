@@ -5,6 +5,7 @@ import {
   Container,
   Grid,
   IconButton,
+  Snackbar,
   Stack,
   Typography,
   useTheme,
@@ -19,6 +20,10 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useFavorites } from '../../context/FavoriteSellerContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import ContactSellerDialog from '../../components/shared/ContactSellerDialog';
+import ShareButton from '../../components/shared/ShareButton';
+import ReplyIcon from '@mui/icons-material/Reply';
+import CloseIcon from '@mui/icons-material/Close';
+import { stripHtml } from '../../utils/CommonUtils';
 
 function SellerInfo({ adminData }) {
   const theme = useTheme();
@@ -30,6 +35,26 @@ function SellerInfo({ adminData }) {
   const [openDialog, setOpenDialog] = useState(false);
   const closeDialog = () => {
     setOpenDialog(false);
+  };
+
+  const [toastOpen, setToastOpen] = useState(false);
+
+  const handleShare = async (text, url) => {
+    const message = `${stripHtml(text)}\n\n${url}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ text: message });
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        setToastOpen(true); // Show toast notification
+      } catch (error) {
+        console.error('Failed to copy:', error);
+      }
+    }
   };
 
   return (
@@ -80,7 +105,7 @@ function SellerInfo({ adminData }) {
             {adminData.tagline}
           </Typography>
         </Stack>
-        <Grid container spacing={1} sx={{ mt: 3 }}>
+        <Grid container columnSpacing={1} rowSpacing={1.5} sx={{ mt: 3 }}>
           <Grid item xs={4} className="flexCenter">
             <Button
               className="flexCenter"
@@ -177,63 +202,65 @@ function SellerInfo({ adminData }) {
               />
             </Button>
           </Grid>
-        </Grid>
-      </Stack>
-      <Stack
-        gap={1}
-        direction="row"
-        sx={{
-          width: '100%',
-          display: 'flex',
-          // alignItems: 'flex-end',
-          // justifyContent: 'flex-end',
-        }}
-      >
-        {/* <Box
-            sx={{
-              display: 'flex',
-              height: '52px',
-            }}
-          >
-            <FavButton sellerId={adminData.id} />
-          </Box>
-          <IconButton onClick={() => openWhatsAppChat(phoneNumber)}>
-            <WhatsAppIcon
-              fontSize="medium"
-              sx={{ color: 'hsl(142.4,70.2%,42.6%)' }}
-            />
-          </IconButton>
-          <IconButton onClick={() => initiateAudioCall(phoneNumber)}>
-            <CallIcon fontSize="medium" sx={{ color: 'hsl(217, 79%, 65%)' }} />
-          </IconButton> */}
-        {/* <Button
-            variant="outlined"
-            // onClick={toggleDialog}
-            onClick={() => {
-              navigate(`/seller/${query.sellerId}/payments`);
-            }}
-            sx={{
-              height: '2.5rem',
-              borderRadius: '15px',
-              borderColor: theme.palette.grey[500],
-            }}
-          >
-            <CurrencyRupeeIcon
-              fontSize="small"
-              sx={{
-                color: 'hsl(145, 63%, 39%)',
-                mr: 0.5,
+          <Grid item xs={12} className="flexCenter">
+            <Button
+              className="flexCenter"
+              onClick={() => {
+                handleShare(
+                  adminData.tagline,
+                  `${window.location.href.replace(/\/$/, '')}/share`
+                );
               }}
-            />
-            <Typography variant="button2" color={theme.palette.grey[700]}>
-              Payments
-            </Typography>
-          </Button> */}
+              variant="standard"
+              sx={{
+                width: '50%',
+                // minWidth: '50%',
+                height: '2rem',
+                borderRadius: '15px',
+                borderColor: 'secondary.main',
+                bgcolor: 'primary.lightsurface',
+                // height: '3rem',
+                // bgcolor: 'primary.main',
+                '&:hover, &:focus, &:active': {
+                  // bgcolor: 'primary.main',
+                  borderColor: 'secondary.main',
+                  bgcolor: 'primary.lightsurface',
+                },
+              }}
+            >
+              <Typography
+                variant="button2"
+                sx={{ color: 'info.main', mr: 0.5 }}
+              >
+                Share
+              </Typography>
+              <ReplyIcon
+                fontSize="small"
+                sx={{ transform: 'scaleX(-1)', color: 'info.main' }}
+              />
+            </Button>
+          </Grid>
+        </Grid>
       </Stack>
       <ContactSellerDialog
         open={openDialog}
         onClose={closeDialog}
         admin={adminData}
+      />
+      <Snackbar
+        open={toastOpen}
+        autoHideDuration={3000} // Closes after 3 seconds
+        onClose={() => setToastOpen(false)}
+        message="Store Link copied to clipboard!"
+        action={
+          <IconButton
+            size="small"
+            color="inherit"
+            onClick={() => setToastOpen(false)}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
       />
     </Container>
   );

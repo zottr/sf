@@ -79,9 +79,10 @@ export const client = new ApolloClient({
     // response, we attach it to all subsequent requests.
     setContext((request, operation) => {
       const authToken = localStorage.getItem(AUTH_TOKEN_KEY);
-      let channelToken = import.meta.env.VITE_VENDURE_UH_CHANNEL_TOKEN; //urbana store token
-      if (subdomain === 'demo') {
-        channelToken = import.meta.env.VITE_VENDURE_DEMO_CHANNEL_TOKEN; //sample store token
+      // let channelToken = import.meta.env.VITE_VENDURE_UH_CHANNEL_TOKEN; //urbana store token
+      let channelToken = import.meta.env.VITE_VENDURE_DEMO_CHANNEL_TOKEN; //urbana store token
+      if (subdomain === 'urbanahaat') {
+        channelToken = import.meta.env.VITE_VENDURE_UH_CHANNEL_TOKEN; //sample store token
       }
       let headers = {};
       if (authToken) {
