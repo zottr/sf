@@ -43,7 +43,7 @@ function SellerInfo({ adminData }) {
     const message = `${stripHtml(text)}\n\n${url}`;
     if (navigator.share) {
       try {
-        await navigator.share({ text: message });
+        await navigator.share({ text: message ?? '' });
       } catch (error) {
         console.error('Error sharing:', error);
       }

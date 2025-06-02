@@ -39,9 +39,19 @@ function ProductImages({ images }) {
             <Zoom overlayBgColorEnd="rgba(0,0,0,0.8)">
               <Box
                 component="img"
+                // onError={(e) => {
+                //   e.target.onerror = null;
+                //   e.target.src = `${logo}`;
+                // }}
+                src={`${image.preview}?preset=medium`}
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = `${logo}`;
+                  const originalSrc = image.preview;
+                  if (e.target.src.includes('?preset=')) {
+                    e.target.src = originalSrc;
+                  } else {
+                    e.target.src = `${logo}`;
+                  }
                 }}
                 sx={{
                   height: '240px',
@@ -51,7 +61,6 @@ function ProductImages({ images }) {
                   objectPosition: 'top',
                   cursor: 'zoom-in',
                 }}
-                src={`${image.preview}?preset=medium`}
                 alt={image.name}
               />
             </Zoom>
@@ -88,9 +97,19 @@ function ProductImages({ images }) {
                 component="img"
                 alt={image.name}
                 onClick={() => handleThumbnailClick(index)}
+                // onError={(e) => {
+                //   e.target.onerror = null;
+                //   e.target.src = `${logo}`;
+                // }}
+                src={`${image.preview}?preset=thumb`}
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = `${logo}`;
+                  const originalSrc = image.preview;
+                  if (e.target.src.includes('?preset=')) {
+                    e.target.src = originalSrc;
+                  } else {
+                    e.target.src = `${logo}`;
+                  }
                 }}
                 sx={{
                   width: '100%',
@@ -104,7 +123,6 @@ function ProductImages({ images }) {
                   borderRadius: '4px',
                   p: 0.3,
                 }}
-                src={`${image.preview}?preset=small`}
               />
             </Grid>
           ))}
