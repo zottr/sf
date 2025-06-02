@@ -39,11 +39,29 @@ function SellerInfo({ adminData }) {
 
   const [toastOpen, setToastOpen] = useState(false);
 
-  const handleShare = async (text, url) => {
-    const message = `${stripHtml(text)}\n\n${url}`;
+  // const handleShare = async (text, url) => {
+  //   const message = `${stripHtml(text)}\n\n${url}`;
+  //   if (navigator.share) {
+  //     try {
+  //       await navigator.share({ text: message ?? '' });
+  //     } catch (error) {
+  //       console.error('Error sharing:', error);
+  //     }
+  //   } else {
+  //     try {
+  //       await navigator.clipboard.writeText(url);
+  //       setToastOpen(true); // Show toast notification
+  //     } catch (error) {
+  //       console.error('Failed to copy:', error);
+  //     }
+  //   }
+  // };
+
+  const handleShare = async (title, text, url) => {
+    const message = `${stripHtml(text ?? '')}\n\n${url}`;
     if (navigator.share) {
       try {
-        await navigator.share({ text: message ?? '' });
+        await navigator.share({ text: message, title: title });
       } catch (error) {
         console.error('Error sharing:', error);
       }
@@ -202,6 +220,7 @@ function SellerInfo({ adminData }) {
               className="flexCenter"
               onClick={() => {
                 handleShare(
+                  adminData.businessName,
                   adminData.tagline,
                   `${window.location.href.replace(/\/$/, '')}/share`
                 );

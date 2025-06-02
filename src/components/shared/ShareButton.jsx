@@ -10,10 +10,10 @@ const ShareButton = ({ title, text, url }) => {
   const [toastOpen, setToastOpen] = useState(false);
 
   const handleShare = async () => {
-    const message = `${stripHtml(text)}\n\n${url}`;
+    const message = `${stripHtml(text ?? '')}\n\n${url}`;
     if (navigator.share) {
       try {
-        await navigator.share({ text: message ?? '' });
+        await navigator.share({ text: message, title: title });
       } catch (error) {
         console.error('Error sharing:', error);
       }
