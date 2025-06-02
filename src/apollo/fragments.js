@@ -40,6 +40,7 @@ export const CART_FRAGMENT = gql`
           customFields {
             adminId
             adminName
+            itemType
           }
         }
       }
@@ -104,6 +105,7 @@ export const ORDER_DETAILS = gql`
           customFields {
             adminId
             adminName
+            itemType
           }
         }
       }

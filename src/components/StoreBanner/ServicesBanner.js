@@ -9,7 +9,7 @@ function ServicesBanner() {
         width: '100%',
         mr: -1,
         mb: 2,
-        height: '240px',
+        height: '120px',
       }}
     >
       <Box
@@ -20,6 +20,7 @@ function ServicesBanner() {
           width: '100%',
           height: 'auto',
           objectFit: 'cover',
+          objectPosition: 'top',
           transform: 'scale(1)', // zoom by 10%
           transformOrigin: 'top', // zoom from center
         }}

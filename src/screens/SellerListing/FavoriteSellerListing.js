@@ -62,14 +62,14 @@ const FavoriteSellerListing = () => {
             variant="h5"
             sx={{ color: theme.palette.grey[800], fontWeight: 'bold' }}
           >
-            Favorite Sellers
+            Favorite Profiles
           </Typography>
         </Box>
         {!isLocalStorageAvailable() ? (
           <Box sx={{}}>
             <ErrorAlert
               title="Your web browser's local storage is disabled"
-              description="We store your Favorite Sellers list in web browser's storage. Please enable browser storage to use this feature."
+              description="We store your Favorite Profiles list in web browser's storage. Please enable browser storage to use this feature."
               variant="standard"
             />
           </Box>
@@ -96,7 +96,7 @@ const FavoriteSellerListing = () => {
                       variant="h6"
                       sx={{ color: 'grey.500', textAlign: 'center' }}
                     >
-                      You don't have any favorite sellers yet!
+                      You don't have any favorite profiles yet!
                     </Typography>
                     <Box
                       component="img"
@@ -121,7 +121,7 @@ const FavoriteSellerListing = () => {
                             xs={12}
                             key={seller.id}
                             component={Link}
-                            to={`/seller/${seller.id}`}
+                            to={`/profile/${seller.id}`}
                             sx={{
                               textDecoration: 'none',
                               color: 'inherit',

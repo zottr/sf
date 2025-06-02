@@ -32,7 +32,7 @@ function SellerInfo({ imageUrl, name, id }) {
     >
       <Link
         component={RouterLink}
-        to={`/seller/${id}`}
+        to={`/profile/${id}`}
         underline="none"
         direction="row"
         className="flexLeft"
@@ -45,8 +45,8 @@ function SellerInfo({ imageUrl, name, id }) {
           alt={name}
           src={imageUrl}
           sx={{
-            width: '2.5rem',
-            height: '2.5rem',
+            width: '3.2rem',
+            height: '3.2rem',
             border: '1px solid rgba(200,200,200,1)',
           }}
         >
@@ -58,12 +58,12 @@ function SellerInfo({ imageUrl, name, id }) {
           />
         </Avatar>
         <Stack>
-          <Typography variant="heavyb2" sx={{ color: 'grey.900' }}>
+          <Typography variant="heavyb2" sx={{ color: 'grey.700' }}>
             {name}
             {/* Rohit's store */}
           </Typography>
           <Typography variant="heavyb3" className="customLink">
-            Visit the Store
+            Visit Profile
           </Typography>
         </Stack>
       </Link>
@@ -71,8 +71,7 @@ function SellerInfo({ imageUrl, name, id }) {
         <Tooltip title="Whatsapp seller" placement="top" sx={{ p: 0 }}>
           <IconButton onClick={() => openWhatsAppChat(adminData?.phoneNumber)}>
             <WhatsAppIcon
-              fontSize="medium"
-              sx={{ color: 'hsl(142.4,70.2%,42.6%)' }}
+              sx={{ color: 'hsl(142.4,70.2%,42.6%)', fontSize: 30 }}
             />
           </IconButton>
         </Tooltip>
@@ -81,7 +80,7 @@ function SellerInfo({ imageUrl, name, id }) {
             color="info"
             onClick={() => initiateAudioCall(adminData?.phoneNumber)}
           >
-            <CallIcon fontSize="medium" sx={{ color: 'hsl(217, 79%, 65%)' }} />
+            <CallIcon sx={{ color: 'hsl(217, 79%, 65%)', fontSize: 30 }} />
           </IconButton>
         </Tooltip>
       </Stack>

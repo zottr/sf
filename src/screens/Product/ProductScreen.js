@@ -25,6 +25,7 @@ import DoubleCellLayoutSellerProducts from '../../components/SellerProducts/Doub
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { handleError } from '../../context/ErrorContext';
 import ShareButton from '../../components/shared/ShareButton';
+import { stripHtml } from '../../utils/CommonUtils';
 
 const PRODUCT = gql`
   ${GET_PRODUCT}
@@ -59,6 +60,7 @@ function ProductScreen() {
     const product = data?.product;
     if (product) {
       setProduct(product);
+      console.log('product:', product);
       if (product.collections[0].slug === 'services') setIsService(true);
       setProductVariantId(product?.variantList?.items[0]?.id);
     }
@@ -121,7 +123,7 @@ function ProductScreen() {
     <Box sx={{ overflowX: 'clip', maxWidth: '100vw' }}>
       <Container sx={{ px: 1, mb: 3 }}>
         <SellerInfo
-          imageUrl={adminData?.logo}
+          imageUrl={`${adminData?.logo}?preset=thumb`}
           name={adminData?.businessName}
           id={adminData?.id}
         />
@@ -130,7 +132,7 @@ function ProductScreen() {
           gap={1}
           sx={{ display: 'flex', alignItems: 'center', mt: 2 }}
         >
-          <Typography variant="h8" sx={{ color: 'grey.700' }}>
+          <Typography variant="h8" sx={{ color: 'grey.800' }}>
             {product.name}
           </Typography>
         </Stack>
@@ -139,20 +141,15 @@ function ProductScreen() {
       <Container sx={{ px: 1 }}>
         <Stack gap={1} sx={{ px: 0.5 }}>
           <Stack gap={1}>
-            <Stack direction="row" gap={2} sx={{}}>
-              {!isService && (
-                <Typography variant="h5" sx={{ color: 'grey.900' }}>
-                  ₹{Number(product?.variantList?.items[0]?.price ?? 0) / 100}
-                </Typography>
-              )}
-              {/* <ShareButton
-                text={product.description}
-                title={product.name}
-                url={`${window.location.href.replace(/\/$/, '')}/share`}
-              /> */}
-            </Stack>
             {!isService && (
-              <Box sx={{ width: '100%', mt: 1 }}>
+              <Stack direction="row" gap={2} sx={{ mt: 2 }}>
+                <Typography variant="h5" sx={{ color: 'secondary.dark' }}>
+                  ₹{Number(product?.variantList?.items[0]?.price ?? 0) / 100}
+                </Typography>{' '}
+              </Stack>
+            )}
+            {!isService && (
+              <Box sx={{ width: '100%', mt: 1, mb: 1 }}>
                 <AddToCartButton
                   productVariantId={productVariantId}
                   adminId={product.customFields?.adminId}
@@ -164,23 +161,19 @@ function ProductScreen() {
               </Box>
             )}
           </Stack>
-          <Typography
-            variant="b1"
-            color={theme.palette.grey[900]}
-            sx={{
-              textAlign: 'left',
-              mt: 0.5,
-              // '& p': {
-              //   // margin: '0.2em 0',
-              //   // lineHeight: 0.5,
-              // },
-            }}
-            dangerouslySetInnerHTML={{
-              __html: product.description,
-            }}
-          >
-            {/* {product.description} */}
-          </Typography>
+          {stripHtml(product.description) !== '' && (
+            <Typography
+              variant="b1"
+              color={theme.palette.grey[900]}
+              sx={{
+                textAlign: 'left',
+                mt: 0,
+              }}
+              dangerouslySetInnerHTML={{
+                __html: product.description,
+              }}
+            />
+          )}
           <ShareButton
             text={product.description}
             title={product.name}
@@ -211,7 +204,7 @@ function ProductScreen() {
                 <Container sx={{ px: 1, mt: 2 }}>
                   <Button
                     onClick={() => {
-                      navigate(`/seller/${adminId}`);
+                      navigate(`/profile/${adminId}`);
                     }}
                     variant="outlined"
                     sx={{

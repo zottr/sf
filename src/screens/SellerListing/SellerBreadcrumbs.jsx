@@ -26,7 +26,7 @@ export default function SellerBreadcrumbs({ type = '' }) {
         </Typography>
       </Link>
       <Typography variant="label2" sx={{ color: 'grey.600' }}>
-        {type === 'favorite' ? 'Favorite Sellers' : 'All Sellers'}
+        {type === 'favorite' ? 'Favorite Profiles' : 'Profiles'}
       </Typography>
     </Breadcrumbs>
   );

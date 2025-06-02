@@ -8,6 +8,16 @@ function CollectionLinksView() {
   const { collections, loading } = React.useContext(CollectionsContext);
   const theme = useTheme();
 
+  const desiredOrder = [
+    'services',
+    'food-and-drinks',
+    'grocery-and-essentials',
+    'clothing-and-accessories',
+    'beauty-and-grooming',
+    'household-items',
+    'home-and-decor',
+  ];
+
   return (
     <>
       {loading && (
@@ -23,9 +33,20 @@ function CollectionLinksView() {
       )}
       {!loading && (
         <Box className="horizontal-scroll">
-          {collections?.map((item) => (
-            <CollectionLink key={item.id} item={item} />
-          ))}
+          {collections
+            ?.slice()
+            .sort(
+              (a, b) =>
+                (desiredOrder.indexOf(a.slug) === -1
+                  ? 999
+                  : desiredOrder.indexOf(a.slug)) -
+                (desiredOrder.indexOf(b.slug) === -1
+                  ? 999
+                  : desiredOrder.indexOf(b.slug))
+            )
+            .map((item) => (
+              <CollectionLink key={item.id} item={item} />
+            ))}
         </Box>
       )}
     </>

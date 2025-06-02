@@ -160,7 +160,7 @@ function OrderDetails() {
                     Seller :
                   </Typography>
                   <Typography
-                    onClick={() => navigate(`/seller/${adminId}`)}
+                    onClick={() => navigate(`/profile/${adminId}`)}
                     variant="heavyb1"
                     noWrap
                     sx={{
@@ -242,7 +242,7 @@ function OrderDetails() {
               >
                 <Button
                   onClick={() => {
-                    navigate(`/seller/${adminId}/payments`);
+                    navigate(`/profile/${adminId}/payments`);
                   }}
                   variant="outlined"
                   sx={{

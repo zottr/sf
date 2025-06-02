@@ -57,15 +57,16 @@ function App() {
           <Route path="/search/:input" element={<SearchResults />} />
           <Route path="/collection/:slug" element={<Collection />} />
           <Route path="/seller-chat/:seller" element={<SellerChat />} />
-          <Route path="/seller/:sellerId" element={<SellerScreen />} />
+          <Route path="/profile/:sellerId" element={<SellerScreen />} />
           <Route
-            path="/seller/:sellerId/payments"
+            path="/profile/:sellerId/payments"
             element={<SellerPayments />}
           />
-          <Route path="/sellers" element={<SellerListingPage />} />
+          <Route path="/profiles" element={<SellerListingPage />} />
           <Route path="/favorite-sellers" element={<FavoriteSellerListing />} />
           <Route path="/make-payment" element={<MakePayment />} />
           <Route path="/product/:productSlug" element={<ProductScreen />} />
+          <Route path="/service/:productSlug" element={<ProductScreen />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/coupons" element={<Coupons />} />
           <Route path="/FAQs" element={<FAQs />} />

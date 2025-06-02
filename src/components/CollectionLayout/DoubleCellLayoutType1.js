@@ -13,7 +13,6 @@ import placeholderLogo from '/logos/zottr_logo_small2_grey_white.svg';
 
 function DoubleCellLayoutType1({ products }) {
   const theme = useTheme();
-
   return (
     <Grid container columnSpacing={2} rowSpacing={2} sx={{ paddingX: '10px' }}>
       {products?.map((item, index) => (
@@ -27,7 +26,11 @@ function DoubleCellLayoutType1({ products }) {
           }}
         >
           <Link
-            to={`/product/${item.product.slug}`}
+            to={
+              item.product.customFields.itemType === 'service'
+                ? `/service/${item.product.slug}`
+                : `/product/${item.product.slug}`
+            }
             style={{ textDecoration: 'none' }}
           >
             <Box>

@@ -30,7 +30,11 @@ function DoubleCellLayoutSellerProducts({ items, itemType = 'product' }) {
                 }}
               >
                 <Link
-                  to={`/product/${product.slug}`}
+                  to={
+                    product.customFields.itemType === 'service'
+                      ? `/service/${product.slug}`
+                      : `/product/${product.slug}`
+                  }
                   style={{ textDecoration: 'none' }}
                 >
                   <Box

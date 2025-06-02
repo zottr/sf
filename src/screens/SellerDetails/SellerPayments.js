@@ -42,13 +42,13 @@ function SellerPayments() {
   };
 
   return loading ? (
-    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 30 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 20 }}>
       <CircularProgress thickness={4} size={50} />
     </Box>
   ) : (
     adminData != null && (
       <Container sx={{ px: 3 }}>
-        <Stack gap={4} sx={{ mt: 10 }}>
+        <Stack gap={4} sx={{ mt: 1 }}>
           <Stack gap={1} className="flexCenter">
             <Stack
               direction="row"
@@ -75,16 +75,16 @@ function SellerPayments() {
                 <Typography
                   variant="h5"
                   sx={{
-                    color: theme.palette.grey[800],
+                    color: theme.palette.grey[900],
                     textAlign: 'center',
                   }}
                 >
                   Pay via UPI
                 </Typography>
                 <Typography
-                  variant="h7"
+                  variant="heavylabel1"
                   sx={{
-                    color: theme.palette.grey[500],
+                    color: theme.palette.grey[600],
                     textAlign: 'center',
                   }}
                 >
@@ -103,7 +103,7 @@ function SellerPayments() {
               <Button
                 variant="outlined"
                 onClick={() => {
-                  navigate(`/seller/${query.sellerId}`);
+                  navigate(`/profile/${query.sellerId}`);
                 }}
                 sx={{
                   borderRadius: '25px',
@@ -128,7 +128,7 @@ function SellerPayments() {
                 />
               </Stack>
             )}
-          <Stack gap={1}>
+          <Stack gap={1} sx={{ mt: -1 }}>
             {adminData.upiName && (
               <Stack gap={1}>
                 <Typography
@@ -179,7 +179,7 @@ function SellerPayments() {
                           onClick={() =>
                             handleCopy(
                               adminData.upiPhone,
-                              'UPI Phone Number copied to clipboard!'
+                              'UPI Phone Number copied to clipboard'
                             )
                           }
                         >
@@ -215,7 +215,7 @@ function SellerPayments() {
                           onClick={() =>
                             handleCopy(
                               adminData.upiId,
-                              'UPI ID copied to clipboard!'
+                              'UPI ID copied to clipboard'
                             )
                           }
                         >
@@ -266,14 +266,16 @@ function SellerPayments() {
                   }}
                 >
                   <Button
-                    size="large"
+                    // size="large"
                     variant="contained"
                     sx={{
-                      width: '75%',
+                      mt: 1,
+                      height: '2.7rem',
+                      width: '90%',
                       borderRadius: '25px',
-                      bgcolor: 'secondary.light',
+                      bgcolor: 'secondary.main',
                       '&:hover, &:focus, &:active': {
-                        bgcolor: 'secondary.light',
+                        bgcolor: 'secondary.main',
                       },
                     }}
                     onClick={async () => {
@@ -297,7 +299,7 @@ function SellerPayments() {
                         window.URL.revokeObjectURL(blobUrl);
 
                         // ✅ Show snackbar after successful download
-                        setSnackbarMessage('QR Code downloaded successfully!');
+                        setSnackbarMessage('QR Code downloaded successfully');
                         setSnackbarOpen(true);
                       } catch (error) {
                         console.error('Failed to download image:', error);

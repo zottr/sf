@@ -105,7 +105,7 @@ const SellerListingPage = () => {
             variant="h5"
             sx={{ color: theme.palette.grey[800], fontWeight: 'bold' }}
           >
-            All Sellers
+            All Profiles
           </Typography>
         </Box>
         {!initialLoaded ? (
@@ -122,7 +122,7 @@ const SellerListingPage = () => {
                   xs={12}
                   key={seller.id}
                   component={Link}
-                  to={`/seller/${seller.id}`}
+                  to={`/profile/${seller.id}`}
                   sx={{
                     textDecoration: 'none',
                     color: 'inherit',
@@ -133,7 +133,7 @@ const SellerListingPage = () => {
                 >
                   <Grid item xs={3}>
                     <Avatar
-                      src={seller.logo}
+                      src={`${seller.logo}?preset=thumb`}
                       alt={`${seller.businessName} Logo`}
                       sx={{
                         width: '60px',

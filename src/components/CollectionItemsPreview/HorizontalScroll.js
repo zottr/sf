@@ -69,7 +69,7 @@ const HorizontalScroll = ({ collection }) => {
               sx={{
                 color: theme.palette.grey[700],
                 display: 'block',
-                maxHeight: '1.43em',
+                // maxHeight: '1.43em',
                 overflow: 'hidden',
               }}
             >
@@ -116,8 +116,10 @@ const HorizontalScroll = ({ collection }) => {
           <Button
             onClick={() => navigate(`/collection/${collection.slug}`)}
             variant="outlined"
-            size="large"
+            // size="large"
             sx={{
+              height: '2.5rem',
+              width: '80%',
               mt: 2,
               borderRadius: '25px',
               borderColor: 'secondary.dark',
@@ -131,7 +133,7 @@ const HorizontalScroll = ({ collection }) => {
               <Typography variant="button1" sx={{ color: 'secondary.dark' }}>
                 {collection.slug === 'services'
                   ? 'View all services'
-                  : 'View all products'}
+                  : 'View all items'}
               </Typography>
               <ArrowRightIcon sx={{ color: 'secondary.dark' }} />
             </Box>

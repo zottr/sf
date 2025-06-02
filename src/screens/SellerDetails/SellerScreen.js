@@ -23,7 +23,7 @@ import FavButton from './FavButton';
 import { handleError } from '../../context/ErrorContext';
 import { initiateAudioCall, openWhatsAppChat } from '../../utils/CommonUtils';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import SellerInfo from './SellerInfo';
+import SellerInfo from './SellerInfoSection';
 import DoubleCellLayoutType1 from '../../components/CollectionLayout/DoubleCellLayoutType1';
 import noItemsFoundImage from '/images/no_items_found.svg';
 
@@ -39,7 +39,7 @@ function SellerScreen() {
   const [adminId, setAdminId] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
   const { adminData, loading: adminLoading, error } = useAdminInfo({ adminId });
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState(-1);
   const take = 10;
 
   //products states
@@ -62,6 +62,10 @@ function SellerScreen() {
   const [skipServices, setSkipServices] = useState(0);
   const [isLoadingMoreServices, setIsLoadingMoreServices] = useState(false);
 
+  const [hasProducts, setHasProducts] = useState(false);
+  const [hasServices, setHasServices] = useState(false);
+  const [productsCheckDone, setProductsCheckDone] = useState(false);
+  const [servicesCheckDone, setServicesCheckDone] = useState(false);
   const toggleDialog = () => setDialogOpen(!dialogOpen);
 
   const handleTabChange = (event, newValue) => {
@@ -99,7 +103,6 @@ function SellerScreen() {
     {
       onCompleted: (data) => {
         const newItems = data?.products?.items || [];
-
         // If skip is 0, this is an initial load — replace
         if (lastRequestedSkipRefServices.current === 0) {
           setServices(newItems);
@@ -190,8 +193,61 @@ function SellerScreen() {
   ]);
 
   useEffect(() => {
-    if (tabIndex === 0) {
+    if (!productsCheckDone || !servicesCheckDone) {
       setAdminId(sellerId);
+      // Reset presence indicators
+      setHasProducts(false);
+      setHasServices(false);
+
+      // Check for products
+      fetchProducts({
+        variables: {
+          options: {
+            filter: {
+              adminId: { eq: sellerId },
+              itemType: { notEq: 'service' },
+            },
+            take: 1,
+          },
+        },
+        fetchPolicy: 'network-only',
+        onCompleted: (data) => {
+          setProductsCheckDone(true);
+          if ((data?.products?.items?.length || 0) > 0) {
+            setTabIndex(0);
+            setHasProducts(true);
+          }
+        },
+        onError: () => setHasProducts(false),
+      });
+
+      // Check for services
+      fetchServices({
+        variables: {
+          options: {
+            filter: {
+              adminId: { eq: sellerId },
+              itemType: { eq: 'service' },
+            },
+            take: 1,
+          },
+        },
+        fetchPolicy: 'network-only',
+        onCompleted: (data) => {
+          setServicesCheckDone(true);
+          if ((data?.products?.items?.length || 0) > 0) {
+            if (tabIndex === -1) setTabIndex(0);
+            setHasServices(true);
+          }
+        },
+        onError: () => setHasServices(false),
+      });
+    }
+  }, [sellerId]);
+
+  useEffect(() => {
+    setAdminId(sellerId);
+    if (tabIndex === 0 && hasProducts) {
       setProducts([]);
       setInitialLoadCompletedProducts(false);
       setSkipProducts(0);
@@ -214,8 +270,10 @@ function SellerScreen() {
           },
         });
       }, 0);
-    } else {
-      setAdminId(sellerId);
+    } else if (
+      tabIndex === 1 ||
+      (tabIndex === 0 && !hasProducts && hasServices)
+    ) {
       setServices([]);
       setInitialLoadCompletedServices(false);
       setSkipServices(0);
@@ -294,47 +352,86 @@ function SellerScreen() {
                   objectPosition: 'center',
                   mt: 1,
                 }}
-                src={adminData?.banner}
+                src={`${adminData?.banner}?preset=medium`}
               />
             )}
             {/* Tabs start here */}
             <Box sx={{ width: '100%', mt: 1 }}>
-              <Tabs
-                value={tabIndex}
-                onChange={handleTabChange}
-                centered
-                textColor="primary"
-                indicatorColor="primary"
-              >
-                <Tab
-                  label=<Typography
-                    variant={tabIndex === 0 ? 'h6' : 'h7'}
-                    color={
-                      tabIndex === 0
-                        ? theme.palette.grey[700]
-                        : theme.palette.grey[500]
-                    }
-                    sx={{ width: '100%', mx: 2 }}
-                  >
-                    Products
-                  </Typography>
-                />
-                <Tab
-                  label=<Typography
-                    variant={tabIndex === 1 ? 'h6' : 'h7'}
-                    color={
-                      tabIndex === 1
-                        ? theme.palette.grey[700]
-                        : theme.palette.grey[500]
-                    }
-                    sx={{ width: '100%', mx: 2 }}
-                  >
-                    Services
-                  </Typography>
-                />
-              </Tabs>
+              {hasProducts || hasServices ? (
+                <Tabs
+                  value={tabIndex}
+                  onChange={handleTabChange}
+                  centered
+                  textColor="primary"
+                  indicatorColor="primary"
+                >
+                  {hasProducts && (
+                    <Tab
+                      label={
+                        <Typography
+                          variant={tabIndex === 0 ? 'h6' : 'h7'}
+                          color={
+                            tabIndex === 0
+                              ? theme.palette.grey[700]
+                              : theme.palette.grey[500]
+                          }
+                          sx={{ width: '100%', mx: 2 }}
+                        >
+                          Products
+                        </Typography>
+                      }
+                    />
+                  )}
+                  {hasServices && (
+                    <Tab
+                      label={
+                        <Typography
+                          variant={
+                            tabIndex === 1 || (tabIndex === 0 && !hasProducts)
+                              ? 'h6'
+                              : 'h7'
+                          }
+                          color={
+                            tabIndex === 1 || (tabIndex === 0 && !hasProducts)
+                              ? theme.palette.grey[700]
+                              : theme.palette.grey[500]
+                          }
+                          sx={{ width: '100%', mx: 2 }}
+                        >
+                          Services
+                        </Typography>
+                      }
+                    />
+                  )}
+                </Tabs>
+              ) : (
+                hasProducts === false &&
+                hasServices === false &&
+                productsCheckDone &&
+                servicesCheckDone && (
+                  <Stack alignItems="center" mt={5}>
+                    <Typography
+                      variant="h7"
+                      color="grey.500"
+                      textAlign="center"
+                    >
+                      This user doesn’t have any listings.
+                    </Typography>
+                    <Box
+                      component="img"
+                      src={noItemsFoundImage}
+                      sx={{
+                        width: '60%',
+                        objectFit: 'contain',
+                        borderRadius: '10px',
+                        mt: 2,
+                      }}
+                    />
+                  </Stack>
+                )
+              )}
               {/* Products Tab */}
-              {tabIndex === 0 && (
+              {tabIndex === 0 && hasProducts && (
                 <>
                   {!initialLoadCompletedProducts && (
                     <Box
@@ -431,7 +528,8 @@ function SellerScreen() {
                 </>
               )}
               {/* Services Tab */}
-              {tabIndex === 1 && (
+              {(tabIndex === 1 ||
+                (tabIndex === 0 && !hasProducts && hasServices)) && (
                 <>
                   {!initialLoadCompletedServices && (
                     <Box

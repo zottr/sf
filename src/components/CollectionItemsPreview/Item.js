@@ -21,7 +21,11 @@ function Item({ item, collectionSlug }) {
           width: '100%',
         }}
         component={RouterLink}
-        to={`/product/${item.slug}`}
+        to={
+          item.customFields.itemType === 'service'
+            ? `/service/${item.slug}`
+            : `/product/${item.slug}`
+        }
       >
         <Box
           component="img"

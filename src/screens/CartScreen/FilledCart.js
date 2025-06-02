@@ -140,7 +140,12 @@ function FilledCart({
                 >
                   <Box
                     component={RouterLink}
-                    to={`/product/${orderLine?.productVariant?.product?.slug}`}
+                    to={
+                      orderLine?.productVariant?.product?.customFields
+                        .itemType === 'service'
+                        ? `/service/${orderLine?.productVariant?.product?.slug}`
+                        : `/product/${orderLine?.productVariant?.product?.slug}`
+                    }
                     sx={{
                       textDecoration: 'none',
                       width: '100%',

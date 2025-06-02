@@ -83,16 +83,13 @@ function MainHeader() {
           sx={{ mb: 0.5 }}
         >
           <ListItemIcon>
-            <HomeIcon
-              fontSize="large"
-              sx={{ color: theme.palette.grey[800] }}
-            />
+            <HomeIcon sx={{ color: theme.palette.grey[800], fontSize: 28 }} />
           </ListItemIcon>
           <ListItemText
             primary={
               <Typography
-                variant="h7"
-                sx={{ color: theme.palette.grey[800], fontWeight: 600 }}
+                variant="heavylabel1"
+                sx={{ color: theme.palette.grey[800] }}
               >
                 Home
               </Typography>
@@ -107,15 +104,14 @@ function MainHeader() {
         >
           <ListItemIcon>
             <EditNoteIcon
-              fontSize="large"
-              sx={{ color: theme.palette.grey[800] }}
+              sx={{ color: theme.palette.grey[800], fontSize: 28 }}
             />
           </ListItemIcon>
           <ListItemText
             primary={
               <Typography
-                variant="h7"
-                sx={{ color: theme.palette.grey[800], fontWeight: 600 }}
+                variant="heavylabel1"
+                sx={{ color: theme.palette.grey[800] }}
               >
                 Your Orders
               </Typography>
@@ -130,17 +126,16 @@ function MainHeader() {
         >
           <ListItemIcon>
             <FavoriteIcon
-              fontSize="large"
-              sx={{ color: theme.palette.grey[800] }}
+              sx={{ color: theme.palette.grey[800], fontSize: 28 }}
             />
           </ListItemIcon>
           <ListItemText
             primary={
               <Typography
-                variant="h7"
-                sx={{ color: theme.palette.grey[800], fontWeight: 600 }}
+                variant="heavylabel1"
+                sx={{ color: theme.palette.grey[800] }}
               >
-                Favorite Sellers
+                Favorites
               </Typography>
             }
           />
@@ -156,8 +151,7 @@ function MainHeader() {
         >
           <ListItemIcon>
             <CategoryIcon
-              fontSize="large"
-              sx={{ color: theme.palette.grey[800] }}
+              sx={{ color: theme.palette.grey[800], fontSize: 28 }}
             />
           </ListItemIcon>
           <ListItemText
@@ -171,20 +165,26 @@ function MainHeader() {
                   }}
                 >
                   <Typography
-                    variant="h7"
-                    sx={{ color: theme.palette.grey[800], fontWeight: 500 }}
+                    variant="heavylabel1"
+                    sx={{ color: theme.palette.grey[800] }}
                   >
                     Categories
                   </Typography>
                   {expandCollections ? (
                     <ExpandLessIcon
-                      fontSize="medium"
-                      sx={{ color: theme.palette.grey[800], pl: 0.5 }}
+                      sx={{
+                        color: theme.palette.grey[800],
+                        pl: 0.5,
+                        fontSize: 28,
+                      }}
                     />
                   ) : (
                     <ExpandMoreIcon
-                      fontSize="medium"
-                      sx={{ color: theme.palette.grey[800], pl: 0.5 }}
+                      sx={{
+                        color: theme.palette.grey[800],
+                        pl: 0.5,
+                        fontSize: 28,
+                      }}
                     />
                   )}
                 </Box>
@@ -205,9 +205,8 @@ function MainHeader() {
                 <ListItemText
                   primary={
                     <Typography
-                      variant="h7"
+                      variant="label1"
                       sx={{
-                        fontWeight: 600,
                         color: theme.palette.grey[800],
                         //avoid data spilling
                         wordWrap: 'break-word', // Ensures long words break and wrap onto the next line
@@ -215,7 +214,7 @@ function MainHeader() {
                         width: '100%', // Ensure the text takes up the full width of its container
                         //name shouldn't extend more than 1 line
                         display: 'block',
-                        maxHeight: '1.25em', //max 1 line
+                        maxHeight: '1.3em', //max 1 line
                         overflow: 'hidden',
                       }}
                     >
@@ -234,22 +233,19 @@ function MainHeader() {
         <ListItemButton
           sx={{ mb: 0.5 }}
           onClick={() => {
-            handleLinkClick(`/sellers`);
+            handleLinkClick(`/profiles`);
           }}
         >
           <ListItemIcon>
-            <GroupIcon
-              fontSize="large"
-              sx={{ color: theme.palette.grey[800] }}
-            />
+            <GroupIcon sx={{ color: theme.palette.grey[800], fontSize: 28 }} />
           </ListItemIcon>
           <ListItemText
             primary={
               <Typography
-                variant="h7"
-                sx={{ color: theme.palette.grey[800], fontWeight: 600 }}
+                variant="heavylabel1"
+                sx={{ color: theme.palette.grey[800] }}
               >
-                Sellers
+                All Profiles
               </Typography>
             }
           />
@@ -263,16 +259,15 @@ function MainHeader() {
         >
           <ListItemIcon>
             <EngineeringIcon
-              fontSize="large"
-              sx={{ color: theme.palette.grey[800] }}
+              sx={{ color: theme.palette.grey[800], fontSize: 28 }}
               // sx={{ color: 'secondary.dark' }}
             />
           </ListItemIcon>
           <ListItemText
             primary={
               <Typography
-                variant="h7"
-                sx={{ color: theme.palette.grey[800], fontWeight: 600 }}
+                variant="heavylabel1"
+                sx={{ color: theme.palette.grey[800] }}
                 // sx={{ color: 'secondary.dark', fontWeight: 700 }}
               >
                 Services
@@ -304,21 +299,21 @@ function MainHeader() {
           >
             <Stack direction="row" gap={1} className="flexCenter">
               <EngineeringIcon
-                fontSize="large"
+                fontSize:32,
                 sx={{ color: 'secondary.main' }}
               />
               <Typography
-                variant="h7"
-                sx={{ color: 'secondary.main', fontWeight: 600 }}
+                variant="heavylabel1"
+                sx={{ color: 'secondary.main',  }}
               >
                 Services
               </Typography>
             </Stack>
           </Button>
         </ListItem> */}
-        <ListItem>
+        {/* <ListItem>
           <PWAInstallButton />
-        </ListItem>
+        </ListItem> */}
       </List>
       <Grid
         container
@@ -329,6 +324,17 @@ function MainHeader() {
           mb: '20px',
         }}
       >
+        <Grid
+          item
+          xs={12}
+          sx={{
+            mb: 1,
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <PWAInstallButton />
+        </Grid>
         <Grid
           item
           xs={12}
@@ -381,6 +387,9 @@ function MainHeader() {
         open={openLeftDrawer}
         onClose={toggleLeftDrawer(false)}
         sx={{
+          '& .MuiDrawer-paper': {
+            width: 280, // You can set this to any fixed width
+          },
           zIndex: (theme) => theme.zIndex.drawer,
         }}
       >
@@ -414,8 +423,7 @@ function MainHeader() {
         >
           <Stack direction="row" className="flexCenter" gap={1}>
             <EditNoteIcon
-              fontSize="large"
-              sx={{ color: theme.palette.grey[800] }}
+              sx={{ color: theme.palette.grey[800], fontSize: 28 }}
             />
             <Typography
               variant="label1"
@@ -432,14 +440,13 @@ function MainHeader() {
         >
           <Stack direction="row" className="flexCenter" gap={2}>
             <FavoriteIcon
-              fontSize="medium"
-              sx={{ color: theme.palette.grey[800] }}
+              sx={{ color: theme.palette.grey[800], fontSize: 25 }}
             />
             <Typography
               variant="label1"
               sx={{ color: theme.palette.grey[800] }}
             >
-              Favorite Sellers
+              Favorite Profiles
             </Typography>
           </Stack>
         </MenuItem>

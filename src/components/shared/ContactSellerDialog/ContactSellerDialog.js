@@ -26,7 +26,7 @@ function ContactSellerDialog({ open, onClose, order, admin }) {
   // const chatWithSeller = () => {
   //   const adminId =
   //     order.lines?.[0]?.productVariant?.product?.customFields?.adminId;
-  //   const sellerStoreUrl = `https://urbanahaat.zottr.com/seller/${adminId}`;
+  //   const sellerStoreUrl = `https://urbanahaat.zottr.com/profile/${adminId}`;
 
   //   const orderItems = order.lines
   //     .map((line) => {
@@ -75,7 +75,7 @@ function ContactSellerDialog({ open, onClose, order, admin }) {
     if (order) {
       const adminId =
         order.lines?.[0]?.productVariant?.product?.customFields?.adminId;
-      const sellerStoreUrl = `https://urbanahaat.zottr.com/seller/${adminId}`;
+      const sellerStoreUrl = `https://urbanahaat.zottr.com/profile/${adminId}`;
 
       const orderItems = order.lines
         .map((line) => {

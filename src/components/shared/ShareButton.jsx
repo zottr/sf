@@ -34,19 +34,19 @@ const ShareButton = ({ title, text, url }) => {
         variant="outlined"
         sx={{
           height: '3rem',
-          borderColor: 'secondary.dark',
+          borderColor: 'info.dark',
           borderRadius: '30px',
           '&:hover, &:focus, &:active': {
-            borderColor: 'secondary.dark',
+            borderColor: 'info.dark',
           },
         }}
       >
-        <Typography variant="button1" sx={{ color: 'secondary.dark' }}>
+        <Typography variant="button1" sx={{ color: 'info.dark' }}>
           Share
         </Typography>
         <ReplyIcon
           fontSize="medium"
-          sx={{ transform: 'scaleX(-1)', ml: 1, color: 'secondary.dark' }}
+          sx={{ transform: 'scaleX(-1)', ml: 1, color: 'info.dark' }}
         />
       </Button>
       {/* Snackbar for toast message */}

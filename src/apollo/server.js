@@ -216,6 +216,7 @@ export const GET_PRODUCT = gql`
       customFields {
         adminId
         adminName
+        itemType
       }
     }
   }
@@ -763,6 +764,7 @@ export const GET_COLLECTION_PRODUCTS = gql`
             customFields {
               adminId
               adminName
+              itemType
             }
           }
         }

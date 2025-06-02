@@ -8,6 +8,17 @@ import CollectionItemsPreviewSkeleton from './CollectionItemsPreviewSkeleton';
 function CollectionItemsPreview() {
   const theme = useTheme();
   const { collections, loading } = React.useContext(CollectionsContext);
+
+  const desiredOrder = [
+    'services',
+    'food-and-drinks',
+    'grocery-and-essentials',
+    'clothing-and-accessories',
+    'beauty-and-grooming',
+    'household-items',
+    'home-and-decor',
+  ];
+
   return (
     <>
       {loading && (
@@ -25,12 +36,29 @@ function CollectionItemsPreview() {
       {/* <Box sx={{ backgroundColor: theme.palette.background.default }}> */}
       {!loading && (
         <Stack spacing={5}>
-          {collections?.map((collection) => (
+          {collections
+            ?.slice()
+            .sort(
+              (a, b) =>
+                (desiredOrder.indexOf(a.slug) === -1
+                  ? 999
+                  : desiredOrder.indexOf(a.slug)) -
+                (desiredOrder.indexOf(b.slug) === -1
+                  ? 999
+                  : desiredOrder.indexOf(b.slug))
+            )
+            .map((collection) => (
+              <HorizontalScroll
+                key={collection.slug ?? collection.id}
+                collection={collection}
+              />
+            ))}
+          {/* {collections?.map((collection) => (
             <HorizontalScroll
               key={collection.slug ?? collection.id}
               collection={collection}
             />
-          ))}
+          ))} */}
         </Stack>
       )}
       {/* </Box> */}
